@@ -1582,5 +1582,13 @@
 2)	artifacts are plain objects, their flags and bags kept in the
 	object
 3)	ways to die moved from death.h into rogue.h
+4)	new monsters: young dragon, old dragon, very old dragon,
+	achaierai
+5)	reworked monster levels, stats, experience and symbols
+6)	more monsters summon their friends, not just the undead
+7)	new chances for scrolls, potions, rings and sticks
+8)	detection scrolls and potions renamed, some no longer appear
+9)	lower prices for some magic, new food prices
+10)	new weapon weights and armor chances
 
 -------	End of File ------
