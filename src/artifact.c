@@ -1,5 +1,5 @@
 /*
- * Last Modified: 08/05/86
+ * Last Modified: Jan 20, 1991
  */
 /*
  * This file contains functions for dealing with artifacts
@@ -28,7 +28,7 @@ apply()
 	    chance = rnd(100) - 10 * rnd(luck);
 	    debug("Rolled %d.", chance);
 	    if (chance < 5)
-		do_major(obj);
+		do_major();
 	    else if (chance < 50)
 		do_minor(obj);
 	    else
@@ -145,8 +145,7 @@ struct object *tr;
     debug("Rolled %d.", which);
     switch(which) {
 	when 0:
-		if (off(player, ISBLIND))
-		    msg("You develop some acne on your face.");
+		seemsg("You develop some acne on your face.");
 	when 1:
 		if (on(player, CANSCENT)) {
 		    msg("A sudden whiff of BO causes you to faint.");
@@ -155,23 +154,17 @@ struct object *tr;
 		else if (off(player, ISUNSMELL))
 		    msg("You begin to smell funny.");
 	when 2:
-		if(off(player, ISBLIND))
-		    msg("A wart grows on the end of your nose.");
+		seemsg("A wart grows on the end of your nose.");
 	when 3:
-		if (off(player, ISDEAF))
-		    msg("Your hear strange noises in the distance.");
+		hearmsg("Your hear strange noises in the distance.");
 	when 4:
-		if (off(player, ISDEAF))
-		    msg("You hear shuffling in the distance.");
+		hearmsg("You hear shuffling in the distance.");
 	when 5:
-		if (off(player, ISDEAF))
-		    msg("You hear clanking in the distance.");
+		hearmsg("You hear clanking in the distance.");
 	when 6:
-		if (off(player, ISDEAF))
-		    msg("You hear water dripping onto the floor.");
+		hearmsg("You hear water dripping onto the floor.");
 	when 7:
-		if (off(player, ISDEAF))
-		    msg("The dungeon goes strangely silent.");
+		hearmsg("The dungeon goes strangely silent.");
 	when 8:
 		msg("You suddenly feel very warm.");
 	when 9:
@@ -250,20 +243,15 @@ struct object *tr;
 		else
 		   msg("You feel an urge to scratch an itch.");
 	when 22:
-		if (off(player, ISBLIND))
-		    msg("Your hair begins to turn grey.");
+		seemsg("Your hair begins to turn grey.");
 	when 23:
-		if (off(player, ISBLIND))
-		    msg("Your hair begins to turn white.");
+		seemsg("Your hair begins to turn white.");
 	when 24:
-		if (off(player, ISBLIND))
-		    msg("Some of your hair instantly turns white.");
+		seemsg("Some of your hair instantly turns white.");
 	when 25:
-		if (off(player, ISBLIND))
-		    msg("You are covered with long white hair.");
+		seemsg("You are covered with long white hair.");
 	when 26:
-		if (off(player, ISBLIND))
-		    msg("You are covered with long red hair.");
+		seemsg("You are covered with long red hair.");
 	when 27:
 		msg("You grow a beard.");
 	when 28:
@@ -287,13 +275,11 @@ struct object *tr;
 	when 37:
 		msg("An eye grows on your forehead.");
 	when 38:
-		if(off(player, ISBLIND))
-		    msg("You see beady eyes watching from a distance.");
+		seemsg("You see beady eyes watching from a distance.");
 	when 39:
 		msg("The dungeon rumbles for a moment.");
 	when 40:
-		if (off(player, ISBLIND))
-		    msg("A flower grows on the floor next to you.");
+		seemsg("A flower grows on the floor next to you.");
 	when 41:
 		msg("You are stunned by a psionic blast.");
 	        if (on(player, ISHUH))
@@ -311,8 +297,7 @@ struct object *tr;
 	            turn_on(player, ISHUH);
 		}
 	when 43:
-		if (off(player, ISDEAF))
-		    msg("You hear voices in the distance.");
+		hearmsg("You hear voices in the distance.");
 	when 44:
 		msg("You feel a strange pull.");
 		teleport();
@@ -393,19 +378,15 @@ struct object *tr;
 		}
 		else msg("You feel dizzy for a moment, but it quickly passes.");
 	when 52:
-		if (off(player, ISDEAF))
-		    msg("You hear a wailing sound in the distance.");
+		hearmsg("You hear a wailing sound in the distance.");
 		aggravate();
 	when 53:
-		if (off(player, ISDEAF))
-		    msg("You hear a high pitched whining sound.");
-		aggravate();
+		read_scroll(&player, S_HOLD, ISCURSED);
 	when 54:
 		msg("You can't move.");
 		no_command = 3 * HOLDTIME;
 	when 55:
-		if (off(player, ISDEAF))
-		    msg("You hear a buzzing sound.");
+		hearmsg("You hear a buzzing sound.");
 		aggravate();
 	when 56:
 		msg("Your limbs stiffen.");
@@ -450,8 +431,7 @@ struct object *tr;
 	when 73:
 		msg("You feel in touch with a Universal Oneness.");
 	when 74:
-		if (off(player, ISDEAF))
-		    msg("You hear voices in the distance.");
+		hearmsg("You hear voices in the distance.");
 	when 75:
 		msg("A strange feeling of power comes over you.");
 	when 76:
@@ -560,7 +540,7 @@ struct object *tr;
 	}
 	otherwise:
 		tr->ar_flags &= ~ISACTIVE;
-		msg("You hear a click coming from %s.", inv_name(tr, LOWERCASE));
+		hearmsg("You hear a click coming from %s.", inv_name(tr, LOWERCASE));
     }
 }
 
@@ -580,8 +560,7 @@ struct object *tr;
  * 10.	weapon crumbles
  * 11.	curse weapon 
  */
-do_major(tr)
-struct object *tr;
+do_major()
 {
     register int which;
 
@@ -600,14 +579,17 @@ struct object *tr;
 	if (on(player, ISREGEN)) {
 	    extinguish(unregen);
 	    turn_off(player, ISREGEN);
+	    unregen();
 	}
 	if (on(player, NOCOLD)) {
 	    extinguish(uncold);
 	    turn_off(player, NOCOLD);
+	    uncold();
 	}
 	if (on(player, NOFIRE)) {
 	    extinguish(unhot);
 	    turn_off(player, NOFIRE);
+	    unhot();
 	}
 	if (on(player, SUPEREAT)) {
 	    lengthen(unsupereat, 2*PHASEDURATION);
@@ -703,11 +685,11 @@ struct object *tr;
     }
     otherwise:
 	if (cur_weapon == NULL) {
-	    msg("Your hand glows yellow for an instant.");
+	    seemsg("Your hand glows yellow for an instant.");
 	    pstats.s_dmg = "1d3";
 	    return;
 	}
-	msg("Your %s glows bright red for a moment.", 
+	seemsg("Your %s glows bright red for a moment.", 
 		weaps[cur_weapon->o_which].w_name);
 	if (cur_weapon->o_hplus > 0)
 	    cur_weapon->o_hplus = -rnd(3);
@@ -1090,7 +1072,7 @@ do_sceptre()
 		    do_zap(&player, WS_PARALYZE, ISBLESSED);
 	when 6: if (get_dir()) 
 		    do_zap(&player, WS_DRAIN, ISBLESSED);
-	when 7: quaff(&player, P_SMELL, ISNORMAL);
+	when 7: quaff(&player, P_SMELL, ISBLESSED);
 	otherwise:
 		msg("What a strange thing to do!!");
     }
@@ -1104,7 +1086,7 @@ do_wand()
     register int which, i;
 
     /* Prompt for action */
-    msg("How do you wish to apply the Wand of Orcus (* for list)? ");
+    msg("How do you wish to apply the Wand of Yendor (* for list)? ");
 
     which = (short) ((getchar() & 0177) - 'a');
     if (which == (short) ESCAPE - (short) 'a') {

@@ -122,7 +122,7 @@ int flags;
 	return;
     }
     if (is_stick) {
-	if ((obj = get_object(pack, "zap with", NULL, bff_zappable)) == NULL)
+	if ((obj = get_object(pack, "zap with", STICK, bff_zappable)) == NULL)
 	    return;
 	if (obj->o_type != STICK && !(obj->o_flags & ISZAPPED)) {
 	    msg("You can't zap with that!");
@@ -274,7 +274,7 @@ int flags;
 		    if (isalpha(mvwinch(cw, y, x)))
 			mvwaddch(cw, y, x, tp->t_type);
 		    tp->t_oldch = oldch;
-		    msg(terse ? "A new %s!" : "You have created a new %s!", mname);
+		    seemsg(terse ? "A new %s!" : "You have created a new %s!", mname);
 		}
 		else if (which == WS_CANCEL) {
 		    tp->t_flags[0] &= CANC0MASK;
@@ -314,8 +314,8 @@ int flags;
 			do {	/* Move monster to another room */
 			    rm = rnd_room();
 			    rnd_pos(&rooms[rm], &tp->t_pos);
-			} until(winat(tp->t_pos.y,tp->t_pos.x) ==
-			        FLOOR || i++>500);
+			} while (winat(tp->t_pos.y,tp->t_pos.x) !=
+			        FLOOR && i++ < 500);
 		    }
 
 		    /* Now move the monster */
@@ -353,11 +353,11 @@ int flags;
 		debug("Missiled %s for %d (%d)",
 		    mname, damage, tp->t_stats.s_hpt-damage);
 		if ((tp->t_stats.s_hpt -= damage) <= 0) {
-		    msg("The missile kills the %s.", mname);
+		    seemsg("The missile kills the %s.", mname);
 		    killed(&player, item, NOMESSAGE, POINTS);
 		}
 		else {
-		    msg("The missile hits the %s", mname);
+		    seemsg("The missile hits the %s", mname);
 		    runto(&bolt.o_pos, &hero);
 		    summon_help(tp, NOFORCE);
 		}
@@ -372,7 +372,7 @@ int flags;
 	    struct object strike; /* don't want to change sticks attributes */
 
 	    if (is_stick) know_items[TYP_STICK][which] = TRUE;
-	    bolt.o_type = '=';
+	    bolt.o_type = '@';
 	    do_motion(&bolt, delta.y, delta.x, &player);
 	    ch = winat(bolt.o_pos.y, bolt.o_pos.x);
 
@@ -394,7 +394,7 @@ int flags;
 		sprintf(buf, "%dd%d", ndice, nsides);
 
 		strike.o_damage = buf;
-		fight(&tp->t_pos, ch, &strike, NOTHROWN);
+		fight(&tp->t_pos, &strike, NOTHROWN);
 	    }
 	}
 	when WS_SLOW_M:
@@ -421,18 +421,14 @@ int flags;
 		delta.x = x;
 		runto(&delta, &hero);
 	    }
-	/*
-	 * This will become much more useful (and carried around more)
-	 * if it does a fix_stick() on all drained wands
-	 */
 	when WS_CHARGE:
-	    if (know_items[TYP_STICK][WS_CHARGE] != TRUE && is_stick) {
+	    if (know_items[TYP_STICK][which] != TRUE && is_stick) {
 		msg("This is a wand of charging.");
 		know_items[TYP_STICK][which] = TRUE;
 	    }
 	    if ((nitem = get_item("charge", STICK)) != NULL) {
 		nobj = OBJPTR(nitem);
-		if (nobj->o_charges == 0) {
+		if ((nobj->o_charges == 0) && (nobj->o_which != WS_CHARGE)) {
 		    fix_stick(nobj);
 		    if (blessed) nobj->o_charges *= 2;
 		    else if (cursed) nobj->o_charges /= 2;
@@ -449,25 +445,35 @@ int flags;
 	    char *name;
 	    int damage;
 	    int ndice = 3 + pstats.s_lvl;
-	    int nsides = 6;
+	    int nsides;
 
-	    if (is_stick) know_items[TYP_STICK][which] = TRUE;
+	    if (is_stick) {
+		know_items[TYP_STICK][which] = TRUE;
+		if (strcmp(ws_type[which], "staff") == 0)
+		    nsides = 8;
+		else
+		    nsides = 4;
+	    }
+	    else
+		nsides = 6;
 	    if (cursed)
 		nsides /= 2;
 	    else if (blessed)
 		nsides *= 2;
-	    damage = roll(ndice, nsides);
 
 	    switch (which) {
 	    when WS_ELECT:
 		name = "lightning bolt";
-		if (obj->o_charges > 50)
-		    damage += roll(1+rnd(3),1+rnd(3));
+		if (rnd(2))
+		    ndice += rnd(obj->o_charges / 10);
+		else
+		    nsides += rnd(obj->o_charges / 10);
 	    when WS_FIRE:
 		name = "flame";
 	    when WS_COLD:
 		name = "ice";
 	    }
+	    damage = roll(ndice, nsides);
 	    shoot_bolt(&player, hero, delta, POINTS, D_BOLT, name, damage);
 	}
 	when WS_ANTIMATTER: {
@@ -526,10 +532,10 @@ int flags;
 		    if (is_stick) know_items[TYP_STICK][which] = TRUE;
 		    switch (which) {
 		    when WS_CONFMON:
-			msg("The %s looks bewildered.", mname);
+			seemsg("The %s looks bewildered.", mname);
 			turn_on (*tp, ISHUH);
 		    when WS_PARALYZE:
-			msg("The %s looks stunned.", mname);
+			seemsg("The %s looks stunned.", mname);
 			tp->t_no_move = FREEZETIME;
 		    }
 		}
@@ -545,10 +551,10 @@ int flags;
 		if (cursed) {
 		    if (!save_throw(VS_MAGIC, tp)) {
 			if ((mons_hpt -= hpt_gain) <= 0) {
-			    msg("The %s shrivels up and dies!", mname);
+			    seemsg("The %s shrivels up and dies!", mname);
 			    killed(&player, item, NOMESSAGE, POINTS);
 			}
-			else msg("Wounds appear all over the %s.", mname);
+			else seemsg("Wounds appear all over the %s.", mname);
 		    }
 		    else nothing_message(flags);
 		    delta.y = y;
@@ -558,7 +564,7 @@ int flags;
 		else {
 		    if (is_stick) know_items[TYP_STICK][which] = TRUE;
 		    mons_hpt = min(mons_hpt + hpt_gain, tp->maxstats.s_hpt);
-		    msg("The %s appears less wounded!", mname);
+		    seemsg("The %s appears less wounded!", mname);
 		}
 	    }
 	    else nothing_message(flags);
@@ -605,7 +611,7 @@ int flags;
 			tp->t_stats.s_hpt = tp->t_stats.s_hpt / 2 - 1;
 			if (tp->t_stats.s_hpt < 1) {
 			     killed(&player, item, NOMESSAGE, POINTS);
-			     msg("The %s fades away.", mname);
+			     seemsg("The %s fades away.", mname);
 			}
 			else {
 			    delta.y = y;
@@ -613,7 +619,7 @@ int flags;
 			    runto(&delta, &hero);
 			    if (on(*tp, CANSUMMON))
 				 summon_help(tp, FORCE);
-			    else msg("The %s is very upset.", mname);
+			    else seemsg("The %s is very upset.", mname);
 			}
 		    }
 		    else {
@@ -621,7 +627,7 @@ int flags;
 			    luck++;
 			    aggravate();
 			}
-			msg("The %s turns to dust and blows away.", mname);
+			seemsg("The %s turns to dust and blows away.", mname);
 			killed (&player, item, NOMESSAGE, POINTS);
 		    }
 		}
@@ -656,7 +662,7 @@ int flags;
 		    }
 		}
 		if (zapped)
-		    msg("The monsters seem to have all disappeared.");
+		    seemsg("The monsters seem to have all disappeared.");
 		else
 		    nothing_message(flags);
 	    }
@@ -666,11 +672,11 @@ int flags;
 		    if (blessed) {
 			turn_off(*tp, ISINVIS);
 			turn_off(*tp, ISSHADOW);
-			msg("The %s appears.", mname);
+			seemsg("The %s appears.", mname);
 		    }
 		    else {
 			turn_on(*tp, ISINVIS);
-			msg("The %s disappears.", mname);
+			seemsg("The %s disappears.", mname);
 		    }
 		}
 		else nothing_message(flags);
@@ -688,7 +694,7 @@ int flags;
 	    obj = OBJPTR(item);
 	    obj->o_count = 1;
 	    obj->o_flags |= ISKNOW;
-	    msg("BOOOM!");
+	    hearmsg("BOOOM!");
 	    aggravate();
 	    obj->o_pos.x = hero.x;
 	    obj->o_pos.y = hero.y;
@@ -754,10 +760,10 @@ int flags;
 	    ch = winat(bolt.o_pos.y, bolt.o_pos.x);
 
 	    if (isalpha(ch)) {
-		if (save_throw(VS_MAGIC - (blessed ? 5 : -5), tp))
-		    msg("The %s evades your web.", mname);
+		if (save_throw(tp))
+		    seemsg("The %s evades your web.", mname);
 		else {
-		    msg("The %s is webbed.", mname);
+		    seemsg("The %s is webbed.", mname);
 		    turn_off(*tp, ISRUN);
 		    turn_on(*tp, ISHELD);
 		}
@@ -803,7 +809,7 @@ int flags;
 		when SECRETDOOR:
 		    if (which == WS_KNOCK) {
 			mvaddch(zap_loc.y, zap_loc.x, DOOR);
-			msg("A secret door stands revealed before you!");
+			seemsg("A secret door stands revealed before you!");
 			if (is_stick) know_items[TYP_STICK][which] = TRUE;
 		    }
 		    else goto n_doing;
@@ -999,8 +1005,6 @@ int damage;			/* make zapee suffer */
 		    else if (dirch == '/') dirch = '\\';
 		}
 
-		y--;
-		msg("The %s bounces!", name);
 	    otherwise:
 		if (isalpha(ch)) {			/* hit a monster */
 		    item = find_mons(pos.y, pos.x);
@@ -1034,7 +1038,7 @@ int damage;			/* make zapee suffer */
 			if ( on(*tp, NOFIRE) )
 			    no_effect=TRUE;
 			if ( on(*tp, CANBBURN) ) {
-			    msg("The %s is burned to death by the flame.",
+			    seemsg("The %s is burned to death by the flame.",
 				mname);
 			    take_that[y] += tp->t_stats.s_hpt + 1;
 			    ret_val = TRUE;
@@ -1046,7 +1050,7 @@ int damage;			/* make zapee suffer */
 			if ( on(*tp, BOLTDIVIDE) ) {
 			    no_effect=TRUE;
 			    if (creat_mons(tp, tp->t_index, NOMESSAGE))
-				msg("The %s divides the %s.", name, mname);
+				seemsg("The %s divides the %s.", name, mname);
 			}
 		    }
 		    if (no_effect == TRUE) {
@@ -1244,14 +1248,31 @@ int flags;
 	    nsides *= 2;
 	damage = roll(ndice, nsides);
 
-	if ( (ch==PLAYER) && !save(VS_MAGIC) ) {	/* help the player */
-	    if (terse) 
-		 msg("The %s hits you.", bolt_name);
-	    else msg("You are hit by the %s.", bolt_name);
-	    if ((pstats.s_hpt -= damage) <= 0)
-		death(D_BOLT);
+	if (ch == PLAYER) {
+	    if (save(VS_MAGIC))		/* help the player */
+		msg("You evade the %s.", bolt_name);
+	    else {
+		if (terse) 
+		     msg("The %s hits you.", bolt_name);
+		else msg("You are hit by the %s.", bolt_name);
+		if ((pstats.s_hpt -= damage) <= 0)
+		    death(D_BOLT);
+	    }
 	}
-	else msg("The %s misses.", bolt_name);
+	else if (isalpha(ch)) {
+	    register struct linked_list *item;
+
+	    item = find_mons(bolt.o_pos.y, bolt.o_pos.x);
+	    if (item != NULL) {
+		register struct thing *tp = THINGPTR(item);
+		bool see_it = cansee(bolt.o_pos.y, bolt.o_pos.x);
+
+		if ((tp->t_stats.s_hpt -= damage) <= 0)
+		    killed(zapper, item, see_it, (zapper == THINGPTR(fam_ptr)));
+		else if (see_it)
+		    msg("The %s hits the monster.", bolt_name);
+	    }
+	}
 	if ( bolt.o_pos.y >= 0 && bolt.o_pos.x >= 0 &&
 			bolt.o_pos.y < LINES && bolt.o_pos.x < COLS)
 	    mvwaddch(cw, bolt.o_pos.y, bolt.o_pos.x,
@@ -1272,7 +1293,7 @@ int flags;
 	    ws_magic[which].mi_name);
     }
     if (shoot) {
-	ndice = 3 + pstats.s_lvl;
+	ndice = curp->s_lvl / 2 + 1;
 	nsides = 6;
 
 	if (cursed)
@@ -1280,7 +1301,8 @@ int flags;
 	else if (blessed)
 	    nsides *= 2;
 	damage = roll(ndice, nsides);
-	shoot_bolt(zapper, zapper->t_pos, delta, NOPOINTS, D_BOLT, bolt_name, damage);
+	shoot_bolt(zapper, zapper->t_pos, delta, (zapper == THINGPTR(fam_ptr)),
+	    D_BOLT, bolt_name, damage);
     }
 }
 
@@ -1326,5 +1348,4 @@ bool not_unique;
     }
     if (no_effect)
 	nothing_message(ISNORMAL);
-  	bolt_name = "cold";
 }

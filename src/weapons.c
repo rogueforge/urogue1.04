@@ -25,13 +25,11 @@ register struct thing *tp;
     /*
     * Get which thing we are hurling
     */
-    if (item == NULL) {
+    if (item == NULL)
 	return;
-    }
     obj = OBJPTR(item);
-    if (!dropcheck(obj) || is_current(obj)) {
+    if (!dropcheck(obj) || is_current(obj))
 	return;
-    }
     /*
     * Get rid of the thing. If it is a non-multiple item object, or
     * if it is the last thing, just drop it. Otherwise, create a new
@@ -52,13 +50,14 @@ register struct thing *tp;
 	obj->o_count = 1;
 	item = nitem;
     }
-    if (obj->o_type == ARTIFACT)
-	has_artifact &= ~(1 << obj->o_which);
-    if (obj->o_type == SCROLL && obj->o_which == S_SCARE) {
-	if (obj->o_flags & ISBLESSED)
-	    obj->o_flags &= ~ISBLESSED;
-	else 
-	    obj->o_flags |= ISCURSED;
+    switch (obj->o_type) {
+	when ARTIFACT:
+	    has_artifact &= ~(1 << obj->o_which);
+	when SCROLL:
+	    if (obj->o_which == S_SCARE && obj->o_flags & ISBLESSED)
+		obj->o_flags &= ~ISBLESSED;
+	    else 
+		obj->o_flags |= ISCURSED;
     }
     updpack ();
     do_motion(obj, ydelta, xdelta, tp);
@@ -71,7 +70,7 @@ register struct thing *tp;
 	if (obj->o_type == WEAPON && obj->o_which == GRENADE) {
 	    static coord fpos;
 
-	    msg("BOOOM!");
+	    hearmsg("BOOOM!");
 	    aggravate();
 	    if (ntraps+1 < 2*MAXTRAPS && fallpos(&obj->o_pos, &fpos, TRUE)) {
 		mvaddch(fpos.y, fpos.x, TRAPDOOR);
@@ -168,6 +167,7 @@ bool pr;
     rp = roomin(&(tp->t_pos));
     if (obj->o_flags & CANRETURN) {
 	add_pack(item, NOMESSAGE);
+	msg("You have %s.", inv_name(obj, LOWERCASE));
 	return;
     }
     else if (fallpos(&obj->o_pos, &fpos, TRUE)) {
@@ -245,7 +245,7 @@ register struct thing *thrower;
     target.y = y;
     target.x = x;
     if (thrower == &player)
-	return(fight(&target, winat(y, x), weapon, THROWN));
+	return(fight(&target, weapon, THROWN));
 
     if (ce(target, hero)) {
 	if (good_monster(*thrower)) {
@@ -305,13 +305,11 @@ wield()
 	return;
     }
     obj = OBJPTR(item);
-    if (!wield_ok(&player, obj, TRUE))
-	return;
-
     if (is_current(obj)) {
 	after = FALSE;
 	return;
     }
+    wield_ok(&player, obj, TRUE);
     
     msg("%sielding %s.", (terse ? "W" : "You are now w"), inv_name(obj, LOWERCASE));
     cur_weapon = obj;
@@ -389,7 +387,7 @@ bool print_message;
 	if (obj->o_flags & ISSHARP)
 	    ret_val = FALSE;
     when C_DRUID:			/* No non-silver metal weapons */
-	if (obj->o_flags & ISMETAL && ~(obj->o_flags & ISSILVER))
+	if (obj->o_flags & ISMETAL && !(obj->o_flags & ISSILVER))
 	    ret_val = FALSE;
     when C_PALADIN:			/* must wield sharp stuff */
 	if ((obj->o_flags & ISSHARP) == FALSE)
@@ -397,7 +395,7 @@ bool print_message;
     when C_FIGHTER:			/* wield anything */
     case C_RANGER:
     case C_MONSTER:
-
+	;
     otherwise:				/* Unknown class */
 	debug("Unknown class %d.", class_type);
 	break;

@@ -43,13 +43,12 @@ struct matrix att_mat[11] = {
 
 do_fight(y, x, tothedeath)
 {
-    if (!tothedeath)
-	if (pstats.s_hpt < max_stats.s_hpt/3) {
-	    if (!terse)
-		msg("That's not wise.");
-	    after = fighting = FALSE;
-	    return;
-	}
+    if (!tothedeath && pstats.s_hpt < max_stats.s_hpt/3) {
+	if (!terse)
+	    msg("That's not wise.");
+	after = fighting = FALSE;
+	return;
+    }
     if (isalpha(winat(hero.y+y, hero.x+x))) {
 	after = fighting = TRUE;
 	do_move(y, x);
@@ -65,9 +64,8 @@ do_fight(y, x, tothedeath)
  *	The player attacks the monster.
  */
 
-fight(mp, mn, weap, thrown)
+fight(mp, weap, thrown)
 register coord *mp;
-char mn;
 struct object *weap;
 bool thrown;
 {
@@ -136,7 +134,7 @@ bool thrown;
 	    if (thrown) {
 		if (weap != NULL && weap->o_type == WEAPON
 			&& weap->o_which == GRENADE) {
-		    msg("BOOOM!");
+		    hearmsg("BOOOM!");
 		    aggravate();
 		}
 		thunk(weap, mname);
@@ -269,8 +267,8 @@ bool thrown;
 
 	    /* Can the player confuse? */
 	    if (on(player, CANHUH) && !thrown) {
-		msg("Your hands stop glowing red!");
-		msg("The %s appears confused.", mname);
+		seemsg("Your hands stop glowing red!");
+		seemsg("The %s appears confused.", mname);
 		turn_on(*tp, ISHUH);
 		turn_off(player, CANHUH);
 	    }
@@ -321,7 +319,7 @@ bool thrown;
 		    /* Put it there */
 		    mvwaddch(mw, tp->t_pos.y, tp->t_pos.x, tp->t_type);
 		    tp->t_oldch = mvwinch(cw, tp->t_pos.y, tp->t_pos.x);
-		    msg("The %s seems to have disappeared!", mname);
+		    seemsg("The %s seems to have disappeared!", mname);
 		}
 	    }
 	}
@@ -791,8 +789,10 @@ bool thrown;
 		    if ((obj != cur_armor && obj != cur_weapon &&
 			obj != cur_ring[LEFT_1] && obj != cur_ring[LEFT_2] &&
 			obj != cur_ring[LEFT_3] && obj != cur_ring[LEFT_4] &&
+			obj != cur_ring[LEFT_5] &&
 			obj != cur_ring[RIGHT_1] && obj != cur_ring[RIGHT_2] &&
 			obj != cur_ring[RIGHT_3] && obj != cur_ring[RIGHT_4] &&
+			obj != cur_ring[RIGHT_5] &&
 			!(obj->o_flags & ISPROT) && is_magic(obj) 
 				|| level > 95)
 			&& get_worth(obj) > worth) {
@@ -880,13 +880,11 @@ struct linked_list *mon;
 register struct object *weapon;
 bool thrown;
 {
-    register char *mname1,*mname2;
-    register bool did_hit = FALSE, visible;
-    struct thing *attackee;
-
-    attackee = THINGPTR(mon);
-
-    visible = cansee(attacker->t_pos.y, attacker->t_pos.x);
+    struct thing *attackee = THINGPTR(mon);
+    register bool did_hit = FALSE;
+    register bool visible = cansee(attackee->t_pos.y, attackee->t_pos.x);
+    register char *mname1 = monsters[attacker->t_index].m_name;
+    register char *mname2 = monsters[attackee->t_index].m_name;
 
     /*
      * Similar monsters don't hit each other
@@ -903,9 +901,6 @@ bool thrown;
      */
     attackee->t_rest_hpt = attackee->t_rest_pow = 0;
     attacker->t_rest_hpt = attacker->t_rest_pow = 0;
-
-    mname1 = monsters[attacker->t_index].m_name;
-    mname2 = monsters[attackee->t_index].m_name;
 
     if (roll_em(attacker,attackee,weapon,thrown,wield_weap(weapon, attacker))) {
 	did_hit = TRUE;
@@ -1199,16 +1194,16 @@ struct object *cur_weapon;
 	    damage = max(0, damage);
 
 	    /* sleeping monsters are backstabbed by certain player classes */
-	    if (is_player && !hurl &&
+	    if (is_player && !hurl && damage > 0 &&
 			(off(*def_er, ISRUN) || def_er->t_no_move > 0) &&
  			(player.t_ctype == C_THIEF || 
  			 player.t_ctype == C_NINJA ||
 			 player.t_ctype == C_ASSASIN)
 			&& (wield_ok(&player, cur_weapon, NOMESSAGE)) 
 			&& (wear_ok(&player, cur_armor, NOMESSAGE)) ) {
-		damage *= (pstats.s_lvl/4 + 1);
+		damage *= (pstats.s_lvl/4 + 2);
 		msg("You backstabbed the %s %d times!",
-		    monsters[def_er->t_index].m_name, (pstats.s_lvl/4)+1);
+		    monsters[def_er->t_index].m_name, (pstats.s_lvl/4)+2);
 		if (player.t_ctype == C_NINJA || player.t_ctype == C_ASSASIN)
 		    pstats.s_exp += def_er->t_stats.s_exp / 2;
 	    }
@@ -1405,9 +1400,12 @@ static int strtohit[] =
 str_plus(str)
 register short str;
 {
-  if (str < 3) return(strtohit[3]);
-  else if (str > 25) return(strtohit[25]);
-  else return(strtohit[str]);
+  int ret_val = str;
+
+  if (str < 3) ret_val = 3;
+  else if (str > 25) ret_val = 25;
+
+  return(strtohit[ret_val]);
 }
 
 /*
@@ -1421,9 +1419,12 @@ static int str_damage[] =
 add_dam(str)
 register short str;
 {
-  if (str < 3) return(str_damage[3]);
-  else if (str > 25) return(str_damage[25]);
-  else return(str_damage[str]);
+  int ret_val = str;
+
+  if (str < 3) ret_val = 3;
+  else if (str > 25) ret_val = 25;
+
+  return(str_damage[ret_val]);
 }
 
 /*

@@ -308,7 +308,7 @@ int dy, dx;
 	} 
 	else {
 	    hero = old_hero;   /* Restore hero -- we'll fight instead of move */
-	    fight(&nh, ch, cur_weapon, FALSE);
+	    fight(&nh, cur_weapon, NOTHROWN);
 	    return;
 	}
     } 

@@ -1620,4 +1620,16 @@
 4)	status line redraws when asked
 5)	food worth counted by number, blessed food worth double
 
+1.04 Alpha, Jan 20, 91
+1)	backstabs need damage and do (level/4 + 2) times
+2)	zapping asks which stick
+3)	can't recharge a wand of charging
+4)	bolts do d8 from staffs and d4 from wands plus a bonus for
+	charges
+5)	monster bolts can be dodged, hit other monsters and grow with
+	level
+6)	thrown scrolls are cursed, returning weapons say so
+7)	druids can use silver weapons
+8)	minor artifact effect holds monsters
+
 -------	End of File ------

@@ -1,5 +1,5 @@
 /*
- * Last Modified: 08/05/86
+ * Last Modified: Jan 20, 1991
  */
 /*
  * This file contains misc functions for dealing with armor
