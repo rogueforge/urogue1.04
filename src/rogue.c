@@ -12,7 +12,7 @@ struct thing player;			/* The rogue */
 struct thing *beast;			/* The last beast that attacked us */
 struct object *cur_armor;		/* What a well dresssed rogue wears */
 struct object *cur_weapon = NULL;	/* ... and wields */
-struct object *cur_ring[8];		/* His rings */
+struct object *cur_ring[10];		/* His rings */
 struct object *cur_shield = NULL;	/* future expansion */
 struct object *cur_cloak = NULL;
 struct object *cur_shoes = NULL;
@@ -234,11 +234,11 @@ struct h_list helpstr[] = {
     'R',	"	remove ring",
     'A',	"       activate/apply an artifact",
     'd',	"	drop object",
-    'c',	"	call object (generic)",
+    'C',	"	call object (generic)",
     'M',	"	mark object (specific)",
     'o',	"	examine/set options",
-    'C',	"	cast a spell/say a prayer",
-    'p',	"	pray to a deity",
+    'c',	"	cast a spell/say a prayer",
+    'p',	"	pray for help (risky)",
     'a',	"	affect the undead",
     '^',	"	set a trap",
     'D',	"	dip something (into a pool)",
@@ -257,21 +257,21 @@ struct h_list helpstr[] = {
  */
 	'-',		0,
 	22,	"	enter wizard mode",		/* ctrl-w */
-	22,	"c	create item",
-	22,	"C	charge item",
-	22,	"f	floor map",
-	22,	"F	food statistics",
-	22,	"g	goto level",
-	22,	"i	inventory level",
-	22,	"I	identify item",
-	22,	"m	see monster",
-	22,	"M	create monster",
-	22,	"o	improve stats and pack",
+	22,	"v	toggle wizard verbose mode",
 	22,	"e	exit wizard mode",
 	22,	"r	random number check",
 	22,	"s	system statistics",
+	22,	"F	food statistics",
+	22,	"f	floor map",
+	22,	"m	see monster",
+	22,	"M	create monster",
+	22,	"c	create item",
+	22,	"i	inventory level",
+	22,	"I	identify item",
 	22,	"t	random teleport",
-	22,	"v	toggle wizard verbose mode",
+	22,	"g	goto level",
+	22,	"C	charge item",
 	22,	"w 	print worth of object",
+	22,	"o	improve stats and pack",
 	0,		0
 };

@@ -198,6 +198,8 @@ bool display;	/* is TRUE, display unconditionally */
     }
     wclrtoeol(cw);
     wmove(cw, oy, ox);
+    if (display)
+	wrefresh(cw);
 }
 
 /*

@@ -61,7 +61,7 @@ struct linked_list *what;
 teleport()
 {
     register struct room *new_rp, *old_rp = roomin(&hero);
-    register int rm, dir, which;
+    register int rm, which;
     coord c;
     bool is_lit = FALSE;	/* For saving room light state */
     bool rand_position = TRUE;

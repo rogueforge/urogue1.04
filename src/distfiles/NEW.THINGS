@@ -1612,4 +1612,12 @@
 29)	turned undead run away, others recoil
 30)	swarm leaders get one boost roll
 
+1.04 Alpha, Jan 7, 91
+1)	added status.c for complex monster status checks. Mark Williams
+	C for the ST blows up on code that is too complex
+2)	start with three crams
+3)	help shows c and C swapped, and pray for help
+4)	status line redraws when asked
+5)	food worth counted by number, blessed food worth double
+
 -------	End of File ------

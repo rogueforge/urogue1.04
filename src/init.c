@@ -17,7 +17,7 @@ static char *rainbow[] = {
 	"Ecru",		"Turquoise",	"Magenta",	"Amber",
 	"Topaz",	"Plaid",	"Tan",		"Tangerine",
 	"Aquamarine",	"Scarlet",	"Khaki",	"Crimson",
-	"Indigo",	"Beige",	"Lavender",	"Saffron",
+	"Indigo",	"Beige",	"Lavender",	"Saffron"
 } ;
 #define NCOLORS (sizeof rainbow / sizeof (char *))
 
@@ -38,7 +38,7 @@ static char *sylls[] = {
     "tab", "tem", "ther", "ti", "tox", "trol", "tue", "turs", "u",
     "ulk", "um", "un", "uni", "ur", "val", "viv", "vly", "vom", "wah",
     "wed", "werg", "wex", "whon", "wun", "xo", "y", "yot", "yu",
-    "zant", "zap", "zeb", "zim", "zok", "zon", "zum",
+    "zant", "zap", "zeb", "zim", "zok", "zon", "zum"
 } ;
 
 static char *stones[] = {
@@ -53,7 +53,7 @@ static char *stones[] = {
 	"Quartz",		"Rhodochrosite",	"Ruby",
 	"Sapphire",		"Sardonyx",		"Serpentine",
 	"Spinel",		"Tiger eye",		"Topaz",
-	"Tourmaline",		"Turquoise",
+	"Tourmaline",		"Turquoise"
 } ;
 #define NSTONES (sizeof stones / sizeof (char *))
 
@@ -63,7 +63,7 @@ static char *wood[] = {
 	"Driftwood",	"Ebony",	"Eucalyptus",	"Hemlock",
 	"Ironwood",	"Mahogany",	"Manzanita",	"Maple",
 	"Oak",		"Pine",		"Redwood",	"Rosewood",
-	"Teak",		"Walnut",	"Zebra wood", 	"Persimmon wood",
+	"Teak",		"Walnut",	"Zebra wood", 	"Persimmon wood"
 } ;
 #define NWOOD (sizeof wood / sizeof (char *))
 
@@ -71,7 +71,7 @@ static char *metal[] = {
 	"Aluminium",	"Bone",		"Brass",	"Bronze",
 	"Copper",	"Chromium",	"Iron",		"Lead",
 	"Magnesium",	"Pewter",	"Platinum",	"Steel",
-	"Tin",		"Titanium",	"Zinc",
+	"Tin",		"Titanium",	"Zinc"
 } ;
 #define NMETAL (sizeof metal / sizeof (char *))
 
@@ -234,10 +234,9 @@ init_player()
 	    purse = roll(20,60);
 	    which_armor = SOFT_LEATHER;
 	    which_weapon = SINGLESTICK;
+	otherwise: ;
     }
-    /*
-     * Add this stuff to the rogue's pack.
-     */
+    /* Add weapon to pack */
     item = spec_item(WEAPON, which_weapon, 1, 1);
     obj = OBJPTR(item);
     obj->o_flags |= ISKNOW;
@@ -246,9 +245,7 @@ init_player()
     add_pack(item, NOMESSAGE);
     cur_weapon = obj;
 
-    /*
-     * And his suit of armor
-     */
+    /* Add armor to pack */
     item = spec_item(ARMOR, which_armor, 0, 0);
     obj = OBJPTR(item);
     obj->o_flags |= ISKNOW;
@@ -256,12 +253,11 @@ init_player()
     add_pack(item, NOMESSAGE);
     cur_armor = obj;
 
-    /*
-     * Give him some food too
-     */
-    item = spec_item(FOOD, 0, 0, 0);
+    /* Add some food to pack */
+    item = spec_item(FOOD, FD_CRAM, 0, 0);
     obj = OBJPTR(item);
     obj->o_weight = things[TYP_FOOD].mi_wght;
+    obj->o_count = 3;
     add_pack(item, NOMESSAGE);
 }
 
@@ -276,8 +272,10 @@ init_flags()
 	case C_CLERIC:
 	case C_DRUID:
 	    turn_on(player, CANSUMMON);
+	otherwise: ;
     }
     turn_on(player, CANCAST);
+    turn_on(player, CANWIELD);
 }
 
 

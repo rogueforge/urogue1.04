@@ -499,16 +499,18 @@ open_market()
 get_worth(obj)
 reg struct object *obj;
 {
-	reg long worth;
-	reg int wh;
+	reg long worth = 0;
+	reg int wh = obj->o_which;
+	reg int blessed = obj->o_flags & ISBLESSED;
+	reg int cursed = obj->o_flags & ISCURSED;
 
-	worth = 0;
-	wh = obj->o_which;
 	switch (obj->o_type) {
 	    when FOOD:
-		worth = fd_data[wh].mi_worth;
-		if (obj->o_flags & ISBLESSED)
-		     worth *= 5;
+		if (wh < maxfoods) {
+		    worth = obj->o_count * fd_data[wh].mi_worth;
+		    if (blessed)
+			worth *= 2;
+		}
 	    when WEAPON:
 		if (wh < maxweapons) {
 		    worth = weaps[wh].w_worth;
@@ -552,9 +554,9 @@ reg struct object *obj;
 	}
 	if (obj->o_flags & ISPROT)	/* 300% more for protected */
 	    worth *= 3;
-	if (obj->o_flags &  ISBLESSED)	/* 50% more for blessed */
-	    worth = worth * 3 / 2;
-	if (obj->o_flags & ISCURSED)	/* half for cursed */
+	if (blessed)			/* 50% more for blessed */
+	    worth = 3 * worth / 2;
+	else if (cursed)		/* half for cursed */
 	    worth /= 2;
 	if (obj->o_flags & (CANRETURN | ISOWNED))
 	    worth *= 4;
@@ -562,9 +564,7 @@ reg struct object *obj;
 	    worth *= 2;
 	else if (obj->o_flags & ISLOST)
 	    worth /= 3;
-	if (worth < 0)
-	    worth = 0;
-	return worth;
+	return(max(0, worth));
 }
 
 /*

@@ -710,18 +710,10 @@ struct thing *caster;
 	    return(sp);
     }
 
-    /* Any flags added here must also be in player_powers[] */
-    if (rnd(5) == 0 && (on(player, HASOXYGEN) ||
-	on(player, CANFLY)	|| on(player, CANINWALL) ||
-	on(player, CANREFLECT)	|| on(player, CANSEE) ||
-	on(player, HASMSHIELD)	|| on(player, HASSHIELD) ||
-	on(player, ISHASTE)	|| on(player, ISREGEN) ||
-	on(player, ISDISGUISE)	|| on(player, ISINVIS) ||
-	on(player, NOCOLD)	|| on(player, NOFIRE) ||
-	on(player, ISELECTRIC)) ) {
-	    sp = &monst_spells[M_CANCEL];
-	    if (sp->sp_flags & ISKNOW)
-		return(sp);
+    if (rnd(5) == 0 && has_defensive_spell(player)) {
+	sp = &monst_spells[M_CANCEL];
+	if (sp->sp_flags & ISKNOW)
+	    return(sp);
     }
 
     /* Cast an offensive spell */
