@@ -50,13 +50,13 @@ register struct object *cur_obj_p;		/* current object */
 	cur_obj_p = OBJPTR(bag_p);
 	if (type != NULL && type != cur_obj_p->o_type)
 	    continue;
-	if (bff_p != NULL && !bff_p(cur_obj_p, user_arg))
+	if (bff_p != NULL && !(*bff_p)(cur_obj_p, user_arg))
 	    continue;
 	/*
  	 * At this point, we have an object which qualifies for processing
  	 */
 	bag_obj_p = cur_obj_p;		/* in case the user wants it */
-	if (baf_p != NULL && baf_p(cur_obj_p, user_arg, identifier(bag_obj_p)))
+	if (baf_p != NULL && (*baf_p)(cur_obj_p, user_arg, identifier(bag_obj_p)))
 	    continue;
 	/*
 	 * We have an object which qualifies, quit now!
