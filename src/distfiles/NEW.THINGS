@@ -1577,4 +1577,10 @@
 4)	urprint prints the longs right
 5)	throne rooms summoned 1 in 9999 moves, 999999 doesn't fit an int
 
+1.04 Alpha, Jan 5, 91
+1)	five rings per hand
+2)	artifacts are plain objects, their flags and bags kept in the
+	object
+3)	ways to die moved from death.h into rogue.h
+
 -------	End of File ------

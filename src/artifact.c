@@ -24,7 +24,7 @@ apply()
 	    return;
 	obj = OBJPTR(item);
 	which = obj->o_which;
-	if (!(obj->art_stats.ar_flags & ISACTIVE)) {
+	if (!(obj->ar_flags & ISACTIVE)) {
 	    chance = rnd(100) - 10 * rnd(luck);
 	    debug("Rolled %d.", chance);
 	    if (chance < 5)
@@ -32,9 +32,9 @@ apply()
 	    else if (chance < 50)
 		do_minor(obj);
 	    else
-		obj->art_stats.ar_flags |= ISACTIVE;
+		obj->ar_flags |= ISACTIVE;
 	}
-	if (obj->art_stats.ar_flags & ISACTIVE) {
+	if (obj->ar_flags & ISACTIVE) {
 	    switch (which) {
 	    when TR_PURSE:	do_bag(obj);
 	    when TR_PHIAL:	do_phial();
@@ -128,12 +128,8 @@ register struct object *cur;
 	cur->o_flags = 0;
 	cur->o_group = 0;
 	cur->o_count = 1;
-	cur->art_stats.ar_flags = 0;
-	cur->art_stats.ar_rings = 0;
-	cur->art_stats.ar_potions = 0;
-	cur->art_stats.ar_scrolls = 0;
-	cur->art_stats.ar_wands = 0;
-	cur->art_stats.t_art = NULL;
+	cur->o_bag = NULL;
+	cur->ar_flags = 0;
 	return;
 }
 
@@ -563,7 +559,7 @@ struct object *tr;
 		}
 	}
 	otherwise:
-		tr->art_stats.ar_flags &= ~ISACTIVE;
+		tr->ar_flags &= ~ISACTIVE;
 		msg("You hear a click coming from %s.", inv_name(tr, LOWERCASE));
     }
 }
@@ -984,12 +980,12 @@ do_bag(obj)
 	msg("Your attempt is successful.");
     switch (which) {
 	when 0:
-	    inventory(obj->art_stats.t_art, NULL);
+	    inventory(obj->o_bag, NULL);
 	when 1: {
 	    register object *new_obj_p;	/* what the user selected */
 	    if ((new_obj_p = get_object(pack, "add", NULL, NULL)) != NULL) {
 		rem_pack(new_obj_p);		/* free up pack slot */
- 		push_bag(&obj->art_stats.t_art, new_obj_p, new_obj_p->o_type);
+ 		push_bag(&obj->o_bag, new_obj_p, new_obj_p->o_type);
 		pack_report(new_obj_p, MESSAGE, "You just added ");
   	    }
 	}
@@ -998,11 +994,11 @@ do_bag(obj)
 	    register linked_list *item_p; 
 	    linked_list *make_item();
 
-	    if ((obj_p = get_object(obj->art_stats.t_art, "remove", NULL, NULL))
+	    if ((obj_p = get_object(obj->o_bag, "remove", NULL, NULL))
 		!= NULL) {
 		item_p = make_item(obj_p);	/* attach upper structure */
 		if (add_pack(item_p, MESSAGE) != FALSE) 
-		    pop_bag(obj->art_stats.t_art, obj_p);
+		    pop_bag(obj->o_bag, obj_p);
 		}
 	    }
 	when 3: 

@@ -15,7 +15,7 @@
  */
 static struct object bolt =
 {
-    {0, 0}, NULL, "", 0, "1d4", 0, '*', 0, 0, 0, 100, 1, 0, 0, 0, 0, 0
+    {0, 0}, NULL, NULL, "", 0, "1d4", 0, 0, '*', 0, 0, 0, 100, 1, 0, 0, 0, 0, 0
 };
 struct object null_stick = {0};
 

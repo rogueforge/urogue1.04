@@ -294,8 +294,8 @@ char *message;
   if (obj->o_type == ARTIFACT) {
     has_artifact |= (1 << obj->o_which);
     picked_artifact |= (1 << obj->o_which);
-    if ( !(obj->art_stats.ar_flags & ISUSED) ) {
-      obj->art_stats.ar_flags |= ISUSED;
+    if ( !(obj->ar_flags & ISUSED) ) {
+      obj->ar_flags |= ISUSED;
       pstats.s_exp += arts[obj->o_which].ar_worth / 10;
       check_level();
     }

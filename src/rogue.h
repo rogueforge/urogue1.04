@@ -1,5 +1,5 @@
 /*
- * Last Modified: 08/10/86
+ * Last Modified: Jan 5, 1991
  */
 /*
  * Rogue definitions and variable declarations
@@ -52,10 +52,12 @@
 #define	LEFT_2	1
 #define	LEFT_3	2
 #define	LEFT_4	3
-#define	RIGHT_1	4
-#define	RIGHT_2	5
-#define	RIGHT_3	6
-#define	RIGHT_4	7
+#define	LEFT_5	4
+#define	RIGHT_1	5
+#define	RIGHT_2	6
+#define	RIGHT_3	7
+#define	RIGHT_4	8
+#define	RIGHT_5	9
 
 /*
  * All the fun defines
@@ -802,18 +804,6 @@ struct init_artifact {
 };
 
 /*
- * Artifact attributes
- */
-struct artifact {
-    long ar_flags;			/* general flags */
-    long ar_rings;			/* ring effects flags */
-    long ar_potions;			/* potion effects flags */
-    long ar_scrolls;			/* scroll effects flags */
-    long ar_wands;			/* wand effects flags */
-    struct linked_list *t_art;		/* linked list pointer */
-};
-
-/*
  * Array of all traps on this level
  */
 struct trap {
@@ -903,10 +893,12 @@ struct monster {
 typedef struct object {
     coord o_pos;			/* Where it lives on the screen */
     struct linked_list *next_obj;	/* The next obj. for stacked objects */
+    struct linked_list *o_bag;		/* bag linked list pointer */
     char *o_text;			/* What it says if you read it */
     char *o_damage;			/* Damage if used like sword */
     char *o_hurldmg;			/* Damage if thrown */
     long o_flags;			/* Information about objects */
+    long ar_flags;			/* general flags */
     int o_type;				/* What kind of object it is */
     int o_ident;			/* identifier for object */
     int o_count;			/* Count for plural objects */
@@ -918,7 +910,6 @@ typedef struct object {
     int o_weight;			/* weight of this object */
     char o_launch;			/* What you need to launch it */
     char o_mark[MARKLEN];		/* Mark the specific object */
-    struct artifact art_stats;		/* substructure for artifacts */
 } object;
 /*
  * weapon structure
@@ -1133,3 +1124,22 @@ extern int maxsticks;
 extern int maxweapons;
 extern int nummonst;
 extern int numthings;
+
+/* Ways to die */
+
+#define	D_PETRIFY	-1
+#define	D_ARROW		-2
+#define	D_DART		-3
+#define	D_POISON	-4
+#define	D_BOLT		-5
+#define	D_SUFFOCATION	-6
+#define	D_POTION	-7
+#define	D_INFESTATION	-8
+#define	D_DROWN		-9
+#define	D_FALL		-10
+#define	D_FIRE		-11
+#define	D_SPELLFUMBLE	-12
+#define	D_DRAINLIFE	-13
+#define	D_ARTIFACT	-14
+#define	D_GODWRATH	-15
+#define	D_CLUMSY	-16

@@ -345,7 +345,7 @@ total_winner()
 	worth = get_worth(obj);
 	purse += worth;
 	if (obj->o_type == ARTIFACT && obj->o_which == TR_PURSE) 
-	    bag = obj->art_stats.t_art;
+	    bag = obj->o_bag;
 	mvprintw(c - 'a' + 1, 0, "%c) %8d  %s", c, 
 		worth, inv_name(obj, UPPERCASE));
     }
@@ -455,7 +455,7 @@ char *howso;
 		whatis(item);
 		purse += worth;
 		if (obj->o_type == ARTIFACT && obj->o_which == TR_PURSE)
-			bag = obj->art_stats.t_art;
+			bag = obj->o_bag;
 		iname = inv_name(obj, UPPERCASE);
 		mvprintw(cnt, 0, "%d) %s\n",ch,iname);
 		ch += 1;
