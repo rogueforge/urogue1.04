@@ -6,12 +6,6 @@
 #include "rogue.h"
 #include "stepok.h"
 
-/* Avoid Microsoft C compiler bug */
-#if defined(SCO5)
-#define register
-#define reg
-#endif
-
 /*
  * read_scroll - read a scroll (or effect a scroll-like spell)
  *
