@@ -139,12 +139,8 @@ int dy, dx;
      */
     if ((rnd(100) < 80 && on(player, ISHUH)) || 
 	(is_wearing(R_DELUSION) && rnd(100) < 25) ||
-	on(player, STUMBLER) && rnd(40) == 0) {
-
-	coord *foo = rndmove(&player);	/* bug in 4.2 compiler for the RT PC */
-
-	nh = *foo;
-    }
+	on(player, STUMBLER) && rnd(40) == 0)
+	nh = *rndmove(&player);
     else {
 	nh.y = hero.y + dy;
 	nh.x = hero.x + dx;

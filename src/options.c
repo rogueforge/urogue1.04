@@ -1,5 +1,5 @@
 /*
- * Last Modified: 07/09/86
+ * Last Modified: Dec 29, 1990
  */
 /*
  * This file has all the code for the option command.
@@ -8,12 +8,8 @@
  *
  */
 
-#include "rogue.h"
-#include "mach_dep.h"
-#if defined(attron)
-#include <term.h>
-#endif attron
 #include <ctype.h>
+#include "rogue.h"
 
 #define	NUM_OPTS	(sizeof optlist / sizeof (OPTION))
 #define	EQSTR(a, b, c)	(strncmp(a, b, c) == 0)
@@ -104,7 +100,6 @@ option()
     wait_for(' ');
     clearok(cw, TRUE);
     touchwin(cw);
-    after = FALSE;
 }
 
 /*
@@ -247,12 +242,7 @@ WINDOW *win;
 	wclrtoeol(win), wrefresh(win)) {
 	if (c == -1)
 	    continue;
-#if (defined(USGV3) || defined(USGV5) || defined(attron)) && !defined(SCO5)
-	else if (c == _tty.c_cc[VERASE]) /* process erase character */
-#endif
-#if defined(BSD4) || defined(RTU2) || defined(SCO5)
-	else if (c == _tty.sg_erase) /* process erase character */
-#endif
+	else if (c == '\b')
 	{
 	    if (sp > buf) {
 		register int i;
@@ -263,32 +253,20 @@ WINDOW *win;
 	    }
 	    continue;
 	}
-#if (defined(USGV3) || defined(USGV5) || defined(attron)) && !defined(SCO5)
-	else if (c == _tty.c_cc[VKILL])  /* process kill character */
-#endif
-#if defined(BSD4) || defined(RTU2) || defined(SCO5)
-	else if (c == _tty.sg_kill)  /* process kill character */
-#endif
+	else if (c == '\0')
 	{
 	    sp = buf;
 	    wmove(win, oy, ox);
 	    continue;
 	}
-	else if (sp == buf)
-	    if (c == '-' && win == hw)	/* To move back a line in hw */
-		break;
-	    else if (c == '~') {
-		strcpy(buf, home);
-		waddstr(win, home);
-		sp += strlen(home);
-		continue;
-	    }
+	else if (sp == buf && c == '-' && win == hw)
+	    break;
 	*sp++ = c;
 	waddstr(win, unctrl(c));
     }
     *sp = '\0';
     if (sp > buf)	/* only change option if something has been typed */
-	strucpy(opt, buf, strlen(buf));
+	strcpy(opt, buf, strlen(buf));
     wmove(win, oy, ox);
     waddstr(win, opt);
     waddch(win, '\n');
@@ -380,20 +358,13 @@ register char *str;
 		     */
 		    for (str = sp + 1; *str == '='; str++)
 			continue;
-		    if (*str == '~') {
-			strcpy((char *) value, home);
-			start = (char *) value + strlen(home);
-			while (*++str == '/')
-			    continue;
-		    }
-		    else
-			start = (char *) value;
+		    start = (char *) value;
 		    /*
 		     * Skip to end of string value
 		     */
 		    for (sp = str + 1; *sp && *sp != ','; sp++)
 			continue;
-		    strucpy(start, str, sp - str);
+		    strcpy(start, str, sp - str);
 
 		    /* Put the value into the option field */
 		    if (op->o_putfunc != put_abil && op->o_putfunc != put_inv)
@@ -455,23 +426,6 @@ register char *str;
 	    sp++;
 	str = sp;
     }
-}
-
-/*
- * copy string using unctrl for things
- */
-strucpy(s1, s2, len)
-register char *s1, *s2;
-register int len;
-{
-    register char *sp;
-
-    while (len--)
-    {
-	strcpy(s1, (sp = unctrl(*s2++)));
-	s1 += strlen(sp);
-    }
-    *s1 = '\0';
 }
 
 /*
