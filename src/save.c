@@ -7,22 +7,18 @@
  */
 
 #include <ctype.h>
-#include <sys/types.h>
+#include <errno.h>
 #include <sys/stat.h>
-#include <signal.h>
 #include "rogue.h"
-#include "mach_dep.h"
 
 typedef struct stat STAT;
 
 extern char *sys_errlist[], version[];
 extern int errno;
 
-char *sbrk(), _putchar();
+char *sbrk();
 
 STAT sbuf;
-
-int sigdie = -1;
 
 save_game()
 {
@@ -63,54 +59,11 @@ gotfile:
     } while (savefd == -1);
 
     /*
-     * Fix keypad?
-     */
-    if(keypadmode) {
-	keypadoff();
-    }
-
-    /*
      * write out encrpyted file (after a stat)
      * The fwrite is to force allocation of the buffer before the write
      */
     save_file(savefd);
     return TRUE;
-}
-
-/*
- * automatically save a file.  This is used if a HUP signal is
- * recieved
- */
-auto_save(sig)
-int sig;
-{
-    register int savefd;
-
-    /*
-     * Code added by Bruce Dautrich on 4/11/84 to
-     * increase probability of saving game if two 
-     * signals are sent to game. Requires define
-     * in rogue.h of a variable called sigdie
-     */
-
-    if (sigdie == -1) {
-	/*This is first signal*/
-	sigdie=sig;
-	signal(sig,SIG_IGN);
-	goto got1sig;
-    } else {
-	/*This is second signal*/
-	signal(sig,SIG_IGN);
-    }
-
-got1sig:
-    if (file_name[0] != '\0' && (savefd = creat(file_name, 0400)) > -1)
-	save_file(savefd);
-#if defined(BSD4)
-    (void) TtySetOriginalChars();
-#endif
-    endwin();
-    exit(1);
 }
 
 save_file(savefd)
@@ -131,17 +84,9 @@ char **envp;
 {
     register int infd;
     extern char **environ;
-    register char *sp;
+    char *sp, *getenv();
     char buf[2*LINELEN];
     STAT sbuf2;
-
-    makesure();
-
-    /*
-     * Reset the effective uid & gid to the real ones.
-     */
-    seteuid(getuid());
-    setegid(getgid());
 
     if (strcmp(file, "-r") == 0)
 	file = file_name;
@@ -169,96 +114,27 @@ char **envp;
      * inode for as long as possible
      */
 
-    if (!wizard) {
-	if (sbuf2.st_ino != sbuf.st_ino || sbuf2.st_dev != sbuf.st_dev) {
-	    printf("Sorry, saved game is not in the same file.\n");
-	    return FALSE;
-	}
-	else if (sbuf2.st_ctime - sbuf.st_ctime > SAVETIME) {
-	    printf("(%d): Sorry, file has been touched.\n",
-		sbuf2.st_ctime - sbuf.st_ctime);
-	    return FALSE;
-	}
-    }
     mpos = 0;
     mvwprintw(cw, 0, 0, "%s: %s", file, ctime(&sbuf2.st_mtime));
 
-    /*
-     * defeat multiple restarting from the same place
-     */
-    if (!wizard) {
-	if (sbuf2.st_nlink != 1) {
-	    printf("Cannot restore from a linked file\n");
-	    return FALSE;
-	}
-	else if (unlink(file) < 0) {
-	    printf("Cannot unlink file\n");
-	    return FALSE;
-	}
+    if (unlink(file) < 0) {
+	printf("Cannot unlink file\n");
+	return FALSE;
     }
-
-#if defined(BSD4)
-    (void) TtyInit();
-    (void) TtyGetGameChars();
-    (void) TtyMapGameChars();
-#endif
 
     environ = envp;
-    if ((sp = getenv(OPTIONS)) != NULL)
+    if ((sp = getenv("OPTIONS")) != NULL)
 	parse_opts(sp);
-#if defined(USGV5)
-    if (isatty(2)) {
-#else
-    if (!My_term && isatty(2)) {
-#endif
-	_tty_ch = 2;
-#if !defined(USGV5)
-	gettmode();
-#endif
-	if ((sp = getenv("TERM")) == NULL)
-	    sp = Def_term;
-    }
-    else
-	sp = Def_term;
-#if defined(attron)
-    savetty();
-    restartterm(sp, 1, 0);
-    resetty();
-#else
-    setterm(sp);
-#endif attron
-#if !defined(USGV5)
-    _puts(TI);
-    _puts(VS);
-#endif
-
-    /*
-     * Should we turn keypad mode on?
-     */
-    if(keypadmode) {
-	keypadon();
-    }
 
     strcpy(file_name, file);
+
     setup();
     clearok(curscr, TRUE);
     touchwin(cw);
-#if defined(attron)
-    cbreak();
     noecho();
     nonl();
-#else
-#if defined(USGV5)
-    /*
-     * Sys V curses weirdness
-     */
-    noecho();
-    nonl();
-#endif
-#endif attron
-    srand(getpid());
+    srand(1234);
     playit();
-    /*NOTREACHED*/
 }
 
 /*****************************************************************
@@ -320,8 +196,8 @@ int outfd;
   register int cnt;
   char buffer[512 * 20];
 
-  srand (time ((long *) 0) + getpid () + getuid ());	/* Build a random seed */
-  seed = (rand () & 0x7fff);
+  srandom (time ((long *) 0));	/* Build a random seed */
+  seed = (random () & 0x7fff);
   
   putword (seed, outfd);			/* Write the random seed */
   putword (size, outfd);			/* Write the file length */
