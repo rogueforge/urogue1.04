@@ -7,8 +7,6 @@
  * New addition to version 1.3 by S. A. Hester  11/8/83
  */
 
-#include <sys/types.h>
-#include <sys/stat.h>
 #include <stdio.h>
 #include <ctype.h>
 #include "rogue.h"
@@ -32,37 +30,13 @@ char *which_class();
 geta_player()
 {
 
-	char char_file[2*LINELEN];		/* Where the file should be! */
-	struct	stat	stbuf, st2buf;
+	int	i;
 	int	fd;
 	char	pbuf[2*LINELEN];
-	short    i;
 
-	strcpy(char_file,home);
-	strcat(char_file, ROGDEFS);
-
-	if ((fd = open(char_file, 0)) < 0)
+	if ((fd = open("urogue.chr", 0)) < 0)
 	    return FALSE;
 
-	fstat(fd, &stbuf);
-	read(fd, (char *)&(st2buf.st_ino), sizeof(st2buf.st_ino));
-	read(fd, (char *)&(st2buf.st_nlink), sizeof(st2buf.st_nlink));
-	read(fd, (char *)&(st2buf.st_ctime), sizeof(st2buf.st_ctime));
-	read(fd, (char *)&(st2buf.st_dev), sizeof(st2buf.st_dev));
-
-	/*
-	 * Now check to see if the player tried to alter it.
-	 */
-	if (stbuf.st_ino != st2buf.st_ino ||
-	    stbuf.st_dev != st2buf.st_dev ||
-	    stbuf.st_nlink != 1 ||
-	    ((stbuf.st_ctime - st2buf.st_ctime) > 25 )) {
-		return FALSE;
-	}
-
-	/*
-	 * It's OK.  Get the info!
-	 */
 	encread((char *)def_array, sizeof(def_array), fd);
 	close(fd);
  
@@ -119,15 +93,10 @@ geta_player()
 puta_player()
 {
 
-	char char_file[2*LINELEN];		/* Where the file should be! */
 	register int	fd;
-	struct	stat	stbuf;
 	char	pbuf[2*LINELEN];
 	char	*class;
 	short   i;
-
-	strcpy(char_file,home);
-	strcat(char_file, ROGDEFS );
 
 	class = which_class(player.t_ctype);
 	sprintf(pbuf, "You have a %s with the following attributes:",class);
@@ -181,8 +150,8 @@ puta_player()
 	def_array[i][I_CTYPE] = player.t_ctype;
 
 	/* OK. Now let's write this stuff out! */
-	if ((fd = creat(char_file, 0644)) < 0) {
-	    sprintf(pbuf,"I can't seem to open/create %s", char_file);
+	if ((fd = creat("urogue.chr", 0644)) < 0) {
+	    sprintf(pbuf,"I can't seem to open/create urogue.chr.");
 	    mvwaddstr(hw,5,5,pbuf);
 	    mvwaddstr(hw,6,5,"However I'll let you play it anyway!");
 	    mvwaddstr(hw, LINES - 1, 0, spacemsg);
@@ -190,11 +159,6 @@ puta_player()
 	    wait_for(' ');
 	    return(TRUE);
 	}
-	fstat(fd, &stbuf);
-	write(fd, (char *)&(stbuf.st_ino), sizeof(stbuf.st_ino));
-	write(fd, (char *)&(stbuf.st_nlink), sizeof(stbuf.st_nlink));
-	write(fd, (char *)&(stbuf.st_ctime), sizeof(stbuf.st_ctime));
-	write(fd, (char *)&(stbuf.st_dev), sizeof(stbuf.st_dev));
 	encwrite((char *)def_array, sizeof(def_array), fd);
 	close(fd);
 	return TRUE;
