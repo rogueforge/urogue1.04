@@ -7,21 +7,11 @@
  *
  */
 
-#include <signal.h>
 #include <ctype.h>
-#include <sys/types.h>
-#include <pwd.h>
+#include <time.h>
 #include "rogue.h"
-#include "mach_dep.h"
 #include "score.h"
 #include "death.h"
-#if defined(RTU2) || defined(USGV5)
-#include <time.h>
-#else
-#include <sys/time.h>
-#endif
-
-#define RN (((seed = seed*11109+13849) & 0x7fff) >> 1)
 
 static char *rip[] = {
 "                       __________",
@@ -36,7 +26,7 @@ static char *rip[] = {
 "                  |                  |",
 "                  |       1980       |",
 "                 *|     *  *  *      | *",
-"         ________)/\\\\_//(\\/(/\\)/\\//\\/|_)_______",
+"       ________)/\\\\_//(\\/(/\\)/\\//\\/|_)_______",
     0
 };
 
@@ -160,15 +150,12 @@ int lvl;
 	long sc_gold;
 	int sc_flags;
 	int sc_level;
-	int sc_uid;
 	short sc_artifacts;
 	short sc_monster;
     } top_ten[10];
     register struct sc_ent *scp;
     register int i;
-    register struct sc_ent *sc2;
     register char *killer;
-    register int fd;
     static char *reason[] = {
 	"killed",
 	"quit",
@@ -178,24 +165,7 @@ int lvl;
     int	endit();
     char *packend;
     extern int fd_score;
-    struct passwd *pp, *getpwuid();
 
-
-    signal(SIGINT, byebye);
-#if defined(BSD4)
-    (void) TtySetOriginalChars();
-#endif
-#if defined(attron)
-    if (flags != SCOREIT) {
-	nocbreak();
-	nl();
-    }
-#else
-#if defined(USGV3) || defined(USGV5) || defined(RTU2)
-    noraw();
-    nl();
-#endif
-#endif attron
     if (flags != WINNER && flags != TOTAL && flags != SCOREIT) {
 	if (flags == CHICKEN)
 	    packend = "when you quit";
@@ -207,14 +177,6 @@ int lvl;
 	refresh();
 	gets(prbuf);
 	showpack(packend);
-    }
-
-    /*
-     * Should we return the terminal's keypad mode to
-     * numeric mode?
-     */
-    if(keypadmode) {
-	keypadoff();
     }
 
     /*
@@ -231,14 +193,12 @@ int lvl;
 	for (i = 0; i < 76; i++)
 	    scp->sc_name[i] = rnd(255);
 	scp->sc_gold = 0L;
-	scp->sc_flags = RN;
-	scp->sc_level = RN;
-	scp->sc_monster = RN;
+	scp->sc_flags = rnd(10);
+	scp->sc_level = rnd(10);
+	scp->sc_monster = rnd(10);
 	scp->sc_artifacts = 0;
-	scp->sc_uid = RN;
     }
 
-    signal(SIGINT, SIG_DFL);
     if (flags != SCOREIT)
     {
 	mvaddstr(LINES - 1, 0, retstr);
@@ -252,59 +212,11 @@ int lvl;
      */
     if (!waswizard)
     {
-	struct	sc_ent	*sc3;
-	int uid = getuid();
 	for (scp = top_ten; scp < &top_ten[10]; scp++) {
 	    if ( lvl > scp->sc_lvl)
 		break;
 	    if ( lvl == scp->sc_lvl && amount > scp->sc_score)
 		break;
-	    else if(scp->sc_uid == uid)
-		scp = &top_ten[9];
-	}
-	if (scp < &top_ten[10])
-	{
-	    for(sc3 = scp; sc3 < &top_ten[10]; sc3++)
-		if(sc3->sc_uid == uid){
-		    for (sc2 = sc3; sc2 < &top_ten[9]; sc2++)
-			*sc2 = *(sc2 + 1);
-		    top_ten[9].sc_score = 0L;
-		    for (i = 0; i < 76; i++)
-			top_ten[9].sc_name[i] = rnd(255);
-		    top_ten[9].sc_gold = 0L;
-		    top_ten[9].sc_flags = RN;
-		    top_ten[9].sc_level = RN;
-		    top_ten[9].sc_monster = RN;
-		    top_ten[9].sc_artifacts = 0;
-		    top_ten[9].sc_uid = RN;
-		    sc3--;
-		}
-	    for (sc2 = &top_ten[9]; sc2 > scp; sc2--)
-		*sc2 = *(sc2-1);
-	    scp->sc_lvl = lvl;
-	    scp->sc_score = amount;
-	    scp->sc_gold = purse;
-	    scp->sc_uid = getuid();
-	    strcpy(scp->sc_name, whoami);
-	    if ((pp = getpwuid(scp->sc_uid)) == NULL) {
-		sprintf(prbuf, " (%d)", scp->sc_uid);
-		strcat(scp->sc_name, prbuf);
-	    }
-	    else {
-		sprintf(prbuf, " (%s)", pp->pw_name);
-		if (strcmp(scp->sc_name, pp->pw_name))
-		    strcat(scp->sc_name, prbuf);
-	    }
-	    sprintf(prbuf, " %s", 
-			cnames[player.t_ctype][min(pstats.s_lvl,11) - 1]);
-	    strcat(scp->sc_name, prbuf);
-	    scp->sc_flags = flags;
-	    if (flags == WINNER || flags == TOTAL)
-		scp->sc_level = max_level;
-	    else
-		scp->sc_level = level;
-	    scp->sc_monster = monst;
-	    scp->sc_artifacts = picked_artifact;
 	}
     }
     if (flags != SCOREIT) {
@@ -589,15 +501,8 @@ char *howso;
 void
 byebye()
 {
-    extern bool _endwin;
-
-    if (!_endwin) {
-	endwin();
-    }
-    printf("\n");
-#if defined(BSD4)
-    (void) TtySetOriginalChars();
-#endif
+    endwin();
+    ttputc('\n');
     exit(0);
 }
 
