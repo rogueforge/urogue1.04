@@ -37,7 +37,7 @@ int flags;
 	    return;
 	obj = OBJPTR(item);
 	if (obj->o_type != SCROLL) {
-	    msg ("There's nothing on it to read!");
+	    msg ("It says 'Made in Yugoslavia'!");
 	    return;
 	}
 	if (on(player, ISBLIND)) {
@@ -95,8 +95,7 @@ int flags;
 		 * level and sets them running towards the hero
 		 */
 		aggravate();
-		if (off(player, ISDEAF)) 
-		    msg("You hear a high pitched humming noise.");
+		hearmsg("You hear a high pitched humming noise.");
 	    }
 	    else if (blessed) { /* Hold all monsters on level */
 		if (mlist == NULL) 
@@ -432,8 +431,8 @@ int flags;
 				i++;
 			    }
 			}
+			goto pet_message;
 		    }
-		    goto pet_message;
 		case DOOR:
 		case SECRETDOOR:
 		    {
@@ -467,10 +466,8 @@ pet_message:	    msg("The dungeon begins to rumble and shake!");
 			msg("Your dizzy feeling leaves you.");
 		    }
 
-		    /* Mark the player as in a wall */
 		    turn_on(player, ISINWALL);
-		    break;
-		default:
+		otherwise:
 		    nothing_message(flags);
 	    }
 	when S_GENOCIDE:
@@ -535,17 +532,13 @@ pet_message:	    msg("The dungeon begins to rumble and shake!");
 	    if ((ll = get_item("enchant",0)) != NULL) {
 		lb = OBJPTR(ll);
 		lb->o_flags &= ~ISCURSED;
-		if (is_scroll && (obj->o_flags & ISBLESSED)) {
+		if (blessed)
 		    howmuch = 2;
-		    flags = ISBLESSED;
-		}
-		else if (is_scroll && (obj->o_flags & ISCURSED)) {
+		else if (cursed)
 		    howmuch = -1;
-		    flags = ISCURSED;
-		}
 		else {
 		    howmuch = 1;
-		    flags = ISBLESSED;
+		    flags |= ISBLESSED;
 		}
 		switch(lb->o_type) {
 		    when RING:
@@ -565,13 +558,11 @@ pet_message:	    msg("The dungeon begins to rumble and shake!");
 				when R_ADDWISDOM:
 				    pstats.s_wisdom -= 2;
 				    max_stats.s_wisdom -= 2;
-				default:
-				    ;
 			    }
 			    del_pack(ll);
 			    lb = NULL;
 			}
-			else if (is_r_on(lb)) {
+			else if (is_r_on(lb))
 			    switch(lb->o_which) {
 				when R_ADDSTR:
 				    pstats.s_str += howmuch;
@@ -583,13 +574,10 @@ pet_message:	    msg("The dungeon begins to rumble and shake!");
 				    pstats.s_wisdom += howmuch;
 				when R_CARRYING:
 				    updpack();
-				default:
-				    ;
 			     }
-			}
 		    when ARMOR:
 			lb->o_ac -= howmuch;
-			if (armors[lb->o_which].a_class - lb->o_ac > 8
+			if (armors[lb->o_which].a_class - lb->o_ac > 5
 					&& rnd(5) == 0) {
 			    msg("Your %s explodes in a cloud of dust.",
 				inv_name(lb, LOWERCASE));
@@ -601,15 +589,14 @@ pet_message:	    msg("The dungeon begins to rumble and shake!");
 			    lb = NULL;
 			}
 		    when STICK:
-			if (wizard || howmuch!=1 && rnd(5)==0) {
+			if (wizard || howmuch!=1 && rnd(5)==0)
 			    lb->o_flags |= flags;
-			}
 			lb->o_charges += howmuch + 10;
 			if (lb->o_charges < 0)
 			    lb->o_charges = 0;
 			if (lb->o_charges > 50
 					&& rnd(5) == 0) {
-			    msg("Your %s explodes in a cloud of dust.",
+			    msg("Your %s explodes into splinters.",
 				inv_name(lb, LOWERCASE));
 			    lb->o_flags &= ~ISCURSED;
 			    dropcheck(lb);
@@ -621,8 +608,8 @@ pet_message:	    msg("The dungeon begins to rumble and shake!");
 			    lb->o_hplus += howmuch;
 			else
 			    lb->o_dplus += howmuch;
-			if (lb->o_hplus + lb->o_dplus > 15 && rnd(5) == 0) {
-			    msg("Your %s explodes in a cloud of dust.",
+			if (lb->o_hplus + lb->o_dplus > 10 && rnd(5) == 0) {
+			    msg("Your %s explodes in a cloud of shrapnel",
 				inv_name(lb, LOWERCASE));
 			    lb->o_flags &= ~ISCURSED;
 			    if (lb == cur_weapon)
@@ -642,17 +629,16 @@ pet_message:	    msg("The dungeon begins to rumble and shake!");
 	    }
 	}
 	when S_NOTHING:
-	    msg("This scroll is blank.");
+	    nothing_message(flags);
 	when S_SILVER: 
 	{
-	    struct linked_list *ll;
 	    struct object *lb;
 	    if (is_scroll && know_items[TYP_SCROLL][S_SILVER] == FALSE) {
 	        msg("You are granted the power of magic hitting.");
 		know_items[TYP_SCROLL][S_SILVER] = TRUE;
 	    }
-	    if ((ll = get_item("annoint",WEAPON)) != NULL) {
-		lb = OBJPTR(ll);
+	    if ((item = get_item("annoint",WEAPON)) != NULL) {
+		lb = OBJPTR(item);
 		if (blessed && !(lb->o_flags & ISSILVER)) {
 		    lb->o_hplus += rnd(3) + 1;
 		    lb->o_flags |= ISSILVER;
@@ -665,10 +651,11 @@ pet_message:	    msg("The dungeon begins to rumble and shake!");
 		    msg("Your silver weapon has turned to steel.");
 		}
 		else if (lb->o_flags & ISSILVER) {
-		    nothing_message(flags);
+		    msg("Your silver weapon glitters briefly.");
+		    lb->o_hplus += rnd(2);
 		}
 		else {
-		    lb->o_hplus += rnd(2);
+		    lb->o_hplus += rnd(3);
 		    lb->o_flags |= ISSILVER;
 		    lb->o_flags |= ISMETAL;
 		    msg("Your weapon has turned to silver.");
@@ -800,40 +787,33 @@ pet_message:	    msg("The dungeon begins to rumble and shake!");
 	     */
 	    charm_power = pstats.s_charisma/2 + pstats.s_lvl/3 + max(0, pstats.s_intel - 15); 
 	    if (cursed) {
+		msg("You hear harsh, dissonant twanging throughout the dungeon.");
 		aggravate();
-		msg("You feel ugly.");
 	    }
 	    else if (blessed) {				/* Charm entire level */
-		if (mlist != NULL) {
-		    register struct linked_list *mon;
-		    register struct thing *th;
+		register struct linked_list *mon;
 
-		    for (mon = mlist; mon != NULL; mon = next(mon)) {
-			th = THINGPTR(mon);
-			if (th->t_stats.s_intel<charm_power && off(*th,ISUNIQUE)) {
-			    turn_on(*th, ISCHARMED);
-			    runto(&th->t_pos,&hero);
-			}
+		msg("You hear ringingly meliflous music all around you.");
+		for (mon = mlist; mon != NULL; mon = next(mon)) {
+		    register struct thing *th = THINGPTR(mon);
+
+		    if (th->t_stats.s_intel<charm_power && off(*th,ISUNIQUE)) {
+			turn_on(*th, ISCHARMED);
+			runto(&th->t_pos,&hero);
 		    }
-		    msg("You hear beautiful music throughout the dungeon.");
 		}
-		else nothing_message(flags);
 	    }
-	    else {				/* Normal version of spell */
-		/*
-		 * Charm all monsters within two spaces of the hero.
-		 */
+	    else {	/* Charm all monsters within two spaces of the hero */
 		register int x,y;
 		register struct linked_list *mon;
-		bool gotone=FALSE;
 
+		msg("You hear soft, lyrical music all around you.");
 		for (x = hero.x-2; x <= hero.x+2; x++)
 		    for (y = hero.y-2; y <= hero.y+2; y++)
 			if (y > 0 && x > 0 && isalpha(mvwinch(mw, y, x))) {
 			    if ((mon = find_mons(y, x)) != NULL) {
 				register struct thing *th;
 
-				gotone = TRUE;
 				th = THINGPTR(mon);
 				if (th->t_stats.s_intel<charm_power && off(*th,ISUNIQUE)) {
 				    turn_on(*th, ISCHARMED);
@@ -841,9 +821,6 @@ pet_message:	    msg("The dungeon begins to rumble and shake!");
 				}
 			    }
 			}
-		msg("You hear beautiful music all around you.");
-		if (!gotone) 
-		    msg("Unfortunately, no one else does.");
 	    }
 	when S_SUMMON: {
 	    struct linked_list *llp;
@@ -911,13 +888,17 @@ pet_message:	    msg("The dungeon begins to rumble and shake!");
 	     * if cursed, you get frightened
 	     */
 	    if (cursed) {
-		if (off(player, SUPERHERO) && (player.t_ctype != C_PALADIN))
-		    msg("You feel fearful for a moment.");
+		if (off(player, SUPERHERO) && (player.t_ctype != C_PALADIN) &&
+		    !save(VS_DEATH))
+		    msg("A momentary wave of panic sweeps over you.");
 		else {
 		    msg("Panicstricken, you fall into a coma.");
-		    no_command += 4 + rnd(SLEEPTIME);
+		    no_command += roll(2, SLEEPTIME);
 		}
 	    }
+	    /*
+	     * What should go here? if (blessed) { }
+	     */
 	    else {
 		/*
 		 * terrify monster scroll.  
@@ -944,18 +925,18 @@ pet_message:	    msg("The dungeon begins to rumble and shake!");
 		    }
 		}
 		if (gotone) 
-		     msg("The monster(s) around you recoil in horror.");
+		     seemsg("The monster(s) around you recoil in horror.");
 		else nothing_message(flags);
 	    }
 	when S_MSHIELD:			/* deal with blessed/cursed later */
 	    if (on(player, HASMSHIELD)) {
-		msg("The fog around you thickens.");
+		seemsg("The fog around you thickens.");
 		lengthen(unmshield, (blessed ? 3 : 1)*HEROTIME);
 	    }
 	    else {
-		msg("A fog forms around you.");
+		seemsg("A fog forms around you.");
 		turn_on(player, HASMSHIELD);
-		fuse(unshield, 0, (blessed ? 3 : 1)*HEROTIME, AFTER);
+		fuse(unmshield, 0, (blessed ? 3 : 1)*HEROTIME, AFTER);
 	    }
 	    if (is_scroll) 
 		know_items[TYP_SCROLL][S_MSHIELD] = TRUE;
@@ -1013,7 +994,7 @@ bool message;
 	return(nitem);
     }
     if (message) 
-	msg("You hear a faint cry of anguish in the distance.");
+	hearmsg("You hear a faint cry of anguish in the distance.");
     return(NULL);
 }
 
@@ -1064,8 +1045,10 @@ register struct object *obj;
 {
 	if(obj==cur_ring[LEFT_1]||obj==cur_ring[LEFT_2]||
 	   obj==cur_ring[LEFT_3]||obj==cur_ring[LEFT_4]||
+	   obj==cur_ring[LEFT_5]||
 	   obj==cur_ring[RIGHT_1]||obj==cur_ring[RIGHT_2]||
-	   obj==cur_ring[RIGHT_3]||obj==cur_ring[RIGHT_4]) {
+	   obj==cur_ring[RIGHT_3]||obj==cur_ring[RIGHT_4]||
+	   obj==cur_ring[RIGHT_5]) {
 	   return TRUE;
 	}
 	return FALSE;
@@ -1099,9 +1082,8 @@ int flags;
 		turn_off(player, ISHELD);
 	turn_off(*reader, DIDHOLD);
 
-	if (cursed) {
+	if (cursed)
 	    reader->t_no_move++;
-	}
 	else {
 	    register int rm;
 
@@ -1117,7 +1099,7 @@ int flags;
 	    do {
 		rm = rnd_room();
 		rnd_pos(&rooms[rm], &reader->t_pos);
-	    } until(winat(reader->t_pos.y, reader->t_pos.x) == FLOOR);
+	    } while(winat(reader->t_pos.y, reader->t_pos.x) != FLOOR);
 
 	    /* Put it there */
 	    mvwaddch(mw, reader->t_pos.y, reader->t_pos.x, reader->t_type);

@@ -1590,5 +1590,15 @@
 8)	detection scrolls and potions renamed, some no longer appear
 9)	lower prices for some magic, new food prices
 10)	new weapon weights and armor chances
+11)	hearmsg() and seemsg() so a deaf or blind hero misses messages
+12)	monsters cast two-way and cursed bolts
+13)	monsters cast offensive spells only within bolt range
+14)	monsters phase at a hero in the walls one time in five
+15)	learning new spells no longer forgets old ones
+16)	enchanting blows up items sooner
+17)	silver weapons glitter, cursed fear scroll gets a save
+18)	new potion and scroll messages
+19)	ten ring slots, messages when rings come off
+20)	known cursed rings are marked
 
 -------	End of File ------

@@ -108,7 +108,7 @@ int flags;
 	    if (player.t_ctype != C_PALADIN
 		    && !(player.t_ctype == C_NINJA && curp->s_lvl > 12)
 		    && !save(VS_POISON)) {
-		msg("You feel very sick now.");
+		feel_message();
 		curp->s_hpt /= 2;
 		curp->s_power /= 2;
 		if ((curp->s_hpt -= 1) <= 0) {
@@ -228,7 +228,7 @@ int flags;
 	    if (blessed)
 		turn_on(player, BLESSMONS);
 	}
-	else msg("You have a strange feeling, then it passes.");
+	else nothing_message(flags);
     when P_TREASDET:
 	/*
 	 * Potion of magic detection.  Show the potions and scrolls
@@ -306,7 +306,7 @@ int flags;
 		break;
 	    }
 	}
-	msg("You have a strange feeling for a moment, then it passes.");
+	nothing_message(flags);
     when P_SEEINVIS:
 	if (cursed) {
 	    if (off(player, ISBLIND) && !is_wearing(R_SEEINVIS)) {
@@ -327,8 +327,10 @@ int flags;
 		fuse(unsee, 0, blessed ? SEEDURATION*3 :SEEDURATION, AFTER);
 		light(&hero);
 	    }
-	    else if (find_slot(unsee) != NULL)
+	    else if (find_slot(unsee) != NULL) {
+		nothing_message(ISNORMAL);
 		lengthen(unsee, blessed ? SEEDURATION*3 : SEEDURATION);
+	    }
 	    sight();
 	}
     when P_PHASE:
@@ -389,7 +391,7 @@ int flags;
     when P_RESTORE: {
 	register int i;
 
-	msg("Hey, this tastes great.  It make you feel warm all over.");
+	msg("You are surrounded by an orange mist.");
 	if (is_potion)
 	    know_items[TYP_POTION][P_RESTORE] = TRUE;
 
@@ -412,7 +414,11 @@ int flags;
 	curp->s_const = maxp->s_const;
     }
     when P_INVIS:
-	if (off(player, ISINVIS)) {
+	if (cursed) {
+	    msg("You feel very noticable.");
+	    quaff(&player, P_SHIELD, ISCURSED);
+	}
+	else if (off(player, ISINVIS)) {
 	    turn_on(player, ISINVIS);
 	    if (on(player, ISDISGUISE)) {
 		turn_off(player, ISDISGUISE);
@@ -710,9 +716,9 @@ int flags;
 	    if (is_potion)
 		know_items[TYP_POTION][P_LEVITATION] = TRUE;
 	    if (on(player, CANFLY))
-		lengthen(unfly, duration*PHASEDURATION);
+		lengthen(unfly, duration*WANDERTIME);
 	    else {
-		fuse(unfly, 0, duration*PHASEDURATION, AFTER);
+		fuse(unfly, 0, duration*WANDERTIME, AFTER);
 		turn_on(player, CANFLY);
 	    }
 	if (!is_wearing(R_LEVITATION))
@@ -1126,7 +1132,8 @@ int flags;
 	else turn_on(*quaffer, ISHASTE);
     when P_INVIS:
 	turn_on(*quaffer, ISINVIS);
-	/* if can_see msg("The monster dissappears!"); */
+	if (cansee(quaffer->t_pos.y, quaffer->t_pos.x))
+	    seemsg("The monster dissappears!");
     when P_REGENERATE:
 	if (cursed) {
 	    quaff(quaffer, P_HEALING, ISCURSED);

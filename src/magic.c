@@ -1,5 +1,5 @@
 /*
- * Last Modified: 08/12/86
+ * Last Modified: Jan 5, 1991
  */
 /*
  * This file contains functions for casting magic spells
@@ -40,47 +40,48 @@ int spell_cost[] = { 1, 5, 17, 29, 53, 91, 159, 247, 396};
 /*
  * Spells that a monster can cast
  */
-struct spells monst_spells[] = {
 #define		M_SELFTELEP	0
-	{ 5,	S_SELFTELEP,	SCR_MAGIC},
+#define		M_OFFENSE	10
 #define		M_HLNG2	1
-	{ 4,	P_HEALING,	POT_MAGIC|_TWO_},
 #define		M_REGENERATE	2
-	{ 3,	P_REGENERATE,	POT_MAGIC},
 #define		M_HLNG	3
-	{ 2,	P_HEALING,	POT_MAGIC},
 #define 	NUM_RUN 	4
-
 #define		M_HASTE 	4
-	{ 4,	P_HASTE,	POT_MAGIC},
 #define		M_SEEINVIS	5
-	{ 2,	P_SEEINVIS,	POT_MAGIC},
 #define		M_SHERO 	6
-	{ 3,	P_SHERO,	POT_MAGIC},
 #define		M_PHASE 	7
+#define		M_INVIS 	8
+#define		M_CANCEL	9
+
+struct spells monst_spells[] = {
+	{ 5,	S_SELFTELEP,	SCR_MAGIC},
+	{ 4,	P_HEALING,	POT_MAGIC|_TWO_},
+	{ 3,	P_REGENERATE,	POT_MAGIC},
+	{ 2,	P_HEALING,	POT_MAGIC},
+
+	{ 4,	P_HASTE,	POT_MAGIC},
+	{ 2,	P_SEEINVIS,	POT_MAGIC},
+	{ 3,	P_SHERO,	POT_MAGIC},
 	{ 5,	P_PHASE,	POT_MAGIC},
 
-#define		M_INVIS 	8
 	{ 4,	P_INVIS,	POT_MAGIC},
-#define		 M_CANCEL	9
 	{ 4,	WS_CANCEL,	ZAP_MAGIC},
 
 	/* In reverse order of damage ability */
-#define		M_OFFENSE	10
-	{ 6,	WS_ELECT,	ZAP_MAGIC},
-	{ 6,	WS_FIRE,	ZAP_MAGIC},
-	{ 6,	WS_COLD,	ZAP_MAGIC},
+	{ 6,	WS_ELECT,	ZAP_MAGIC|_TWO_},
+	{ 6,	WS_FIRE,	ZAP_MAGIC|_TWO_},
+	{ 6,	WS_COLD,	ZAP_MAGIC|_TWO_},
+	{ 6,	WS_MISSILE,	ZAP_MAGIC|_TWO_},
 	{ 5,	WS_ELECT,	ZAP_MAGIC},
 	{ 5,	WS_FIRE,	ZAP_MAGIC},
 	{ 5,	WS_COLD,	ZAP_MAGIC},
-	{ 5,	WS_MISSILE,	ZAP_MAGIC},
-	{ 4,	WS_ELECT,	ZAP_MAGIC},
-	{ 4,	WS_FIRE,	ZAP_MAGIC},
-	{ 4,	WS_COLD,	ZAP_MAGIC},
+	{ 4,	WS_ELECT,	ZAP_MAGIC|ISCURSED},
+	{ 4,	WS_FIRE,	ZAP_MAGIC|ISCURSED},
+	{ 4,	WS_COLD,	ZAP_MAGIC|ISCURSED},
 	{ 3,	WS_MISSILE,	ZAP_MAGIC},
-	{ 1,	WS_MISSILE,	ZAP_MAGIC},
+	{ 1,	WS_MISSILE,	ZAP_MAGIC|ISCURSED},
 
-	{ -1,	-1,		-1		},
+	{ -1,	-1,		-1		}
 };
 
 
@@ -156,7 +157,7 @@ struct spells player_spells[] = {
 	{ 6,	S_MAKEITEMEM,	SCR_MAGIC	|SP_WIZARD},
 	*/
 
-	{ -1,	-1,		-1		},
+	{ -1,	-1,		-1		}
 };
 
 /*
@@ -352,7 +353,7 @@ coord shoot_dir;
     cast_name = spell_name(sp);
 
     fumble_chance = (10*sp->sp_level/4 - 10*level_casters/13) * 5;
-    if (cur_weapon!=NULL && wield_ok(&player, cur_weapon, FALSE) == FALSE) {
+    if (cur_weapon!=NULL && wield_ok(caster, cur_weapon, FALSE) == FALSE) {
 	switch(caster->t_ctype) {
 	when C_MAGICIAN:
 	case C_ILLUSION:
@@ -656,13 +657,11 @@ struct thing *caster;
 
     /* Discover castable spells */
     for (sp=monst_spells; sp->sp_level != -1; sp++) {
-	int spell_level = sp->sp_level;
-	int rnd_number = rnd(2*spell_level) - spell_level;
-	int casting_cost = spell_cost[spell_level] + rnd_number;
+	int rnd_number = rnd(2*sp->sp_level) - sp->sp_level;
+	int casting_cost = spell_cost[sp->sp_level] + rnd_number;
 
 	if (points_casters >= casting_cost)
 	     sp->sp_flags |= ISKNOW;
-	else sp->sp_flags &= ~ISKNOW;
     }
 
     /*
@@ -705,7 +704,7 @@ struct thing *caster;
 	}
     }
 
-    if (on(player, CANINWALL) && (off(*caster, CANINWALL)) && rnd(2)) {
+    if (on(player, CANINWALL) && (off(*caster, CANINWALL)) && (rnd(5) == 0)) {
 	sp = &monst_spells[M_PHASE];
 	if (sp->sp_flags & ISKNOW)
 	    return(sp);
@@ -729,6 +728,14 @@ struct thing *caster;
     for (sp = &monst_spells[M_OFFENSE]; sp->sp_level != 1; sp++) {
 	if ( (rnd(3) == 0) && (sp->sp_flags & ISKNOW) )
 	    return(sp);
+	if ( (rnd(3) == 0) && (sp->sp_flags & ISKNOW) ) {
+	    if (sp->sp_which != WS_MISSILE &&
+		DISTANCE(caster->t_dest->y, caster->t_dest->x,
+			hero.y, hero.x) > BOLT_LENGTH)
+		continue;
+	    else
+		return(sp);
+	}
     }
 
     return(NULL);

@@ -1,5 +1,5 @@
 /*
- * Last Modified: 08/10/86
+ * Last Modified: Jan 5, 1991
  */
 /*
  * Various input/output functions
@@ -314,4 +314,36 @@ end_line()
             add_line(NULL);
     line_cnt = 0;
     newpage = FALSE;
+}
+
+/*
+ * hearmsg:
+ *	Call msg() only if you are not deaf
+ */
+hearmsg(fmt, va_alist)
+char *fmt;
+va_dcl
+{
+    if (off(player, ISDEAF))
+	msg(fmt, va_alist);
+    else if (wizard) {
+	msg("Couldn't hear: ");
+	msg(fmt, va_alist);
+    }
+}
+
+/*
+ * seemsg:
+ *	Call msg() only if you are not blind
+ */
+seemsg(fmt, va_alist)
+char *fmt;
+va_dcl
+{
+    if (off(player, ISBLIND))
+	msg(fmt, va_alist);
+    else if (wizard) {
+	msg("Couldn't see: ");
+	msg(fmt, va_alist);
+    }
 }
