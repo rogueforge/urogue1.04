@@ -26,9 +26,6 @@ command()
     static bool an_after;
     static bool summoned;
     static coord dta;
-#if !defined(unctrl)
-    char *unctrl();
-#endif
 
     an_after = FALSE;
     newcount = FALSE;
@@ -162,7 +159,6 @@ command()
 	    if (count && !running)
 		count--;
 	    switch (ch) {
-		when '!' : shell();
 		when 'h' : do_move(0, -1);
 		when 'j' : do_move(1, 0);
 		when 'k' : do_move(-1, 0);
@@ -228,7 +224,7 @@ command()
 		when '<' : after = FALSE; u_level();
 		when '?' : after = FALSE; help();
 		when '/' : after = FALSE; identify();
-		when CTRL(T) :
+		when 19 :	/* ctrl-t */
 		    if (get_dir()) 
 			 steal();
 		    else after = FALSE;
@@ -247,11 +243,11 @@ command()
 		    else after = FALSE;
 		when 'v' : after = FALSE;
 			   msg("UltraRogue Version %s.", release);
-		when CTRL(R) :
+		when 17 :	/* ctrl-r */
 		    after = FALSE;
 		    clearok(curscr, TRUE);
 		    touchwin(cw);
-		when CTRL(P) : {
+		when 15 : {	/* ctrl-p */
 			    register bool decrement = FALSE;
 
 			    after = FALSE; 
@@ -268,14 +264,11 @@ command()
 			wclear(cw);
 			wrefresh(cw);
 			endwin();
-#if defined(BSD4)
-			(void) TtySetOriginalChars();
-#endif
 			exit(0);
 		    }
 		when '.' : ;			/* Rest command */
 		when ' ' : after = FALSE;	/* Do Nothing */
-		when CTRL(W) :
+		when 22 :	/* ctrl-w */
 		    after = FALSE;
 		    if (!wizard) {
 			if (passwd()) {
@@ -919,75 +912,6 @@ u_level()
 	msg("I see no way up.");
     else 
 	msg("Your way is magically blocked.");
-}
-
-/*
- * Let him escape for a while
- */
-
-shell()
-{
-    register int pid;
-    register char *sh;
-    int ret_status;
-
-    /*
-     * Set the terminal back to original mode
-     */
-    sh = getenv("SHELL");
-    wclear(hw);
-    wmove(hw, LINES-1, 0);
-    wrefresh(hw);
-#if defined(BSD4)
-    (void) TtySetOriginalChars();
-#endif
-#if defined(USGV3) || defined(RTU2) || defined(attron)
-    endwin();
-#endif
-    in_shell = TRUE;
-    fflush(stdout);
-    /*
-     * Fork and do a shell
-     */
-    while((pid = fork()) < 0)
-	sleep(1);
-    if (pid == 0) {
-	/*
-	 * Set back to original user, just in case
-	 */
-	setuid(getuid());
-	setgid(getgid());
-	execl(sh == NULL ? "/bin/sh" : sh, "shell", "-i", 0);
-	perror("No shelly");
-	endwin();
-#if defined(BSD4)
-	(void) TtySetOriginalChars();
-#endif
-	exit(-1);
-    }
-    else {
-	signal(SIGINT, SIG_IGN);
-	signal(SIGQUIT, SIG_IGN);
-	while (wait(&ret_status) != pid)
-	    continue;
-	signal(SIGINT, quit);
-	signal(SIGQUIT, quit);
-#if defined(BSD4)
-	(void) TtySetGameChars();
-#endif
-#if defined(USGV3) || defined(RTU2)
-	noecho();
-	crmode();
-#endif
-	printf(retstr);
-	in_shell = FALSE;
-	wait_for('\n');
-#if defined(USGV3) || defined(RTU2)
-	nonl();
-#endif
-	clearok(cw, TRUE);
-	touchwin(cw);
-    }
 }
 
 /*
