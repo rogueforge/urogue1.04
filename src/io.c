@@ -6,14 +6,11 @@
  */
 
 #include <ctype.h>
-#include <errno.h>
-#include <signal.h>
+#include <varargs.h>
 #include "rogue.h"
-#include "mach_dep.h"
 #include "stepok.h"
-#include "varargs.h"
 
-static char mbuf[2*BUFSIZ];
+static char mbuf[2*LINELEN];
 static int newpos = 0;
 
 /*
@@ -21,15 +18,10 @@ static int newpos = 0;
  *	Display a message at the top of the screen.
  */
 
-
-/*VARARGS1*/
-msg(fmt, va_alist)
+msg(fmt, args)
 char *fmt;
-va_dcl
+int args;
 {
-    va_list ap;
-
-
     /*
      * if the string is "", just clear the line
      */
@@ -42,25 +34,18 @@ va_dcl
     /*
      * otherwise add to the message and flush it out
      */
-    va_start(ap);
-    doadd(fmt, ap);
-    va_end(ap);
+    doadd(fmt, &args);
     endmsg();
 }
 
 /*
  * add things to the current message
  */
-/*VARARGS1*/
-addmsg(fmt, va_alist)
+addmsg(fmt, args)
 char *fmt;
-va_dcl
+int args;
 {
-    va_list ap;
-
-    va_start(ap);
-    doadd(fmt, ap);
-    va_end(ap);
+    doadd(fmt, &args);
 }
 
 /*
@@ -84,27 +69,11 @@ endmsg()
     wrefresh(cw);
 }
 
-/*VARARGS1*/
 doadd(fmt, args)
 char *fmt;
 int **args;
 {
-    static FILE junk;
-
-    /*
-     * Do the printf into buf
-     */
-    junk._flag = _IOWRT;  /* Under 3.0 IOUNK was IOSTRG */
-    junk._ptr = &mbuf[newpos];
-#if defined(STDIO_BASE_P)
-    junk._base = junk._ptr;
-#endif STDIO_BASE_P
-#if defined(_NFILE)
-    junk._file = _NFILE;
-#endif _NFILE
-    junk._cnt = 32767;
-    _doprnt(fmt, args, &junk);
-    putc('\0', &junk);
+    vsprintf(&mbuf[newpos], fmt, args);
     newpos = strlen(mbuf);
 }
 
@@ -172,35 +141,13 @@ shoot_ok(ch)
 
 /*
  * readchar:
- *	flushes stdout so that screen is up to date and then returns
- *	getchar.
+ *	get an ASCII character
  */
 
 readchar()
 {
-    char c;
-
-    fflush(stdout);
-    while (read(0, &c, 1) < 0)
-	;
-    return (c & 0177);
+    return (ttgetc() & 0x7f);
 }
-
-#if !defined(unctrl)
-/*
- * unctrl:
- *	Print a readable version of a certain character
- */
-
-char *
-unctrl(ch)
-char ch;
-{
-    extern char *_unctrl[];		/* Defined in curses library */
-
-    return _unctrl[ch&0177];
-}
-#endif
 
 /*
  * status:
@@ -323,20 +270,14 @@ char *fmt, *arg;
         /* chai: was if (line_cnt >= LINES - 1 || fmt == NULL) { */
         if (line_cnt >= LINES - 2 || fmt == NULL) {
             if (fmt == NULL && !newpage && inv_type == INV_OVER) {
-                tw = subwin(hw, line_cnt + 1, COLS, 0, 0);
-/*                overwrite(hw, tw);*/
+                tw = newwin(line_cnt + 2, COLS, 0, 0);
+                overwrite(hw, tw);
                 wstandout(tw);
                 mvwaddstr(tw, line_cnt, 0, spacemsg);
                 wstandend(tw);
                 touchwin(tw);
                 wrefresh(tw);
                 wait_for(' ');
-#if defined(BSD4)
-                if (CE) {
-                    werase(tw);
-                    wrefresh(tw);
-                }
-#endif
                 delwin(tw);
                 touchwin(cw);
             } else {

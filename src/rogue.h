@@ -5,9 +5,11 @@
  * Rogue definitions and variable declarations
  *
  */
-#include "defs.h"
-#include "curses.h"
-#include "tunable.h"
+#include <curses.h>
+
+/* Movement penalties */
+#define SHOTPENALTY 2		/* In line of sight of missile */
+#define DOORPENALTY 1		/* Moving out of current room */
 
 /*
  * Maximum number of different things
@@ -86,9 +88,6 @@
 #define	o_charges o_ac
 #define	mi_wght mi_worth
 
-#if	defined(TCFLSH)
-#define	flushout() ioctl(_tty_ch,TCFLSH,0)
-#endif
 
 /*
  * Things that appear on the screens
@@ -130,9 +129,6 @@
 /*
  * Various constants
  */
-#define	MAXAUTH		10		/* Let's be realistic! */
-#define	PASSWD		rpass.rp_pass
-#define	PASSWDSEED	rpass.rp_pkey
 
 #define	HOLDTIME	  2
 #define	BEARTIME	  3
@@ -956,11 +952,6 @@ struct matrix {
     int range;			/* Range of levels for each offset */
 };
 
-struct  real_pass {
-    char rp_pass[20];
-    char rp_pkey[2];
-} ;
-
 struct linked_list 
     *find_mons(), *find_obj(), *get_item(), *new_item(), *creat_mons(),
     *new_thing(), *wake_monster(), *get_hurl(), *spec_item(), 
@@ -1004,12 +995,6 @@ struct trap *trap_at();
 
 extern struct h_list helpstr[];
 
-#if defined(USGV5)
-extern int _tty_ch;
-#if !defined(attron) && !defined(PC7300)
-extern SGTTY _tty;
-#endif NOT attron
-#endif
 
 /*
  * Now all the global variables
@@ -1039,7 +1024,6 @@ extern struct magic_item p_magic[];	/* Names and chances for potions */
 extern struct magic_item r_magic[];	/* Names and chances for rings */
 extern struct magic_item ws_magic[];	/* Names and chances for sticks */
 extern struct magic_item fd_data[];	/* Names and chances for food */
-extern struct real_pass rpass;		/* For protection's sake! */
 extern char *cnames[][15];		/* Character level names */
 extern char PLAYER;			/* what the player looks like */
 extern int resurrect;			/* resurrection counter */
@@ -1068,7 +1052,6 @@ extern int lost_dext;			/* amount of dexterity lost */
 extern int hold_count;			/* Number of monsters holding player */
 extern int trap_tries;			/* Number of attempts to set traps */
 extern int spell_power;			/* Spell power left at this level */
-extern int auth_or[MAXAUTH];		/* MAXAUTH priviledged players */
 extern int has_artifact;		/* set for possesion of artifacts */
 extern int picked_artifact;		/* set for any artifacts picked up */
 extern int msg_index;			/* pointer to current message buffer */
@@ -1090,7 +1073,7 @@ extern char *ws_made[];			/* What sticks are made of */
 extern char *release;			/* Release number of rogue */
 extern char whoami[];			/* Name of player */
 extern char fruit[];			/* Favorite fruit */
-extern char msgbuf[10][2*BUFSIZ];	/* message buffer */
+extern char msgbuf[10][2*LINELEN];	/* message buffer */
 extern char *guess_items[MAXMAGICTYPES][MAXMAGICITEMS]; /* Players guess at what magic is */
 extern char *ws_type[];			/* Is it a wand or a staff */
 extern char file_name[];		/* Save file name */
@@ -1134,7 +1117,6 @@ extern LEVTYPE levtype;
  * Command line options
  */
 extern int prscore;				/* Print scores */
-extern int keypadmode;				/* Enable key pad */
 extern int prnews;				/* Print news file */
 extern int prversion;				/* Print version info */
 

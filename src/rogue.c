@@ -23,20 +23,11 @@ struct linked_list *lvl_obj = NULL; 	/* Treasure on this level */
 struct linked_list *mlist = NULL;	/* Monsters on this level */
 struct linked_list *curr_mons = NULL;	/* The mons. currently moving */
 struct linked_list *next_mons = NULL;	/* The mons. after curr_mons */
-struct real_pass rpass;			/* For protection's sake! */
-
-#if defined(USGV5)
-int _tty_ch;
-#if !defined(attron) && !defined(PC7300)
-SGTTY _tty;
-#endif NOT attron
-#endif
 
 /*
  * Command line options
  */
 int prscore;				/* Print scores */
-int keypadmode;				/* Enable key pad applications mode */
 int prnews;				/* Print news file */
 int prversion;				/* Print version info */
 
@@ -69,7 +60,6 @@ int picked_artifact = 0;
 int msg_index = 0;
 int luck = 0;
 int resurrect = 0;
-int auth_or[MAXAUTH];
 bool inv_type = INV_OVER;		/* Overwrite style of inventory */
 int line_cnt;				/* Inventory stuff */
 int newpage;				/* Inventory stuff */
@@ -81,11 +71,11 @@ char curpurch[15];			/* name of item ready to buy */
 char PLAYER = VPLAYER;			/* what the player looks like */
 char take;				/* Thing the rogue is taking */
 char prbuf[2*LINELEN];			/* Buffer for sprintfs */
-char outbuf[BUFSIZ];			/* Output buffer for stdout */
+char outbuf[LINELEN];			/* Output buffer for stdout */
 char runch;				/* Direction player is running */
 char whoami[2*LINELEN];			/* Name of player */
 char fruit[2*LINELEN];			/* Favorite fruit */
-char msgbuf[10][2*BUFSIZ];		/* message buffer */
+char msgbuf[10][2*LINELEN];		/* message buffer */
 char file_name[2*LINELEN];		/* Save file name */
 char score_file[2*LINELEN];		/* Score file name */
 char home[2*LINELEN];			/* User's home directory */
@@ -252,12 +242,11 @@ struct h_list helpstr[] = {
     'a',	"	affect the undead",
     '^',	"	set a trap",
     'D',	"	dip something (into a pool)",
-    CTRL(T),	"<dir>	take (steal) from (direction)",
-    CTRL(R),	"	redraw screen",
-    CTRL(P),	"	back up to 10 previous messages",
+    19,	"<dir>	take (steal) from (direction)",	/* ctrl-t */
+    17,	"	redraw screen",				/* ctrl-r */
+    15,	"	back up to 10 previous messages",	/* ctrl-p */
     ESCAPE,	"	cancel command",
     'v',	"	print program version number",
-    '!',	"	shell escape",
     'S',	"	save game",
     'Q',	"	quit",
     '=',	"	listen for monsters",
@@ -267,22 +256,22 @@ struct h_list helpstr[] = {
  * Wizard commands.  Identified by (h_ch != 0 && h_desc == 0).
  */
 	'-',		0,
-	CTRL(W),	"	enter wizard mode",
-	CTRL(W),	"c	create item",
-	CTRL(W),	"C	charge item",
-	CTRL(W),	"f	floor map",
-	CTRL(W),	"F	food statistics",
-	CTRL(W),	"g	goto level",
-	CTRL(W),	"i	inventory level",
-	CTRL(W),	"I	identify item",
-	CTRL(W),	"m	see monster",
-	CTRL(W),	"M	create monster",
-	CTRL(W),	"o	improve stats and pack",
-	CTRL(W),	"e	exit wizard mode",
-	CTRL(W),	"r	random number check",
-	CTRL(W),	"s	system statistics",
-	CTRL(W),	"t	random teleport",
-	CTRL(W),	"v	toggle wizard verbose mode",
-	CTRL(W),	"w 	print worth of object",
+	22,	"	enter wizard mode",		/* ctrl-w */
+	22,	"c	create item",
+	22,	"C	charge item",
+	22,	"f	floor map",
+	22,	"F	food statistics",
+	22,	"g	goto level",
+	22,	"i	inventory level",
+	22,	"I	identify item",
+	22,	"m	see monster",
+	22,	"M	create monster",
+	22,	"o	improve stats and pack",
+	22,	"e	exit wizard mode",
+	22,	"r	random number check",
+	22,	"s	system statistics",
+	22,	"t	random teleport",
+	22,	"v	toggle wizard verbose mode",
+	22,	"w 	print worth of object",
 	0,		0
 };

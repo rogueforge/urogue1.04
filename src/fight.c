@@ -8,7 +8,6 @@
 
 #include <ctype.h>
 #include "rogue.h"
-#include "mach_dep.h"
 #include "death.h"
 
 /* 
