@@ -11,7 +11,7 @@
 #include "stepok.h"
 
 #define	MAXINT	32767
-#define	MININT	-32768
+#define	MININT	-32767
 
 /* Movement penalties */
 #define SHOTPENALTY 2		/* In line of sight of missile */

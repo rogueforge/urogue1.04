@@ -50,9 +50,9 @@ int lost_dext;				/* amount of lost dexterity */
 int mpos = 0;
 int no_command = 0;
 int level = 0;
-int purse = 0;
+unsigned long purse = 0;
 int inpack = 0;
-int total = 0;
+unsigned long total = 0;
 int see_dist = 3;
 int no_food = 0;
 int count = 0;

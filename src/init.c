@@ -1,5 +1,5 @@
 /*
- * Last Modified: 07/13/86
+ * Last Modified: Dec 29, 1990
  */
 /*
  * global variable initializaton

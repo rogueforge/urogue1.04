@@ -79,14 +79,6 @@
 #define	free_list(a) _free_list(&a)
 #define	max(a, b) ((a) > (b) ? (a) : (b))
 #define	min(a, b) ((a) < (b) ? (a) : (b))
-#define	on(thing, flag) \
-    (((thing).t_flags[(flag >> FLAGSHIFT) & FLAGINDEX] & flag) != 0)
-#define	off(thing, flag) \
-    (((thing).t_flags[(flag >> FLAGSHIFT) & FLAGINDEX] & flag) == 0)
-#define	turn_on(thing, flag) \
-    ((thing).t_flags[(flag >> FLAGSHIFT) & FLAGINDEX] |= (flag & ~FLAGMASK))
-#define	turn_off(thing, flag) \
-    ((thing).t_flags[(flag >> FLAGSHIFT) & FLAGINDEX] &= ~flag)
 #if !defined(CTRL)
 #define	CTRL(ch) ('ch' & 037)
 #endif
@@ -189,214 +181,238 @@
 /*
  * attributes for treasures in dungeon
  */
-#define	ISNORMAL	0x00000000	/* Neither blessed nor cursed */
-#define	ISCURSED	0x00000001	/* cursed */
-#define	ISKNOW		0x00000002	/* has been identified */
-#define	ISPOST		0x00000004	/* object is in a trading post */
-#define	ISMETAL		0x00000008	/* is metallic */
-#define	ISPROT		0x00000010	/* object is protected */
-#define	ISBLESSED	0x00000020	/* blessed */
-#define	ISZAPPED	0x00000040	/* weapon has been charged by dragon */
-#define	ISVORPED	0x00000080	/* vorpalized weapon */
-#define	ISSILVER	0x00000100	/* silver weapon */
-#define	ISPOISON	0x00000200	/* poisoned weapon */
-#define	CANRETURN	0x00000400	/* weapon returns if misses */
-#define	ISOWNED		0x00000800	/* weapon returns always */
-#define	ISLOST		0x00001000	/* weapon always disappears */
-#define	ISMISL		0x00002000	/* missile weapon */
-#define	ISMANY		0x00004000	/* show up in a group */
-#define	CANBURN		0x00008000	/* burns monsters */
-#define	ISSHARP		0x00010000	/* cutting edge */
-#define	ISTWOH		0x00020000	/* needs two hands to wield */
-#define	ISLITTLE	0x00040000	/* small weapon */
-#define	ISLAUNCHER	0x00080000	/* used to throw other weapons */
-#define TYP_MAGIC_MASK	0x0f000000
-#define POT_MAGIC	0x01000000
-#define SCR_MAGIC	0x02000000
-#define ZAP_MAGIC	0x04000000
-#define SP_WIZARD	0x10000000		/* only wizards */
-#define SP_ILLUSION	0x20000000		/* only illusionists */
-#define SP_CLERIC	0x40000000		/* only clerics/paladins */
-#define SP_DRUID	0x80000000		/* only druids/rangers */
-#define SP_MAGIC	0x30000000		/* wizard or illusionist */
-#define SP_PRAYER	0xc0000000		/* cleric or druid */
-#define SP_ALL		0xf0000000		/* all special classes */
+#define	ISNORMAL	0x00000000L	/* Neither blessed nor cursed */
+#define	ISCURSED	0x00000001L	/* cursed */
+#define	ISKNOW		0x00000002L	/* has been identified */
+#define	ISPOST		0x00000004L	/* object is in a trading post */
+#define	ISMETAL		0x00000008L	/* is metallic */
+#define	ISPROT		0x00000010L	/* object is protected */
+#define	ISBLESSED	0x00000020L	/* blessed */
+#define	ISZAPPED	0x00000040L	/* weapon has been charged by dragon */
+#define	ISVORPED	0x00000080L	/* vorpalized weapon */
+#define	ISSILVER	0x00000100L	/* silver weapon */
+#define	ISPOISON	0x00000200L	/* poisoned weapon */
+#define	CANRETURN	0x00000400L	/* weapon returns if misses */
+#define	ISOWNED		0x00000800L	/* weapon returns always */
+#define	ISLOST		0x00001000L	/* weapon always disappears */
+#define	ISMISL		0x00002000L	/* missile weapon */
+#define	ISMANY		0x00004000L	/* show up in a group */
+#define	CANBURN		0x00008000L	/* burns monsters */
+#define	ISSHARP		0x00010000L	/* cutting edge */
+#define	ISTWOH		0x00020000L	/* needs two hands to wield */
+#define	ISLITTLE	0x00040000L	/* small weapon */
+#define	ISLAUNCHER	0x00080000L	/* used to throw other weapons */
+#define TYP_MAGIC_MASK	0x0f000000L
+#define POT_MAGIC	0x01000000L
+#define SCR_MAGIC	0x02000000L
+#define ZAP_MAGIC	0x04000000L
+#define SP_WIZARD	0x10000000L		/* only wizards */
+#define SP_ILLUSION	0x20000000L		/* only illusionists */
+#define SP_CLERIC	0x40000000L		/* only clerics/paladins */
+#define SP_DRUID	0x80000000L		/* only druids/rangers */
+#define SP_MAGIC	0x30000000L		/* wizard or illusionist */
+#define SP_PRAYER	0xc0000000L		/* cleric or druid */
+#define SP_ALL		0xf0000000L		/* all special classes */
 #define _TWO_		ISBLESSED		/* more powerful spell */
 
 /*
  * Various flag bits
  */
-#define	ISDARK		0x00000001
-#define	ISGONE		0x00000002
-#define	ISTREAS		0x00000004
-#define	ISFOUND		0x00000008
-#define	ISTHIEFSET	0x00000010
-#define	WASDARK		0x00000020
+#define	ISDARK		0x00000001L
+#define	ISGONE		0x00000002L
+#define	ISTREAS		0x00000004L
+#define	ISFOUND		0x00000008L
+#define	ISTHIEFSET	0x00000010L
+#define	WASDARK		0x00000020L
 
 /*
  * struct thing t_flags (might include player) for monster attributes
  */
-#define	ISBLIND		0x00000001
-#define	ISINWALL	0x00000002
-#define	ISRUN		0x00000004
-#define	ISFLEE		0x00000008
-#define	ISINVIS		0x00000010
-#define	ISMEAN		0x00000020
-#define	ISGREED		0x00000040
-#define	CANSHOOT	0x00000080
-#define	ISHELD		0x00000100
-#define	ISHUH		0x00000200
-#define	ISREGEN		0x00000400
-#define	CANHUH		0x00000800
-#define	CANSEE		0x00001000
-#define	HASFIRE		0x00002000
-#define	ISSLOW		0x00004000
-#define	ISHASTE		0x00008000
-#define	ISCLEAR		0x00010000
-#define	CANINWALL	0x00020000
-#define	ISDISGUISE	0x00040000
-#define	CANBLINK	0x00080000
-#define	CANSNORE	0x00100000
-#define	HALFDAMAGE	0x00200000
-#define	CANSUCK		0x00400000
-#define	CANRUST		0x00800000
-#define	CANPOISON	0x01000000
-#define	CANDRAIN	0x02000000
-#define	ISUNIQUE	0x04000000
-#define	STEALGOLD	0x08000000
-#define	STEALMAGIC	0x10000001
-#define	CANDISEASE	0x10000002
-#define	HASDISEASE	0x10000004
-#define	CANSUFFOCATE	0x10000008
-#define	DIDSUFFOCATE	0x10000010
-#define	BOLTDIVIDE	0x10000020
-#define	BLOWDIVIDE	0x10000040
-#define	NOCOLD		0x10000080
-#define	TOUCHFEAR	0x10000100
-#define	BMAGICHIT	0x10000200
-#define	NOFIRE		0x10000400
-#define	NOBOLT		0x10000800
-#define	CARRYGOLD	0x10001000
-#define	CANITCH		0x10002000
-#define	HASITCH		0x10004000
-#define	DIDDRAIN	0x10008000
-#define	WASTURNED	0x10010000
-#define	CANSELL		0x10020000
-#define	CANBLIND	0x10040000
-#define	CANBBURN	0x10080000
-#define	ISCHARMED	0x10100000
-#define	CANSPEAK	0x10200000
-#define	CANFLY		0x10400000
-#define	ISFRIENDLY	0x10800000
-#define	CANHEAR		0x11000000
-#define	ISDEAF		0x12000000
-#define	CANSCENT	0x14000000
-#define	ISUNSMELL	0x18000000
-#define	WILLRUST	0x20000001
-#define	WILLROT		0x20000002
-#define	SUPEREAT	0x20000004
-#define	PERMBLIND	0x20000008
-#define	MAGICHIT	0x20000010
-#define	CANINFEST	0x20000020
-#define	HASINFEST	0x20000040
-#define	NOMOVE		0x20000080
-#define	CANSHRIEK	0x20000100
-#define	CANDRAW		0x20000200
-#define	CANSMELL	0x20000400
-#define	CANPARALYZE	0x20000800
-#define	CANROT		0x20001000
-#define	ISSCAVENGE	0x20002000
-#define	DOROT		0x20004000
-#define	CANSTINK	0x20008000
-#define	HASSTINK	0x20010000
-#define	ISSHADOW	0x20020000
-#define	CANCHILL	0x20040000
-#define	CANHUG		0x20080000
-#define	CANSURPRISE	0x20100000
-#define	CANFRIGHTEN	0x20200000
-#define	CANSUMMON	0x20400000
-#define	TOUCHSTONE	0x20800000
-#define	LOOKSTONE	0x21000000
-#define	CANHOLD		0x22000000
-#define	DIDHOLD		0x24000000
-#define	DOUBLEDRAIN	0x28000000
-#define	ISUNDEAD	0x30000001
-#define	BLESSMAP	0x30000002
-#define	BLESSGOLD	0x30000004
-#define	BLESSMONS	0x30000008
-#define	BLESSMAGIC	0x30000010
-#define	BLESSFOOD	0x30000020
-#define	CANBRANDOM	0x30000040	/* Types of breath */
-#define	CANBACID	0x30000080
-#define	CANBFIRE	0x30000100
-#define	CANBBOLT	0x30000200
-#define	CANBGAS		0x30000400
-#define	CANBICE		0x30000800
-#define	CANBPGAS	0x30001000	/* Paralyze gas */
-#define	CANBSGAS	0x30002000	/* Sleeping gas */
-#define	CANBSLGAS	0x30004000	/* Slow gas */
-#define	CANBFGAS	0x30008000	/* Fear gas */
-#define	CANBREATHE	0x3000ffc0	/* Can it breathe at all? */
-#define	STUMBLER	0x30010000
-#define	POWEREAT	0x30020000
-#define	ISELECTRIC	0x30040000
-#define	HASOXYGEN	0x30080000	/* Doesn't need to breath air */
-#define	POWERDEXT	0x30100000
-#define	POWERSTR	0x30200000
-#define	POWERWISDOM	0x30400000
-#define	POWERINTEL	0x30800000
-#define	POWERCONST	0x31000000
-#define	SUPERHERO	0x32000000
-#define	ISUNHERO	0x34000000
-#define	CANCAST		0x38000000
-#define	CANTRAMPLE	0x40000001
-#define	CANSWIM		0x40000002
-#define	LOOKSLOW	0x40000004
-#define	CANWIELD	0x40000008
-#define	CANDARKEN	0x40000010
-#define	ISFAST		0x40000020
-#define	CANBARGAIN	0x40000040
-#define	NOMETAL		0x40000080
-#define	CANSPORE	0x40000100
-#define	NOSHARP		0x40000200
-#define	DRAINWISDOM	0x40000400
-#define	DRAINBRAIN	0x40000800
-#define	ISLARGE		0x40001000
-#define	ISSMALL		0x40002000
-#define	CANSTAB		0x40004000
-#define	ISFLOCK		0x40008000
-#define	ISSWARM		0x40010000
-#define	CANSTICK	0x40020000
-#define	CANTANGLE	0x40040000
-#define	DRAINMAGIC	0x40080000
-#define	SHOOTNEEDLE	0x40100000
-#define	CANZAP		0x40200000
-#define	HASARMOR	0x40400000
-#define	CANTELEPORT	0x40800000
-#define	ISBERSERK	0x41000000
-#define	ISFAMILIAR	0x42000000
-#define	HASFAMILIAR	0x44000000
-#define	SUMMONING	0x48000000
-#define	CANREFLECT	0x50000001
-#define	LOWFRIENDLY	0x50000002
-#define	MEDFRIENDLY	0x50000004
-#define	HIGHFRIENDLY	0x50000008
-#define	MAGICATTRACT	0x50000010
-#define	ISGOD		0x50000020
-#define	CANLIGHT	0x50000040
-#define	HASSHIELD	0x50000080
-#define	HASMSHIELD	0x50000100
-#define	LOWCAST		0x50000200
-#define	MEDCAST		0x50000400
-#define	HIGHCAST	0x50000800
-#define	WASSUMMONED	0x50001000
-#define	HASSUMMONED	0x50002000
-#define	CANTRUESEE	0x50004000
+#define	ISBLIND		0x00000001L
+#define	ISINWALL	0x00000002L
+#define	ISRUN		0x00000004L
+#define	ISFLEE		0x00000008L
+#define	ISINVIS		0x00000010L
+#define	ISMEAN		0x00000020L
+#define	ISGREED		0x00000040L
+#define	CANSHOOT	0x00000080L
+#define	ISHELD		0x00000100L
+#define	ISHUH		0x00000200L
+#define	ISREGEN		0x00000400L
+#define	CANHUH		0x00000800L
+#define	CANSEE		0x00001000L
+#define	HASFIRE		0x00002000L
+#define	ISSLOW		0x00004000L
+#define	ISHASTE		0x00008000L
+#define	ISCLEAR		0x00010000L
+#define	CANINWALL	0x00020000L
+#define	ISDISGUISE	0x00040000L
+#define	CANBLINK	0x00080000L
+#define	CANSNORE	0x00100000L
+#define	HALFDAMAGE	0x00200000L
+#define	CANSUCK		0x00400000L
+#define	CANRUST		0x00800000L
+#define	CANPOISON	0x01000000L
+#define	CANDRAIN	0x02000000L
+#define	ISUNIQUE	0x04000000L
+#define	STEALGOLD	0x08000000L
+#define	STEALMAGIC	0x10000001L
+#define	CANDISEASE	0x10000002L
+#define	HASDISEASE	0x10000004L
+#define	CANSUFFOCATE	0x10000008L
+#define	DIDSUFFOCATE	0x10000010L
+#define	BOLTDIVIDE	0x10000020L
+#define	BLOWDIVIDE	0x10000040L
+#define	NOCOLD		0x10000080L
+#define	TOUCHFEAR	0x10000100L
+#define	BMAGICHIT	0x10000200L
+#define	NOFIRE		0x10000400L
+#define	NOBOLT		0x10000800L
+#define	CARRYGOLD	0x10001000L
+#define	CANITCH		0x10002000L
+#define	HASITCH		0x10004000L
+#define	DIDDRAIN	0x10008000L
+#define	WASTURNED	0x10010000L
+#define	CANSELL		0x10020000L
+#define	CANBLIND	0x10040000L
+#define	CANBBURN	0x10080000L
+#define	ISCHARMED	0x10100000L
+#define	CANSPEAK	0x10200000L
+#define	CANFLY		0x10400000L
+#define	ISFRIENDLY	0x10800000L
+#define	CANHEAR		0x11000000L
+#define	ISDEAF		0x12000000L
+#define	CANSCENT	0x14000000L
+#define	ISUNSMELL	0x18000000L
+#define	WILLRUST	0x20000001L
+#define	WILLROT		0x20000002L
+#define	SUPEREAT	0x20000004L
+#define	PERMBLIND	0x20000008L
+#define	MAGICHIT	0x20000010L
+#define	CANINFEST	0x20000020L
+#define	HASINFEST	0x20000040L
+#define	NOMOVE		0x20000080L
+#define	CANSHRIEK	0x20000100L
+#define	CANDRAW		0x20000200L
+#define	CANSMELL	0x20000400L
+#define	CANPARALYZE	0x20000800L
+#define	CANROT		0x20001000L
+#define	ISSCAVENGE	0x20002000L
+#define	DOROT		0x20004000L
+#define	CANSTINK	0x20008000L
+#define	HASSTINK	0x20010000L
+#define	ISSHADOW	0x20020000L
+#define	CANCHILL	0x20040000L
+#define	CANHUG		0x20080000L
+#define	CANSURPRISE	0x20100000L
+#define	CANFRIGHTEN	0x20200000L
+#define	CANSUMMON	0x20400000L
+#define	TOUCHSTONE	0x20800000L
+#define	LOOKSTONE	0x21000000L
+#define	CANHOLD		0x22000000L
+#define	DIDHOLD		0x24000000L
+#define	DOUBLEDRAIN	0x28000000L
+#define	ISUNDEAD	0x30000001L
+#define	BLESSMAP	0x30000002L
+#define	BLESSGOLD	0x30000004L
+#define	BLESSMONS	0x30000008L
+#define	BLESSMAGIC	0x30000010L
+#define	BLESSFOOD	0x30000020L
+#define	CANBRANDOM	0x30000040L	/* Types of breath */
+#define	CANBACID	0x30000080L
+#define	CANBFIRE	0x30000100L
+#define	CANBBOLT	0x30000200L
+#define	CANBGAS		0x30000400L
+#define	CANBICE		0x30000800L
+#define	CANBPGAS	0x30001000L	/* Paralyze gas */
+#define	CANBSGAS	0x30002000L	/* Sleeping gas */
+#define	CANBSLGAS	0x30004000L	/* Slow gas */
+#define	CANBFGAS	0x30008000L	/* Fear gas */
+#define	CANBREATHE	0x3000ffc0L	/* Can it breathe at all? */
+#define	STUMBLER	0x30010000L
+#define	POWEREAT	0x30020000L
+#define	ISELECTRIC	0x30040000L
+#define	HASOXYGEN	0x30080000L	/* Doesn't need to breath air */
+#define	POWERDEXT	0x30100000L
+#define	POWERSTR	0x30200000L
+#define	POWERWISDOM	0x30400000L
+#define	POWERINTEL	0x30800000L
+#define	POWERCONST	0x31000000L
+#define	SUPERHERO	0x32000000L
+#define	ISUNHERO	0x34000000L
+#define	CANCAST		0x38000000L
+#define	CANTRAMPLE	0x40000001L
+#define	CANSWIM		0x40000002L
+#define	LOOKSLOW	0x40000004L
+#define	CANWIELD	0x40000008L
+#define	CANDARKEN	0x40000010L
+#define	ISFAST		0x40000020L
+#define	CANBARGAIN	0x40000040L
+#define	NOMETAL		0x40000080L
+#define	CANSPORE	0x40000100L
+#define	NOSHARP		0x40000200L
+#define	DRAINWISDOM	0x40000400L
+#define	DRAINBRAIN	0x40000800L
+#define	ISLARGE		0x40001000L
+#define	ISSMALL		0x40002000L
+#define	CANSTAB		0x40004000L
+#define	ISFLOCK		0x40008000L
+#define	ISSWARM		0x40010000L
+#define	CANSTICK	0x40020000L
+#define	CANTANGLE	0x40040000L
+#define	DRAINMAGIC	0x40080000L
+#define	SHOOTNEEDLE	0x40100000L
+#define	CANZAP		0x40200000L
+#define	HASARMOR	0x40400000L
+#define	CANTELEPORT	0x40800000L
+#define	ISBERSERK	0x41000000L
+#define	ISFAMILIAR	0x42000000L
+#define	HASFAMILIAR	0x44000000L
+#define	SUMMONING	0x48000000L
+#define	CANREFLECT	0x50000001L
+#define	LOWFRIENDLY	0x50000002L
+#define	MEDFRIENDLY	0x50000004L
+#define	HIGHFRIENDLY	0x50000008L
+#define	MAGICATTRACT	0x50000010L
+#define	ISGOD		0x50000020L
+#define	CANLIGHT	0x50000040L
+#define	HASSHIELD	0x50000080L
+#define	HASMSHIELD	0x50000100L
+#define	LOWCAST		0x50000200L
+#define	MEDCAST		0x50000400L
+#define	HIGHCAST	0x50000800L
+#define	WASSUMMONED	0x50001000L
+#define	HASSUMMONED	0x50002000L
+#define	CANTRUESEE	0x50004000L
 
-/* Masks for choosing the right flag */
-#define	FLAGMASK	0xf0000000
-#define	FLAGINDEX	0x0000000f
-#define	FLAGSHIFT	28
+
+#define	FLAGSHIFT	28L
+#define	FLAGINDEX	0x0000000fL
+#define	FLAGMASK	0x0fffffffL
+/*
+ * on - check if a monster flag is on
+ */
+#define	on(th, flag) \
+	((th).t_flags[(flag >> FLAGSHIFT) & FLAGINDEX] & (flag << 4))
+
+/*
+ * off - check if a monster flag is off
+ */
+#define	off(th, flag) \
+	(!((th).t_flags[(flag >> FLAGSHIFT) & FLAGINDEX] & (flag << 4)))
+
+/*
+ * turn_on - turn on a monster flag
+ */
+#define	turn_on(th, flag) \
+	( (th).t_flags[(flag >> FLAGSHIFT) & FLAGINDEX] |= (flag << 4))
+
+/*
+ * turn_off - turn off a monster flag
+ */
+#define	turn_off(th, flag) \
+	( (th).t_flags[(flag >> FLAGSHIFT) & FLAGINDEX] &= ~(flag << 4))
+
 
 /* types of things */
 /* All magic spells duplicate a potion, scroll, or stick effect */
@@ -758,7 +774,7 @@ struct magic_item {
     char *mi_name;
     char *mi_abrev;
     int mi_prob;
-    int mi_worth;
+    long mi_worth;
     int mi_curse;
     int mi_bless;
 };
@@ -769,10 +785,10 @@ struct magic_item {
 struct room {
     coord r_pos;			/* Upper left corner */
     coord r_max;			/* Size of room */
-    long r_flags;			/* Info about the room */
-    short r_fires;			/* Number of fires in room */
-    int r_nexits;			/* Number of exits */
     coord r_exit[MAXDOORS];		/* Where the exits are */
+    int r_flags;			/* Info about the room */
+    int r_nexits;			/* Number of exits */
+    short r_fires;			/* Number of fires in room */
 };
 
 /*
@@ -805,30 +821,30 @@ struct artifact {
  * Array of all traps on this level
  */
 struct trap {
-    char tr_type;			/* What kind of trap */
-    char tr_show;			/* Where disguised trap looks like */
     coord tr_pos;			/* Where trap is */
     long tr_flags;			/* Info about trap (i.e. ISFOUND) */
+    char tr_type;			/* What kind of trap */
+    char tr_show;			/* What disguised trap looks like */
 };
 
 /*
  * Structure describing a fighting being
  */
 struct stats {
+    char *s_dmg;			/* String describing damage done */
+    long s_exp;				/* Experience */
+    long s_hpt;				/* Hit points */
+    int s_pack;				/* current weight of his pack */
+    int s_carry;			/* max weight he can carry */
+    int s_lvl;				/* Level of mastery */
+    int s_arm;				/* Armor class */
+    short s_power;			/* Spell points */
     short s_str;			/* Strength */
     short s_intel;			/* Intelligence */
     short s_wisdom;			/* Wisdom */
     short s_dext;			/* Dexterity */
     short s_const;			/* Constitution */
     short s_charisma;			/* Charisma */
-    unsigned long s_exp;		/* Experience */
-    int s_lvl;				/* Level of mastery */
-    int s_arm;				/* Armor class */
-    int s_hpt;				/* Hit points */
-    int s_pack;				/* current weight of his pack */
-    int s_carry;			/* max weight he can carry */
-    char *s_dmg;			/* String describing damage done */
-    short s_power;			/* Spell points */
 };
 
 /*
@@ -847,24 +863,24 @@ struct mstats {
  * Structure for monsters and player
  */
 typedef struct thing {
+    struct linked_list *t_pack;		/* What the thing is carrying */
+    struct stats t_stats;		/* Physical description */
+    struct stats maxstats;		/* maximum(or initial) stats */
+    coord *t_dest;			/* Where it is running to */
+    coord t_pos;			/* Position */
+    coord t_oldpos;			/* Last position */
+    long t_flags[16];			/* State word */
     bool t_turn;			/* If slowed, is it a turn to move */
     bool t_wasshot;			/* Was character shot last round? */
-    char t_type;			/* What it is */
-    char t_disguise;			/* What mimic looks like */
-    char t_oldch;			/* Character that was where it was */
     short t_ctype;			/* Character type */
     short t_index;			/* Index into monster table */
     short t_no_move;			/* How long the thing can't move */
     short t_rest_hpt;			/* used in hit point regeneration */
     short t_rest_pow;			/* used in spell point regeneration */
     short t_doorgoal;			/* What door are we heading to? */
-    coord t_pos;			/* Position */
-    coord t_oldpos;			/* Last position */
-    coord *t_dest;			/* Where it is running to */
-    unsigned long t_flags[16];		/* State word */
-    struct linked_list *t_pack;		/* What the thing is carrying */
-    struct stats t_stats;		/* Physical description */
-    struct stats maxstats;		/* maximum(or initial) stats */
+    char t_type;			/* What it is */
+    char t_disguise;			/* What mimic looks like */
+    char t_oldch;			/* Character that was where it was */
 } thing;
 
 /*
@@ -889,22 +905,22 @@ struct monster {
  */
 
 typedef struct object {
-    struct linked_list *next_obj;	/* The next obj. for stacked objects */
-    int o_type;				/* What kind of object it is */
-    int o_ident;			/* identifier for object */
     coord o_pos;			/* Where it lives on the screen */
+    struct linked_list *next_obj;	/* The next obj. for stacked objects */
     char *o_text;			/* What it says if you read it */
-    char o_launch;			/* What you need to launch it */
     char *o_damage;			/* Damage if used like sword */
     char *o_hurldmg;			/* Damage if thrown */
+    long o_flags;			/* Information about objects */
+    int o_type;				/* What kind of object it is */
+    int o_ident;			/* identifier for object */
     int o_count;			/* Count for plural objects */
     int o_which;			/* Which object of a type it is */
     int o_hplus;			/* Plusses to hit */
     int o_dplus;			/* Plusses to damage */
     int o_ac;				/* Armor class */
-    long o_flags;			/* Information about objects */
     int o_group;			/* Group number for this object */
     int o_weight;			/* weight of this object */
+    char o_launch;			/* What you need to launch it */
     char o_mark[MARKLEN];		/* Mark the specific object */
     struct artifact art_stats;		/* substructure for artifacts */
 } object;
@@ -916,9 +932,9 @@ struct init_weps {
     char *w_dam;		/* hit damage */
     char *w_hrl;		/* hurl damage */
     char w_launch;		/* need to launch it */
-    int  w_flags;		/* flags */
+    long w_flags;		/* flags */
     int  w_wght;		/* weight of weapon */
-    int  w_worth;		/* worth of this weapon */
+    long w_worth;		/* worth of this weapon */
 };
 
 /*
@@ -926,9 +942,9 @@ struct init_weps {
  */
 struct init_armor {
     char *a_name;		/* name of armor */
+    long a_worth;		/* worth of armor */
     int  a_prob;		/* chance of getting armor */
     int  a_class;		/* normal armor class */
-    int  a_worth;		/* worth of armor */
     int  a_wght;		/* weight of armor */
 };
 
@@ -1031,12 +1047,12 @@ extern bool char_type;			/* what type of character is player */
 extern int foodlev;			/* how fast he eats food */
 extern int see_dist;			/* how far he can see^2 */
 extern int level;			/* What level rogue is on */
-extern int purse;			/* How much gold the rogue has */
+extern unsigned long purse;		/* How much gold the rogue has */
 extern int mpos;			/* Where cursor is on top line */
 extern int ntraps;			/* Number of traps on this level */
 extern int no_command;			/* Number of turns asleep */
 extern int inpack;			/* Number of things in pack */
-extern int total;			/* Total dynamic memory bytes */
+extern unsigned long total;		/* Total dynamic memory bytes */
 extern int lastscore;			/* Score before this turn */
 extern int no_food;			/* Number of levels without food */
 extern int seed;			/* Random number seed */

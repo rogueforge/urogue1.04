@@ -227,34 +227,34 @@ struct init_weps weaps[] = {
 int maxweapons = MAXWEAPONS;
 
 struct init_armor armors[] = {
-	{ "soft leather",		03,  9,    75,  50 },
-	{ "cuirboilli",			06,  8,   150, 130 },
-	{ "heavy leather",		10,  8,   175, 100 },
-	{ "ring mail",			20,  7,   350, 250 },
-	{ "studded leather",		31,  7,   400, 200 },
-	{ "scale mail",			43,  6,   500, 250 },
-	{ "padded armor",		55,  6,   550, 150 },
-	{ "chain mail",			67,  5,   750, 300 },
-	{ "brigandine",			75,  5,   800, 280 },
-	{ "splint mail",		77,  4,  1000, 350 },
-	{ "banded mail",		87,  4,  1250, 350 },
-	{ "superior chain",	 	90,  3,  1500, 350 },
-	{ "plate mail",		 	93,  3,  1400, 400 },
-	{ "plate armor",		97,  2,  1650, 450 },
-	{ "mithril",			99,  2, 30000, 100 },
-	{ "crystalline armor",		100, 0, 15000, 300 },
+	{ "soft leather",		   75,  03,  9,  50 },
+	{ "cuirboilli",			  150,  06,  8, 130 },
+	{ "heavy leather",		  175,  10,  8, 100 },
+	{ "ring mail",			  350,  20,  7, 250 },
+	{ "studded leather",		  400,  31,  7, 200 },
+	{ "scale mail",			  500,  43,  6, 250 },
+	{ "padded armor",		  550,  55,  6, 150 },
+	{ "chain mail",			  750,  67,  5, 300 },
+	{ "brigandine",			  800,  75,  5, 280 },
+	{ "splint mail",		 1000,  77,  4, 350 },
+	{ "banded mail",		 1250,  87,  4, 350 },
+	{ "superior chain",	 	 1500,  90,  3, 350 },
+	{ "plate mail",		 	 1400,  93,  3, 400 },
+	{ "plate armor",		 1650,  97,  2, 450 },
+	{ "mithril",			30000,  99,  2, 100 },
+	{ "crystalline armor",		15000, 100,  0, 300 },
 };
 int maxarmors = MAXARMORS;
 
 struct init_artifact arts[] = {
-    { "Magic Purse of Yendor",	 25, 1, 1, 1,  1,  460000, 50 },
-    { "Phial of Galadriel",	 35, 2, 2, 2,  1, 1250000, 10 },
-    { "Amulet of Yendor",	 45, 4, 1, 1,  2, 1600000, 10 },
-    { "Palantir of Might",	 60, 1, 4, 1,  2, 1850000, 70 },
-    { "Crown of Might",		 75, 6, 2, 1,  1, 2350000, 50 },
-    { "Sceptre of Might",	 80, 2, 2, 1,  6, 3800000, 50 },
-    { "Silmaril of Ea",		 90, 4, 2, 5,  1, 5000000, 50 },
-    { "Wand of Lucifer",	100, 4, 2, 3, 10, 8000000, 50 },
+    { "Magic Purse of Yendor",	 25, 1, 1, 1,  1,  460000L, 50 },
+    { "Phial of Galadriel",	 35, 2, 2, 2,  1, 1250000L, 10 },
+    { "Amulet of Yendor",	 45, 4, 1, 1,  2, 1600000L, 10 },
+    { "Palantir of Might",	 60, 1, 4, 1,  2, 1850000L, 70 },
+    { "Crown of Might",		 75, 6, 2, 1,  1, 2350000L, 50 },
+    { "Sceptre of Might",	 80, 2, 2, 1,  6, 3800000L, 50 },
+    { "Silmaril of Ea",		 90, 4, 2, 5,  1, 5000000L, 50 },
+    { "Wand of Lucifer",	100, 4, 2, 3, 10, 8000000L, 50 },
 };
 int maxartifact = MAXARTIFACT;
 

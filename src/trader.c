@@ -1,5 +1,5 @@
 /*
- * Last Modified: 08/05/86
+ * Last Modified: Dec 30, 1990
  */
 /*
  * Anything to do with trading posts
@@ -499,7 +499,8 @@ open_market()
 get_worth(obj)
 reg struct object *obj;
 {
-	reg int worth, wh;
+	reg long worth;
+	reg int wh;
 
 	worth = 0;
 	wh = obj->o_which;

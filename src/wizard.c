@@ -1,5 +1,5 @@
 /*
- * Last Modified: 08/10/86
+ * Last Modified: Dec 30, 1990
  */
 /*
  * Special wizard commands (some of which are also non-wizard commands

@@ -1,5 +1,5 @@
 /*
- * Last Modified: 06/25/86
+ * Last Modified: Dec 29, 1990
  */
 /*
  * Draw the connecting passages

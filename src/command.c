@@ -1,5 +1,5 @@
 /*
- * Last Modified: 08/13/86
+ * Last Modified: Dec 28, 1990
  */
 /*
  * Read and execute the user commands
@@ -437,7 +437,7 @@ command()
 			    quaff(&player, P_FIRERESIST, ISBLESSED);
 			    quaff(&player, P_TRUESEE, ISBLESSED);
 			    quaff(&player, P_PHASE, ISBLESSED);
-			    purse += 50000;
+			    purse += 50000L;
 			    updpack();
 			}
 			when ESCAPE :	/* Escape */
@@ -610,7 +610,7 @@ bad_cleric:
 	    }
 	}
 
-	if (rnd(999999) == 0) {
+	if (rnd(9999) == 0) {
 	    new_level(THRONE);
 	    fighting = running = after = FALSE;
 	    summoned = TRUE;

@@ -1,5 +1,5 @@
 /*
- * Last Modified: 06/28/86
+ * Last Modified: Dec 30, 1990
  */
 /*
  * values for games end

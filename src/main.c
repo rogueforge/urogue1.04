@@ -1,5 +1,5 @@
 /*
- * Last Modified: 08/09/86
+ * Last Modified: Dec 29, 1990
  */
  /*
  * Rogue
@@ -172,7 +172,7 @@ char *s;
 rnd(range)
 register int range;
 {
-	return(range <= 0 ? 0 : (random() & 0x7fffffff) % range);
+	return(range <= 0 ? 0 : (random() & 0x7fffffffL) % range);
 }
 
 /*

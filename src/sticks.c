@@ -1,5 +1,5 @@
 /*
- * Last Modified: 08/12/86
+ * Last Modified: Dec 30, 1990
  */
 /*
  * Functions to implement the various sticks one might find
@@ -15,7 +15,7 @@
  */
 static struct object bolt =
 {
-    NULL, '*' , 0, {0, 0}, "", 0, 0, "1d4" , 0, 0, 100, 1
+    {0, 0}, NULL, "", 0, "1d4", 0, '*', 0, 0, 0, 100, 1, 0, 0, 0, 0, 0
 };
 struct object null_stick = {0};
 

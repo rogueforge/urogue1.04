@@ -1,5 +1,5 @@
 /*
- * Last Modified: 07/27/86
+ * Last Modified: Dec 30, 1990
  */
 /*
  * save and restore routines
@@ -148,10 +148,10 @@ char **envp;
  *
  * Usage:
  *	encwrite (start, size, outfd);
- *	unsigned char *start; int size; int outfd;
+ *	unsigned char *start; long size; int outfd;
  *
  *	encread (start, size, infd);
- *	unsigned char *start; int size; int infd;
+ *	unsigned char *start; long size; int infd;
  *
  * HISTORY
  *
@@ -171,14 +171,14 @@ char **envp;
  *****************************************************************/
 
 /* Constants for key generation */
-# define OFFSET		667818
-# define MODULUS	894871
-# define MULT		2399
+# define OFFSET		667818L
+# define MODULUS	894871L
+# define MULT		2399L
 # define ENCHAR		((unsigned char) ((seed= ((seed*MULT+OFFSET)%MODULUS)) >> 10))
 
 /* Constants for checksumming */
-# define INITCK		1232531
-# define CKMOD		6506347
+# define INITCK		1232531L
+# define CKMOD		6506347L
 
 struct wb { int w1, w2, w3, w4; };
 
@@ -188,12 +188,12 @@ struct wb { int w1, w2, w3, w4; };
 
 encwrite (start, size, outfd)
 register unsigned char *start;
-int size;
+long size;
 int outfd;
 {
   register unsigned char *buf_p, *end_p;
-  register int cksum = INITCK, seed, ch;
-  register int cnt;
+  register int ch;
+  register long cksum = INITCK, cnt, seed;
   char buffer[512 * 20];
 
   srandom (time ((long *) 0));	/* Build a random seed */
@@ -235,10 +235,11 @@ int outfd;
 
 encread (start, size, infd)
 register unsigned char *start;
-int size;
+long size;
 int infd;
-{ register int cksum = INITCK, seed, length, cnt, ch;
-  int stored, getword();
+{ register int length, ch;
+  int stored;
+  long seed, cnt, getword(), cksum = INITCK;
 
   seed = getword (infd); 
   stored = getword (infd);  
@@ -273,7 +274,7 @@ int infd;
  *****************************************************************/
 
 putword (word, file)
-int word;
+long word;
 int file;
 { struct wb w;
 
@@ -289,6 +290,7 @@ int file;
  * getword: Read in an encoded int word
  *****************************************************************/
 
+long
 getword (fd)
 int fd;
 { struct wb w;

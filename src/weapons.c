@@ -1,5 +1,5 @@
 /*
- * Last Modified: 08/12/86
+ * Last Modified: Dec 30, 1990
  */
 /*
  * Functions for dealing with problems brought about by weapons

@@ -97,7 +97,7 @@ pr_armour()
 		printf("%3d ", armors[i].a_prob);
 		printf(" %2d ", armors[i].a_class);
 		printf(" %3d ", armors[i].a_wght);
-		printf(" %5d ", armors[i].a_worth);
+		printf(" %5ld ", armors[i].a_worth);
 
 		printf("\n");
     }
@@ -118,7 +118,7 @@ pr_scrolls()
 		printf("%-3.1f	", q);
 		printf(" %3d ", s_magic[i].mi_curse);
 		printf(" %3d ", s_magic[i].mi_bless);
-		printf(" %5d ", s_magic[i].mi_worth);
+		printf(" %5ld ", s_magic[i].mi_worth);
 	
 		printf("\n");
     }
@@ -139,7 +139,7 @@ pr_potions()
 		printf("%-3.1f	", q);
 		printf(" %3d ", p_magic[i].mi_curse);
 		printf(" %3d ", p_magic[i].mi_bless);
-		printf(" %5d ", p_magic[i].mi_worth);
+		printf(" %5ld ", p_magic[i].mi_worth);
 	
 		printf("\n");
     }
@@ -160,7 +160,7 @@ pr_rings()
 		printf("%-3.1f	", q);
 		printf(" %3d ", r_magic[i].mi_curse);
 		printf(" %3d ", r_magic[i].mi_bless);
-		printf(" %5d ", r_magic[i].mi_worth);
+		printf(" %5ld ", r_magic[i].mi_worth);
 	
 		printf("\n");
     }
@@ -181,7 +181,7 @@ pr_food()
 		printf("%-3.1f	", q);
 		printf(" %3d ", fd_data[i].mi_curse);
 		printf(" %3d ", fd_data[i].mi_bless);
-		printf(" %5d ", fd_data[i].mi_worth);
+		printf(" %5ld ", fd_data[i].mi_worth);
 	
 		printf("\n");
 	}
@@ -202,7 +202,7 @@ pr_sticks()
 		printf("%-3.1f	", q);
 		printf(" %3d ", ws_magic[i].mi_curse);
 		printf(" %3d ", ws_magic[i].mi_bless);
-		printf(" %5d ", ws_magic[i].mi_worth);
+		printf(" %5ld ", ws_magic[i].mi_worth);
 	
 		printf("\n");
     }
@@ -225,7 +225,6 @@ pr_monsters()
 		*/
 
     register int i;
-    register int flag, j, k;
 
     printf(
 	"Number%30s Letter  Int Str  Lvl    Exp(X) Tres  AC Flags\n%64s%12s\n",
@@ -242,7 +241,7 @@ pr_monsters()
 		    );
 	
 		printf(" %2d ", monsters[i].m_stats.s_lvl);
-		printf(" %5d", monsters[i].m_stats.s_exp);
+		printf(" %5ld", monsters[i].m_stats.s_exp);
 	
 		if (monsters[i].m_add_exp != 0)
 		    printf("(%2d)", monsters[i].m_add_exp);
@@ -278,171 +277,168 @@ pr_monsters()
 find_flags(i)
 register int i;
 {
-    register int k, flag;
+	register int k;
+	register long flag;
 
-    for (k=0; k<16; k++) {
-			if ( (flag=monsters[i].m_flags[k]) != 0)
-			{
-					switch(flag) {
-					case ISBLIND:		printf(" BLIND");			break;
-					case ISINWALL:		printf(" INWALL");			break;
-					case ISRUN:			printf(" RUN");				break;
-					case ISFLEE:		printf(" FLEE");			break;
-					case ISINVIS:		printf(" INVIS");			break;
-					case ISMEAN:		printf(" M");				break;
-					case ISGREED:		printf(" GREEDY");			break;
-					case CANSHOOT:		printf(" SHOOT");			break;
-					case ISHELD:		printf(" HELD");			break;
-					case ISHUH:			printf(" HUH");				break;
-					case ISREGEN:		printf(" REGEN");			break;
-					case CANHUH:		printf(" HUH");				break;
-					case CANSEE:		printf(" SEE");				break;
-					case HASFIRE:		printf(" FIRE");			break;
-					case ISSLOW:		printf(" SLOW");			break;
-					case ISHASTE:		printf(" HASTE");			break;
-					case ISCLEAR:		printf(" CLEAR");			break;
-					case CANINWALL:		printf(" INWALL");			break;
-					case ISDISGUISE:	printf(" DISGUISE");		break;
-					case CANBLINK:		printf(" BLINK");			break;
-					case CANSNORE:		printf(" SNORE");			break;
-					case HALFDAMAGE:	printf(" HALFDAMAGE");		break;
-					case CANSUCK:		printf(" SUCK");			break;
-					case CANRUST:		printf(" RUST");			break;
-					case CANPOISON:		printf(" POISON");			break;
-					case CANDRAIN:		printf(" DRAIN");			break;
-					case ISUNIQUE:		printf(" UNIQUE");			break;
-					case STEALGOLD:		printf(" STEALGOLD");		break;
-					case STEALMAGIC:	printf(" STEALMAGIC");		break;
-					case CANDISEASE:	printf(" DISEASE");			break;
-					case HASDISEASE:	printf(" DISEASE");			break;
-					case CANSUFFOCATE:	printf(" SUFFOCATE");		break;
-					case DIDSUFFOCATE:	printf(" DIDSUFFOCATE");	break;
-					case BOLTDIVIDE:	printf(" BOLTDIVIDE");		break;
-					case BLOWDIVIDE:	printf(" BLOWDIVIDE");		break;
-					case NOCOLD:		printf(" NOCOLD");			break;
-					case TOUCHFEAR:		printf(" TOUCHFEAR");		break;
-					case BMAGICHIT:		printf(" M_+_HIT");			break;
-					case NOFIRE:		printf(" NOFIRE");			break;
-					case NOBOLT:		printf(" NOBOLT");			break;
-					case CARRYGOLD:		printf(" CARRYGOLD");		break;
-					case CANITCH:		printf(" ITCH");			break;
-					case HASITCH:		printf(" ITCH");			break;
-					case DIDDRAIN:		printf(" DIDDRAIN");		break;
-					case WASTURNED:		printf(" WASTURNED");		break;
-					case CANSELL:		printf(" SELL");			break;
-					case CANBLIND:		printf(" BLIND");			break;
-					case CANBBURN:		printf(" BBURN");			break;
-					case ISCHARMED:		printf(" CHARMED");			break;
-					case CANSPEAK:		printf(" SPEAK");			break;
-					case CANFLY:		printf(" FLY");				break;
-					case ISFRIENDLY:	printf(" FRIENDLY");		break;
-					case CANHEAR:		printf(" HEAR");			break;
-					case ISDEAF:		printf(" DEAF");			break;
-					case CANSCENT:		printf(" SCENT");			break;
-					case ISUNSMELL:		printf(" UNSMELL");			break;
-					case WILLRUST:		printf(" RUST");			break;
-					case WILLROT:		printf(" ROT");				break;
-					case SUPEREAT:		printf(" SUPEREAT");		break;
-					case PERMBLIND:		printf(" PERMBLIND");		break;
-					case MAGICHIT:		printf(" M_HIT");			break;
-					case CANINFEST:		printf(" INFEST");			break;
-					case HASINFEST:		printf(" INFEST");			break;
-					case NOMOVE:		printf(" NOMOVE");			break;
-					case CANSHRIEK:		printf(" SHRIEK");			break;
-					case CANDRAW:		printf(" DRAW");			break;
-					case CANSMELL:		printf(" SMELL");			break;
-					case CANPARALYZE:	printf(" PARALYZE");		break;
-					case CANROT:		printf(" ROT");				break;
-					case ISSCAVENGE:	printf(" SCAVENGE");		break;
-					case DOROT:			printf(" ROT");				break;
-					case CANSTINK:		printf(" STINK");			break;
-					case HASSTINK:		printf(" STINK");			break;
-					case ISSHADOW:		printf(" SHADOW");			break;
-					case CANCHILL:		printf(" CHILL");			break;
-					case CANHUG:		printf(" HUG");				break;
-					case CANSURPRISE:	printf(" SURPRISE");		break;
-					case CANFRIGHTEN:	printf(" FRIGHTEN");		break;
-					case CANSUMMON:		printf(" SUMMON");			break;
-					case TOUCHSTONE:	printf(" TOUCHSTONE");		break;
-					case LOOKSTONE:		printf(" LOOKSTONE");		break;
-					case CANHOLD:		printf(" HOLD");			break;
-					case DIDHOLD:		printf(" DIDHOLD");			break;
-					case DOUBLEDRAIN:	printf(" DOUBLEDRAIN");		break;
-					case ISUNDEAD:		printf(" UNDEAD");			break;
-					case BLESSMAP:		printf(" B_MAP");			break;
-					case BLESSGOLD:		printf(" B_GOLD");			break;
-					case BLESSMONS:		printf(" B_MONS");			break;
-					case BLESSMAGIC:	printf(" B_MAGIC");			break;
-					case BLESSFOOD:		printf(" B_FOOD");			break;
-					case CANBRANDOM:	printf(" B_RANDOM");		break;
-					case CANBACID:		printf(" B_ACID");			break;
-					case CANBFIRE:		printf(" B_FIRE");			break;
-					case CANBBOLT:		printf(" B_BOLT");			break;
-					case CANBGAS:		printf(" B_GAS");			break;
-					case CANBICE:		printf(" B_ICE");			break;
-					case CANBPGAS:		printf(" B_PGAS");			break;
-					case CANBSGAS:		printf(" B_SGAS");			break;
-					case CANBSLGAS:		printf(" B_SLGAS");			break;
-					case CANBFGAS:		printf(" B_FGAS");			break;
-					case CANBREATHE:	printf(" BREATHE");			break;
-					case STUMBLER:		printf(" STUMBLER");		break;
-					case POWEREAT:		printf(" P_EAT");			break;
-					case ISELECTRIC:	printf(" ELECTRIC");		break;
-					case HASOXYGEN:		printf(" OXYGEN");			break;
-					case POWERDEXT:		printf(" P_DEXT");			break;
-					case POWERSTR:		printf(" P_STR");			break;
-					case POWERWISDOM:	printf(" P_WISDOM");		break;
-					case POWERINTEL:	printf(" P_INTEL");			break;
-					case POWERCONST:	printf(" P_CONST");			break;
-					case SUPERHERO:		printf(" SUPERHERO");		break;
-					case ISUNHERO:		printf(" UNHERO");			break;
-					case CANCAST:		printf(" CAST");			break;
-					case CANTRAMPLE:	printf(" TRAMPLE");			break;
-					case CANSWIM:		printf(" SWIM");			break;
-					case LOOKSLOW:		printf(" LOOKSLOW");		break;
-					case CANWIELD:		printf(" WIELD");			break;
-					case CANDARKEN:		printf(" DARKEN");			break;
-					case ISFAST:		printf(" FAST");			break;
-					case CANBARGAIN:	printf(" BARGAIN");			break;
-					case NOMETAL:		printf(" NOMETAL");			break;
-					case CANSPORE:		printf(" SPORE");			break;
-					case NOSHARP:		printf(" NOSHARP");			break;
-					case DRAINWISDOM:	printf(" D_WISDOM");		break;
-					case DRAINBRAIN:	printf(" D_BRAIN");			break;
-					case ISLARGE:		printf(" LARGE");			break;
-					case ISSMALL:		printf(" SMALL");			break;
-					case CANSTAB:		printf(" STAB");			break;
-					case ISFLOCK:		printf(" FLOCK");			break;
-					case ISSWARM:		printf(" SWARM");			break;
-					case CANSTICK:		printf(" STICK");			break;
-					case CANTANGLE:		printf(" TANGLE");			break;
-					case DRAINMAGIC:	printf(" D_ENCHANT");		break;
-					case SHOOTNEEDLE:	printf(" NEEDLE");		break;
-					case CANZAP:		printf(" ELECTRIC_ZAP");	break;
-					case HASARMOR:		printf(" HASARMOR");		break;
-					case CANTELEPORT:	printf(" TELEPORT");		break;
-					case ISBERSERK:		printf(" BERSERK");		break;
-					case ISFAMILIAR:	printf(" FAMILIAR");		break;
-					case HASFAMILIAR:	printf(" HASFAMILIAR");		break;
-					case SUMMONING:		printf(" SUMMONING");		break;
-					case CANREFLECT:	printf(" REFLECT");		break;
-					case LOWFRIENDLY:	printf(" L_FRIEND");		break;
-					case HIGHFRIENDLY:	printf(" H_FRIEND");		break;
-					case MAGICATTRACT:	printf(" M_ATTRACT");		break;
-					case ISGOD:		printf(" *GOD*");		break;
-					case CANLIGHT:		printf(" LIGHT");		break;
-					case MEDFRIENDLY:	printf(" M_FRIEND");		break;
-					case LOWCAST:		printf(" L_CAST");		break;
-					case MEDCAST:		printf(" M_CAST");		break;
-					case HIGHCAST:	printf(" H_CAST");		break;
-					case WASSUMMONED:	printf(" SUMMONER");		break;
-					case HASSUMMONED:	printf(" HASSUMMONED");		break;
-					case CANTRUESEE:	printf(" TRUESEE");		break;
-					default:
-						printf(" ?????");							break;
-					}
-			}
-    }
+	for (k = 0; k < 16; k++) {
+		if ((flag = monsters[i].m_flags[k]) != 0) {
+			if (flag == ISBLIND) { printf(" BLIND"); continue; }
+			if (flag == ISINWALL) { printf(" INWALL"); continue; }
+			if (flag == ISRUN) { printf(" RUN"); continue; }
+			if (flag == ISFLEE) { printf(" FLEE"); continue; }
+			if (flag == ISINVIS) { printf(" INVIS"); continue; }
+			if (flag == ISMEAN) { printf(" M"); continue; }
+			if (flag == ISGREED) { printf(" GREEDY"); continue; }
+			if (flag == CANSHOOT) { printf(" SHOOT"); continue; }
+			if (flag == ISHELD) { printf(" HELD"); continue; }
+			if (flag == ISHUH) { printf(" HUH"); continue; }
+			if (flag == ISREGEN) { printf(" REGEN"); continue; }
+			if (flag == CANHUH) { printf(" HUH"); continue; }
+			if (flag == CANSEE) { printf(" SEE"); continue; }
+			if (flag == HASFIRE) { printf(" FIRE"); continue; }
+			if (flag == ISSLOW) { printf(" SLOW"); continue; }
+			if (flag == ISHASTE) { printf(" HASTE"); continue; }
+			if (flag == ISCLEAR) { printf(" CLEAR"); continue; }
+			if (flag == CANINWALL) { printf(" INWALL"); continue; }
+			if (flag == ISDISGUISE) { printf(" DISGUISE"); continue; }
+			if (flag == CANBLINK) { printf(" BLINK"); continue; }
+			if (flag == CANSNORE) { printf(" SNORE"); continue; }
+			if (flag == HALFDAMAGE) { printf(" HALFDAMAGE"); continue; }
+			if (flag == CANSUCK) { printf(" SUCK"); continue; }
+			if (flag == CANRUST) { printf(" RUST"); continue; }
+			if (flag == CANPOISON) { printf(" POISON"); continue; }
+			if (flag == CANDRAIN) { printf(" DRAIN"); continue; }
+			if (flag == ISUNIQUE) { printf(" UNIQUE"); continue; }
+			if (flag == STEALGOLD) { printf(" STEALGOLD"); continue; }
+			if (flag == STEALMAGIC) { printf(" STEALMAGIC"); continue; }
+			if (flag == CANDISEASE) { printf(" DISEASE"); continue; }
+			if (flag == HASDISEASE) { printf(" DISEASE"); continue; }
+			if (flag == CANSUFFOCATE) { printf(" SUFFOCATE"); continue; }
+			if (flag == DIDSUFFOCATE) { printf(" DIDSUFFOCATE"); continue; }
+			if (flag == BOLTDIVIDE) { printf(" BOLTDIVIDE"); continue; }
+			if (flag == BLOWDIVIDE) { printf(" BLOWDIVIDE"); continue; }
+			if (flag == NOCOLD) { printf(" NOCOLD"); continue; }
+			if (flag == TOUCHFEAR) { printf(" TOUCHFEAR"); continue; }
+			if (flag == BMAGICHIT) { printf(" M_+_HIT"); continue; }
+			if (flag == NOFIRE) { printf(" NOFIRE"); continue; }
+			if (flag == NOBOLT) { printf(" NOBOLT"); continue; }
+			if (flag == CARRYGOLD) { printf(" CARRYGOLD"); continue; }
+			if (flag == CANITCH) { printf(" ITCH"); continue; }
+			if (flag == HASITCH) { printf(" ITCH"); continue; }
+			if (flag == DIDDRAIN) { printf(" DIDDRAIN"); continue; }
+			if (flag == WASTURNED) { printf(" WASTURNED"); continue; }
+			if (flag == CANSELL) { printf(" SELL"); continue; }
+			if (flag == CANBLIND) { printf(" BLIND"); continue; }
+			if (flag == CANBBURN) { printf(" BBURN"); continue; }
+			if (flag == ISCHARMED) { printf(" CHARMED"); continue; }
+			if (flag == CANSPEAK) { printf(" SPEAK"); continue; }
+			if (flag == CANFLY) { printf(" FLY"); continue; }
+			if (flag == ISFRIENDLY) { printf(" FRIENDLY"); continue; }
+			if (flag == CANHEAR) { printf(" HEAR"); continue; }
+			if (flag == ISDEAF) { printf(" DEAF"); continue; }
+			if (flag == CANSCENT) { printf(" SCENT"); continue; }
+			if (flag == ISUNSMELL) { printf(" UNSMELL"); continue; }
+			if (flag == WILLRUST) { printf(" RUST"); continue; }
+			if (flag == WILLROT) { printf(" ROT"); continue; }
+			if (flag == SUPEREAT) { printf(" SUPEREAT"); continue; }
+			if (flag == PERMBLIND) { printf(" PERMBLIND"); continue; }
+			if (flag == MAGICHIT) { printf(" M_HIT"); continue; }
+			if (flag == CANINFEST) { printf(" INFEST"); continue; }
+			if (flag == HASINFEST) { printf(" INFEST"); continue; }
+			if (flag == NOMOVE) { printf(" NOMOVE"); continue; }
+			if (flag == CANSHRIEK) { printf(" SHRIEK"); continue; }
+			if (flag == CANDRAW) { printf(" DRAW"); continue; }
+			if (flag == CANSMELL) { printf(" SMELL"); continue; }
+			if (flag == CANPARALYZE) { printf(" PARALYZE"); continue; }
+			if (flag == CANROT) { printf(" ROT"); continue; }
+			if (flag == ISSCAVENGE) { printf(" SCAVENGE"); continue; }
+			if (flag == DOROT) { printf(" ROT"); continue; }
+			if (flag == CANSTINK) { printf(" STINK"); continue; }
+			if (flag == HASSTINK) { printf(" STINK"); continue; }
+			if (flag == ISSHADOW) { printf(" SHADOW"); continue; }
+			if (flag == CANCHILL) { printf(" CHILL"); continue; }
+			if (flag == CANHUG) { printf(" HUG"); continue; }
+			if (flag == CANSURPRISE) { printf(" SURPRISE"); continue; }
+			if (flag == CANFRIGHTEN) { printf(" FRIGHTEN"); continue; }
+			if (flag == CANSUMMON) { printf(" SUMMON"); continue; }
+			if (flag == TOUCHSTONE) { printf(" TOUCHSTONE"); continue; }
+			if (flag == LOOKSTONE) { printf(" LOOKSTONE"); continue; }
+			if (flag == CANHOLD) { printf(" HOLD"); continue; }
+			if (flag == DIDHOLD) { printf(" DIDHOLD"); continue; }
+			if (flag == DOUBLEDRAIN) { printf(" DOUBLEDRAIN"); continue; }
+			if (flag == ISUNDEAD) { printf(" UNDEAD"); continue; }
+			if (flag == BLESSMAP) { printf(" B_MAP"); continue; }
+			if (flag == BLESSGOLD) { printf(" B_GOLD"); continue; }
+			if (flag == BLESSMONS) { printf(" B_MONS"); continue; }
+			if (flag == BLESSMAGIC) { printf(" B_MAGIC"); continue; }
+			if (flag == BLESSFOOD) { printf(" B_FOOD"); continue; }
+			if (flag == CANBRANDOM) { printf(" B_RANDOM"); continue; }
+			if (flag == CANBACID) { printf(" B_ACID"); continue; }
+			if (flag == CANBFIRE) { printf(" B_FIRE"); continue; }
+			if (flag == CANBBOLT) { printf(" B_BOLT"); continue; }
+			if (flag == CANBGAS) { printf(" B_GAS"); continue; }
+			if (flag == CANBICE) { printf(" B_ICE"); continue; }
+			if (flag == CANBPGAS) { printf(" B_PGAS"); continue; }
+			if (flag == CANBSGAS) { printf(" B_SGAS"); continue; }
+			if (flag == CANBSLGAS) { printf(" B_SLGAS"); continue; }
+			if (flag == CANBFGAS) { printf(" B_FGAS"); continue; }
+			if (flag == CANBREATHE) { printf(" BREATHE"); continue; }
+			if (flag == STUMBLER) { printf(" STUMBLER"); continue; }
+			if (flag == POWEREAT) { printf(" P_EAT"); continue; }
+			if (flag == ISELECTRIC) { printf(" ELECTRIC"); continue; }
+			if (flag == HASOXYGEN) { printf(" OXYGEN"); continue; }
+			if (flag == POWERDEXT) { printf(" P_DEXT"); continue; }
+			if (flag == POWERSTR) { printf(" P_STR"); continue; }
+			if (flag == POWERWISDOM) { printf(" P_WISDOM"); continue; }
+			if (flag == POWERINTEL) { printf(" P_INTEL"); continue; }
+			if (flag == POWERCONST) { printf(" P_CONST"); continue; }
+			if (flag == SUPERHERO) { printf(" SUPERHERO"); continue; }
+			if (flag == ISUNHERO) { printf(" UNHERO"); continue; }
+			if (flag == CANCAST) { printf(" CAST"); continue; }
+			if (flag == CANTRAMPLE) { printf(" TRAMPLE"); continue; }
+			if (flag == CANSWIM) { printf(" SWIM"); continue; }
+			if (flag == LOOKSLOW) { printf(" LOOKSLOW"); continue; }
+			if (flag == CANWIELD) { printf(" WIELD"); continue; }
+			if (flag == CANDARKEN) { printf(" DARKEN"); continue; }
+			if (flag == ISFAST) { printf(" FAST"); continue; }
+			if (flag == CANBARGAIN) { printf(" BARGAIN"); continue; }
+			if (flag == NOMETAL) { printf(" NOMETAL"); continue; }
+			if (flag == CANSPORE) { printf(" SPORE"); continue; }
+			if (flag == NOSHARP) { printf(" NOSHARP"); continue; }
+			if (flag == DRAINWISDOM) { printf(" D_WISDOM"); continue; }
+			if (flag == DRAINBRAIN) { printf(" D_BRAIN"); continue; }
+			if (flag == ISLARGE) { printf(" LARGE"); continue; }
+			if (flag == ISSMALL) { printf(" SMALL"); continue; }
+			if (flag == CANSTAB) { printf(" STAB"); continue; }
+			if (flag == ISFLOCK) { printf(" FLOCK"); continue; }
+			if (flag == ISSWARM) { printf(" SWARM"); continue; }
+			if (flag == CANSTICK) { printf(" STICK"); continue; }
+			if (flag == CANTANGLE) { printf(" TANGLE"); continue; }
+			if (flag == DRAINMAGIC) { printf(" D_ENCHANT"); continue; }
+			if (flag == SHOOTNEEDLE) { printf(" NEEDLE"); continue; }
+			if (flag == CANZAP) { printf(" ELECTRIC_ZAP"); continue; }
+			if (flag == HASARMOR) { printf(" HASARMOR"); continue; }
+			if (flag == CANTELEPORT) { printf(" TELEPORT"); continue; }
+			if (flag == ISBERSERK) { printf(" BERSERK"); continue; }
+			if (flag == ISFAMILIAR) { printf(" FAMILIAR"); continue; }
+			if (flag == HASFAMILIAR) { printf(" HASFAMILIAR"); continue; }
+			if (flag == SUMMONING) { printf(" SUMMONING"); continue; }
+			if (flag == CANREFLECT) { printf(" REFLECT"); continue; }
+			if (flag == LOWFRIENDLY) { printf(" L_FRIEND"); continue; }
+			if (flag == MEDFRIENDLY) { printf(" M_FRIEND"); continue; }
+			if (flag == HIGHFRIENDLY) { printf(" H_FRIEND"); continue; }
+			if (flag == MAGICATTRACT) { printf(" M_ATTRACT"); continue; }
+			if (flag == ISGOD) { printf(" *GOD*"); continue; }
+			if (flag == CANLIGHT) { printf(" LIGHT"); continue; }
+			if (flag == LOWCAST) { printf(" L_CAST"); continue; }
+			if (flag == MEDCAST) { printf(" M_CAST"); continue; }
+			if (flag == HIGHCAST) { printf(" H_CAST"); continue; }
+			if (flag == WASSUMMONED) { printf(" SUMMONER"); continue; }
+			if (flag == HASSUMMONED) { printf(" HASSUMMONED"); continue; }
+			if (flag == CANTRUESEE) { printf(" TRUESEE"); continue; }
+			printf(" ?????");
+		}
+	}
 }
 
 extern struct init_weps weaps[];
@@ -459,7 +455,7 @@ pr_weapons()
 		printf("%5s ", weaps[i].w_dam);
 		printf(" %8s ", weaps[i].w_hrl);
 		printf(" %5d ", weaps[i].w_wght);
-		printf(" %5d ", weaps[i].w_worth);
+		printf(" %5ld ", weaps[i].w_worth);
 	
 		wfind_flags(i);
 	
@@ -475,29 +471,28 @@ pr_weapons()
 wfind_flags(i)
 register int i;
 {
-    register int k, flag, mask;
-    if ( (flag=weaps[i].w_flags) != 0) {
-			for (mask=01,k=0; k<32; k++,mask<<=1)
-					switch (flag&mask) {
-						case ISCURSED:	printf(" CURSED");		break;
-						case ISKNOW:	printf(" KNOW");		break;
-						case ISPOST:	printf(" POST");		break;
-						case ISMETAL:	printf(" METAL");		break;
-						case ISPROT:	printf(" PROT");		break;
-						case ISBLESSED:	printf(" BLESS");		break;
-						case ISZAPPED:	printf(" ZAP");			break;
-						case ISVORPED:	printf(" VORPAL");		break;
-						case ISSILVER:	printf(" SILVER");		break;
-						case ISPOISON:	printf(" POISON");		break;
-						case CANRETURN:	printf(" MISS_RET");	break;
-						case ISOWNED:	printf(" ALWAYS_RET");	break;
-						case ISLOST:	printf(" DISSAPEARS");	break;
-						case ISMISL:	printf(" MISSLE");		break;
-						case ISMANY:	printf(" MANY");		break;
-						case CANBURN:	printf(" BURN");		break;
-						case ISSHARP:	printf(" SHARP");		break;
-						case ISTWOH:		printf(" TWOH");			break;
-						case ISLITTLE:	printf(" LITTLE");		break;
-					}
+	register long flag = weaps[i].w_flags;
+	register long mask;
+
+	for (i = 0; i < 32; i++, mask = flag & (1L << i)) {
+		if (mask & ISCURSED) printf(" CURSED");
+		if (mask & ISKNOW) printf(" KNOW");
+		if (mask & ISPOST) printf(" POST");
+		if (mask & ISMETAL) printf(" METAL");
+		if (mask & ISPROT) printf(" PROT");
+		if (mask & ISBLESSED) printf(" BLESS");
+		if (mask & ISZAPPED) printf(" ZAP");
+		if (mask & ISVORPED) printf(" VORPAL");
+		if (mask & ISSILVER) printf(" SILVER");
+		if (mask & ISPOISON) printf(" POISON");
+		if (mask & CANRETURN) printf(" MISS_RET");
+		if (mask & ISOWNED) printf(" ALWAYS_RET");
+		if (mask & ISLOST) printf(" DISSAPEARS");
+		if (mask & ISMISL) printf(" MISSLE");
+		if (mask & ISMANY) printf(" MANY");
+		if (mask & CANBURN) printf(" BURN");
+		if (mask & ISSHARP) printf(" SHARP");
+		if (mask & ISTWOH) printf(" TWOH");
+		if (mask & ISLITTLE) printf(" LITTLE");
 	}
 }

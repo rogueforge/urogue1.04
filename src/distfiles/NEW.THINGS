@@ -1568,4 +1568,13 @@
 1.03 Alpha, Jan 13, 87
 1)	fix of "Invalid command ^@" from Mike Laman
 
+1.04 Alpha, Dec 30, 90
+1)	flags, gold, hit points and experience are longs so the game
+	runs where an int is 16 bits
+2)	on(), off(), turn_on() and turn_off() keep the flag shifted, no
+	masking
+3)	switches on long flags changed to if chains
+4)	urprint prints the longs right
+5)	throne rooms summoned 1 in 9999 moves, 999999 doesn't fit an int
+
 -------	End of File ------

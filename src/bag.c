@@ -1,5 +1,5 @@
 /*
- * Last Modified: 08/05/86
+ * Last Modified: Dec 27, 1990
  */
 /*
  * new bag functions
@@ -39,7 +39,7 @@ register linked_list *bag_p;	/* linked list of objects */
 register int type;		/* what is its type (ARMOR, ...) */
 int (*bff_p)();			/* bag filter function */
 int (*baf_p)();			/* bag action routine */
-int user_arg;			/* user argument for filter, action */
+long user_arg;			/* user argument for filter, action */
 {
 register struct object *bag_obj_p = NULL;	/* qualifying object */
 register struct object *cur_obj_p;		/* current object */

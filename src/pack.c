@@ -1,5 +1,5 @@
 /*
- * Last Modified: 08/12/86
+ * Last Modified: Dec 29, 1990
  */
 #include <ctype.h>
 #include "rogue.h"

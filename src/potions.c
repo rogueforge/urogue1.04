@@ -1,5 +1,5 @@
 /*
- * Last Modified: 08/12/86
+ * Last Modified: Dec 29, 1990
  */
 /*
  * Function(s) for dealing with potions

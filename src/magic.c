@@ -450,14 +450,11 @@ coord shoot_dir;
 	bless_or_curse = ISBLESSED;
     }
 
-    switch (sp->sp_flags & TYP_MAGIC_MASK) {
-    case POT_MAGIC:
+    if (sp->sp_flags & POT_MAGIC)
 	quaff(caster, sp->sp_which, bless_or_curse);
-	break;
-    case SCR_MAGIC:
+    else if (sp->sp_flags & SCR_MAGIC)
 	read_scroll(caster, sp->sp_which, bless_or_curse);
-	break;
-    case ZAP_MAGIC:
+    else if (sp->sp_flags & ZAP_MAGIC) {
 	if (is_player) {
 	    do {				/* Must pick a direction */
 		msg("Which direction?");
@@ -468,9 +465,9 @@ coord shoot_dir;
 	    delta.y = shoot_dir.y;
 	}
 	do_zap(caster, sp->sp_which, bless_or_curse);
-    otherwise:
-	msg("What a strange %s!", spell_type);
     }
+    else
+	msg("What a strange %s!", spell_type);
 
     /*
      * Print messages and take fumbles *after* spell has gone off.
@@ -503,16 +500,14 @@ struct spells *sp;
     static char spellname[2*BUFSIZ];
     char *ret_val;
 
-    switch (sp->sp_flags & TYP_MAGIC_MASK) {
-    when POT_MAGIC:
+    if (sp->sp_flags & POT_MAGIC)
 	ret_val = strcpy(spellname, p_magic[sp->sp_which].mi_name);
-    when SCR_MAGIC:
+    else if (sp->sp_flags & SCR_MAGIC)
 	ret_val = strcpy(spellname, s_magic[sp->sp_which].mi_name);
-    when ZAP_MAGIC:
+    else if (sp->sp_flags & ZAP_MAGIC)
 	ret_val = strcpy(spellname, ws_magic[sp->sp_which].mi_name);
-    otherwise:
+    else
 	ret_val = strcpy(spellname, "unknown spell type");
-    }
     if (sp->sp_flags & ISBLESSED)
 	strcat(spellname, " 2");
 
@@ -529,16 +524,14 @@ struct spells *sp;
     static char spellname[2*BUFSIZ];
     char *ret_val;
 
-    switch (sp->sp_flags & TYP_MAGIC_MASK) {
-    when POT_MAGIC:
+    if (sp->sp_flags & POT_MAGIC)
 	ret_val = strcpy(spellname, p_magic[sp->sp_which].mi_abrev);
-    when SCR_MAGIC:
+    else if (sp->sp_flags & SCR_MAGIC)
 	ret_val = strcpy(spellname, s_magic[sp->sp_which].mi_abrev);
-    when ZAP_MAGIC:
+    else if (sp->sp_flags & ZAP_MAGIC)
 	ret_val = strcpy(spellname, ws_magic[sp->sp_which].mi_abrev);
-    otherwise:
+    else
 	ret_val = strcpy(spellname, "?????");
-    }
     if (sp->sp_flags & ISBLESSED)
 	strcat(spellname, " 2");
 
@@ -629,18 +622,16 @@ int num_fumbles;			/* high means you fumbled real bad */
 learn_new_spells()
 {
     register struct spells *sp;
-    register bool know_spell;
+    register int kludge;
 
     for (sp=player_spells; sp->sp_level != -1; sp++) {
-	switch (sp->sp_flags & TYP_MAGIC_MASK) {
-	when POT_MAGIC:
-	    know_spell = know_items[TYP_POTION][sp->sp_which];
-	when SCR_MAGIC:
-	    know_spell = know_items[TYP_SCROLL][sp->sp_which];
-	when ZAP_MAGIC:
-	    know_spell = know_items[TYP_STICK][sp->sp_which];
-	}
-	if (know_spell) {
+	if (sp->sp_flags & POT_MAGIC)
+	    kludge = TYP_POTION;
+	else if (sp->sp_flags & SCR_MAGIC)
+	    kludge = TYP_SCROLL;
+	else if (sp->sp_flags & ZAP_MAGIC)
+	    kludge = TYP_STICK;
+	if (know_items[kludge][sp->sp_which]) {
 	    if ((sp->sp_flags & ISKNOW) == FALSE)
 		debug("Learned new spell '%s'", spell_name(sp));
 	    sp->sp_flags |= ISKNOW;

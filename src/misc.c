@@ -947,3 +947,47 @@ get_monst:
 
     return(ret_val);
 }
+#if 0
+#define	FLAGSHIFT	28L
+#define	FLAGINDEX	0x0000000fL
+#define	FLAGMASK	0x0fffffffL
+/*
+ * on - check if a monster flag is on
+ */
+on(th, flag)
+struct thing th;
+long flag;
+{
+    return(th.t_flags[(flag >> FLAGSHIFT) & FLAGINDEX] & (flag << 4));
+}
+
+/*
+ * off - check if a monster flag is off
+ */
+off(th, flag)
+struct thing th;
+long flag;
+{
+    return !(th.t_flags[(flag >> FLAGSHIFT) & FLAGINDEX] & (flag << 4));
+}
+
+/*
+ * turn_on - turn on a monster flag
+ */
+turn_on(th, flag)
+struct thing th;
+long flag;
+{
+    th.t_flags[(flag >> FLAGSHIFT) & FLAGINDEX] |= (flag << 4);
+}
+
+/*
+ * turn_off - turn off a monster flag
+ */
+turn_off(th, flag)
+struct thing th;
+long flag;
+{
+    th.t_flags[(flag >> FLAGSHIFT) & FLAGINDEX] &= ~(flag << 4);
+}
+#endif
