@@ -49,7 +49,7 @@ prayer()
     else is_godly = ISNORMAL;
 
     if (is_wearing(R_PIETY))
-	 times_prayed += rnd(1);
+	 times_prayed += rnd(2);
     else times_prayed++;
 
     if (wizard) {
@@ -298,11 +298,13 @@ steal()
 	       fall(&player, s_item, TRUE);
 	    }
 
-	    /* Get points for stealing */
-	    if (player.t_ctype == C_THIEF)
-		 pstats.s_exp += tp->t_stats.s_exp/2;
-	    else pstats.s_exp += tp->t_stats.s_exp/min(pstats.s_lvl, 10);
-	    check_level();
+	    /* Get points for stealing from unfriendly monsters */
+	    if (off(*tp, ISFRIENDLY)) {
+		if (player.t_ctype == C_THIEF)
+		     pstats.s_exp += 2*tp->t_stats.s_exp/3;
+		else pstats.s_exp += tp->t_stats.s_exp/min(pstats.s_lvl, 10);
+		check_level();
+	    }
 	}
 	else {
 	    gain = " gains you nothing and";
@@ -378,7 +380,8 @@ affect()
 	(100 * ((2*tp->t_stats.s_lvl) - effective_level)) / effective_level) {
 
 	msg("You have turned the %s.", mname);
-	turn_on(*tp, WASTURNED);	/* No more fleeing after this */
+	turn_on(*tp, WASTURNED);	/* One turn per monster */
+	turn_on(*tp, ISRUN);
 	turn_on(*tp, ISFLEE);
 
 	/* If monster was suffocating, stop it */
@@ -394,6 +397,7 @@ affect()
 	return;
     }
 
+    msg("The %s momentarily recoils from your holy symbol.", mname);
 annoy:
    if (off(*tp, WASTURNED)) runto(&new_pos, &hero);
 }

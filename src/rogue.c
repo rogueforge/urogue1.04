@@ -1,5 +1,5 @@
 /*
- * Last Modified: 08/12/86
+ * Last Modified: Jan 5, 1991
  */
 #include "rogue.h"
 /*

@@ -40,7 +40,7 @@ struct delayed_action {
 	_X_, _X_, _X_, _X_, _X_, _X_, _X_, _X_, _X_, _X_,
 	_X_, _X_, _X_, _X_, _X_, _X_, _X_, _X_, _X_, _X_,
 	_X_, _X_, _X_, _X_, _X_, _X_, _X_, _X_, _X_, _X_,
-	_X_, _X_, _X_, _X_, _X_, _X_, _X_, _X_, _X_, _X_,
+	_X_, _X_, _X_, _X_, _X_, _X_, _X_, _X_, _X_, _X_
 };
 static int demoncnt = 0;	/* number of active daemons */
 

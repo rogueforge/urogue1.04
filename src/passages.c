@@ -34,7 +34,7 @@ do_passages()
 	{ { 0, 0, 1, 0, 1, 0, 0, 0, 1 }, { 0, 0, 0, 0, 0, 0, 0, 0, 0 }, 0 },
 	{ { 0, 0, 0, 1, 0, 0, 0, 1, 0 }, { 0, 0, 0, 0, 0, 0, 0, 0, 0 }, 0 },
 	{ { 0, 0, 0, 0, 1, 0, 1, 0, 1 }, { 0, 0, 0, 0, 0, 0, 0, 0, 0 }, 0 },
-	{ { 0, 0, 0, 0, 0, 1, 0, 1, 0 }, { 0, 0, 0, 0, 0, 0, 0, 0, 0 }, 0 },
+	{ { 0, 0, 0, 0, 0, 1, 0, 1, 0 }, { 0, 0, 0, 0, 0, 0, 0, 0, 0 }, 0 }
     };
 
     /*
@@ -65,11 +65,10 @@ do_passages()
 	 * if no adjacent rooms are outside the graph, pick a new room
 	 * to look from
 	 */
-	if (j == 0) {
-	    do
+	if (j == 0)
+	    do {
 		r1 = &rdes[rnd(MAXROOMS)];
-	    until (r1->ingraph);
-	}
+	    } while (!r1->ingraph);
 	/*
 	 * otherwise, connect new room to the graph, and draw a tunnel
 	 * to it

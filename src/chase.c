@@ -1,5 +1,5 @@
 /*
- * Last Modified: 07/30/86
+ * Last Modified: Jan 5, 1991
  */
 /*
  * Code for one object to chase another
@@ -41,7 +41,7 @@ runners()	/* with monsters now fighting each other, this routine
 	    turn_on(*tp, ISRUN);
 	    turn_off(*tp, ISDISGUISE);
 	    tp->t_dest = &hero;
-	    if (tp->t_stats.s_hpt < tp->maxstats.s_hpt)
+	    if (tp->t_stats.s_hpt < rnd(tp->maxstats.s_hpt))
 		turn_on(*tp, ISFLEE);
 	    if (cansee(tp->t_pos.y, tp->t_pos.x))
 		msg("The %s breaks free!", monsters[tp->t_index].m_name);
@@ -66,7 +66,7 @@ runners()	/* with monsters now fighting each other, this routine
 	    }
 	    if (curr_mons) {
 		tp->t_turn ^= TRUE;
-		tp->t_wasshot = FALSE;	/* Not shot anymore */
+		tp->t_wasshot ^= FALSE;	/* Not shot anymore */
 	    }
 	}
     }
@@ -369,7 +369,7 @@ register bool flee;
 			shoot_dir->x,shoot_dir->y);
 	}
 	else 
-	    shoot_dir = can_shoot(er, ee);    /* check if hero can be shot */
+	    shoot_dir = can_shoot(er, ee);    /* shoot hero */
 
     /*
      * If the thing is confused, let it move randomly. Some
@@ -378,11 +378,8 @@ register bool flee;
     if ((on(*tp, ISHUH) && rnd(10) < 8) ||
 	((on(*tp, ISINVIS) || on(*tp, ISSHADOW)) && rnd(100) < 20) ||
 	(on(player, ISINVIS) && off(*tp, CANSEE))) { /* Player is invisible */
-	{
-	    /* get a valid random move */
-	    coord *foo = rndmove(tp);	/* bug in 4.2a compiler for RT PC */
-	    ch_ret = *foo;
-	}
+	/* get a valid random move */
+	ch_ret = *rndmove(tp);
 	dist = DISTANCE(ch_ret.y, ch_ret.x, ee->y, ee->x);
 
 	if (on(*tp, ISHUH) && rnd(20) == 0)  /* monster might lose confusion */
@@ -673,11 +670,14 @@ register bool flee;
     dist = DISTANCE(ch_ret.y, ch_ret.x, ee->y, ee->x);
 
     /* Mark monsters in a wall */
-    ch = mvinch(ch_ret.y, ch_ret.x);
-    if (ch == WALL || ch == '-' || ch == '|')
-	turn_on(*tp, ISINWALL);
-    else 
-	turn_off(*tp, ISINWALL);
+    switch (mvinch(ch_ret.y, ch_ret.x)) {
+	case WALL:
+	case '-':
+	case '|':
+	    turn_on(*tp, ISINWALL);
+	otherwise:
+	    turn_off(*tp, ISINWALL);
+    }
 
     if (off(*tp, ISFLEE) &&
 	((tp->t_dest != &hero) || off(player, ISINWALL) || on(*tp, CANINWALL)))
@@ -719,10 +719,10 @@ register int y;
 int x;
 {
     register struct linked_list *item;
-    register struct thing *th;
 
     for (item = mlist; item != NULL; item = next(item)) {
-	th = THINGPTR(item);
+	register struct thing *th = THINGPTR(item);
+
 	if (th->t_pos.y == y && th->t_pos.x == x)
 	    return item;
     }
@@ -745,13 +745,13 @@ bool hit_bad;
 	for (col = y - 1; col <= y + 1; col++)
 	    if (row == x && col == y)
 		continue;
-	    else if (col > 0 && row > 0 && isalpha(mvwinch(mw, col, row)))
-	        if ((item = find_mons(col, row)) != NULL) {
-	            tp = THINGPTR(item);
-	            if ((good_monster(*tp) && !hit_bad) ||
-			(!good_monster(*tp) && hit_bad))
-		            return(item);
-	        }
+	    else if (col > 0 && row > 0 && isalpha(mvwinch(mw, col, row)) &&
+		     ((item = find_mons(col, row)) != NULL)) {
+	        tp = THINGPTR(item);
+	        if ((good_monster(*tp) && !hit_bad) ||
+		    (!good_monster(*tp) && hit_bad))
+		    return(item);
+	    }
     return(NULL);
 }
 

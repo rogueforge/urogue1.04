@@ -1,5 +1,5 @@
 /*
- * Last Modified: 08/05/86
+ * Last Modified: Jan 5, 1991
  */
 #include "rogue.h"
 
@@ -13,12 +13,11 @@ new_level(ltype)
 LEVTYPE	ltype;		/* designates type of level to create */
 {
     register int rm, i, cnt;
-    register char ch;
-    register struct linked_list *item;
+    register struct linked_list *item, *nitem;
     register struct thing *tp;
-    coord stairs;
-    struct linked_list *fpack, *nitem;
+    struct linked_list *fpack;
     bool going_down = TRUE;
+    coord stairs;
 
     /* Start player off right */
     turn_off(player, ISHELD);
@@ -33,27 +32,21 @@ LEVTYPE	ltype;		/* designates type of level to create */
     else
 	going_down = FALSE;
     /*
-     * check to see if he missed a UNIQUE, If he did then put it back
-     * in the monster table for next time
-     */
-    for (item = mlist; item != NULL; item = next(item)) {
-	tp = THINGPTR(item);
-	if (on(*tp, ISUNIQUE)) 
-	    monsters[tp->t_index].m_normal = TRUE;
-    }
-    /*
      * Free up the monsters on the last level
      */
     if (fam_ptr != NULL) { 	/* save what familiar is carrying */
 	fpack = (THINGPTR(fam_ptr))->t_pack;
 	(THINGPTR(fam_ptr))->t_pack = NULL;
+	fam_ptr = NULL;		/* just in case */
     }
-    fam_ptr = NULL;		/* just in case */
-    for (i = 0; i <= mons_summoned; i++)
+    for (i = 1; i <= mons_summoned; i++)
 	extinguish(unsummon);
     mons_summoned = 0;
     for (item = mlist; item != NULL; item = nitem) {
+	tp = THINGPTR(item);
 	nitem = next(item);
+	if (on(*tp, ISUNIQUE))	/* Put alive UNIQUE on next level */
+	    monsters[tp->t_index].m_normal = TRUE;
 	killed(NULL, item, NOMESSAGE, NOPOINTS);
     }
 
@@ -86,7 +79,7 @@ LEVTYPE	ltype;		/* designates type of level to create */
     do {
         rm = rnd_room();
 	rnd_pos(&rooms[rm], &stairs);
-    } until (mvinch(stairs.y, stairs.x) == FLOOR || cnt++ > 5000);
+    } while (!(mvinch(stairs.y, stairs.x) == FLOOR || cnt++ > 5000));
     addch(STAIRS);
 
     put_things(ltype);				/* Place objects (if any) */
@@ -100,14 +93,13 @@ LEVTYPE	ltype;		/* designates type of level to create */
     ntraps = 0;	/* No traps yet */
     if (levtype == NORMLEV) {
 	if (rnd(10) < level) {
-	    ntraps = rnd(level/4)+1;
-	    if (ntraps > MAXTRAPS)
-		ntraps = MAXTRAPS;
-	    i = ntraps;
+	    register char ch;
+
+	    i = ntraps = min(MAXTRAPS, rnd(level / 4) + 1);
 	    /*
 	     * maybe a lair
 	     */
-	    if (level > 50 && rnd(wizard ? 3 : 10) == 0 && ltype == NORMLEV) {
+	    if (level > 50 && ltype == NORMLEV && rnd(wizard ? 3 : 10) == 0) {
 		cnt = 0;
 		do {
 		    rm = rnd_room();
@@ -140,7 +132,8 @@ LEVTYPE	ltype;		/* designates type of level to create */
 		    when 4: ch = TELTRAP;
 		    when 5: ch = DARTTRAP;
 		    when 6: ch = POOL;
-			    traps[i].tr_flags = ISFOUND;
+			    if (rnd(10))
+				traps[i].tr_flags = ISFOUND;
 		    when 7: ch = MAZETRAP;
 		    when 8: ch = FIRETRAP;
 		    when 9: ch = POISONTRAP;
@@ -153,7 +146,7 @@ LEVTYPE	ltype;		/* designates type of level to create */
 	    }
 	}
     }
-    do {
+    do {					/* Position hero */
 	rm = rnd_room();
 	if (levtype != THRONE && (rooms[rm].r_flags & ISTREAS))
 	    continue;
@@ -194,6 +187,9 @@ LEVTYPE	ltype;		/* designates type of level to create */
 		 player.t_ctype == C_PALADIN || is_wearing(R_PIETY))
 	    undead_sense();
     }
+
+    if (is_wearing(R_AGGR))
+	aggravate();
 
     if (is_wearing(R_ADORNMENT) || 
 		cur_armor != NULL && cur_armor->o_which == MITHRIL) {
@@ -246,7 +242,7 @@ LEVTYPE	ltype;		/* designates type of level to create */
 		tp->t_pack = fpack;
 	    else if (fpack != NULL) {
 		for (item = tp->t_pack; item->l_next != NULL; item = next(item))
-		    {}	/* find last item in list */
+		    ;
 		item->l_next = fpack;
 		fpack->l_prev = item;
 	    }
@@ -256,22 +252,6 @@ LEVTYPE	ltype;		/* designates type of level to create */
     }
 
     status(TRUE);
-}
-
-/*
- * Pick a room that is really there
- */
-
-rnd_room()
-{
-    register int rm;
-
-    if (levtype != NORMLEV)
-	rm = 0;
-    else do {
-	    rm = rnd(MAXROOMS);
-	} while (rooms[rm].r_flags & ISGONE);
-    return rm;
 }
 
 /*
@@ -355,10 +335,6 @@ LEVTYPE	ltype;		/* designates type of level to create */
 			tp->t_dest = &hero;
 			turn_on(*tp, ISRUN);
 		    }
-
-		    /* If it is a mimic, undisguise it */
-		    if (on(*tp, ISDISGUISE)) 
-			turn_off(*tp, ISDISGUISE);
 		}
 
 		/* Treasures */
@@ -446,7 +422,7 @@ do_throne()
     if (throne_monster == 0)			/* Who has he offended? */
 	do {
 	    throne_monster = nummonst - roll(1, NUMSUMMON);
-	} while (!monsters[throne_monster].m_normal);
+	} until(monsters[throne_monster].m_normal);
 
     /* Create summoning monster */
     item = new_item(sizeof *tp);

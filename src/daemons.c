@@ -514,14 +514,6 @@ unbhero()
 }
 
 /*
- * unxray:
- *	x-ray vision wears off
- */
-unxray()
-{
-}
-
-/*
  * undisguise:
  *	player stops looking like a monster
  */
@@ -541,18 +533,15 @@ unsummon(monst)
 int
    monst;
 {
-struct thing
-    *tp;
-char
-    *mname;
 struct linked_list
-    *sum_monst;
+    *sum_monst = (struct linked_list *) monst;
+struct thing
+    *tp = THINGPTR(sum_monst);
+char
+    *mname = monsters[tp->t_index].m_name;
 
-    sum_monst = (struct linked_list *) monst;
-    tp = THINGPTR(sum_monst);
     turn_off(*tp, WASSUMMONED);
     turn_off(player, HASSUMMONED);
-    mname = monsters[tp->t_index].m_name;
     msg("The summoned %s phases out of existence", mname);
     killed(NULL, sum_monst, NOMESSAGE, NOPOINTS);
     --mons_summoned;
@@ -590,9 +579,8 @@ shero()
 uncold()
 {
     turn_off(player, NOCOLD);
-    if (!is_wearing(R_COLDRESIST)) {
+    if (!is_wearing(R_COLDRESIST))
 	msg("You feel a slight chill in the air.");
-    }
 }
 
 /*
@@ -603,9 +591,8 @@ uncold()
 unhot()
 {
     turn_off(player, NOFIRE);
-    if (!is_wearing(R_FIRERESIST)) {
+    if (!is_wearing(R_FIRERESIST))
 	msg("You feel a flush of warmth.");
-    }
 }
 
 /*
@@ -616,9 +603,8 @@ unhot()
 unfly()
 {
     turn_off(player, CANFLY);
-    if (!is_wearing(R_LEVITATION)) {
+    if (!is_wearing(R_LEVITATION))
 	msg("You float gently to the ground.");
-    }
 }
 
 /*
@@ -629,9 +615,8 @@ unfly()
 unbreathe()
 {
     turn_off(player, HASOXYGEN);
-    if (!is_wearing(R_BREATHE)) {
+    if (!is_wearing(R_BREATHE))
 	msg("You start huffing and puffing.");
-    }
 }
 
 /*
@@ -642,9 +627,8 @@ unbreathe()
 unregen()
 {
     turn_off(player, ISREGEN);
-    if (!is_wearing(R_REGEN)) {
+    if (!is_wearing(R_REGEN))
 	msg("Your metabolism slows down.");
-    }
 }
 
 /*

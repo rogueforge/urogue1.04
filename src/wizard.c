@@ -110,7 +110,7 @@ teleport()
 	do {
 	    rm = rnd_room();
 	    rnd_pos(&rooms[rm], &hero);
-	} until(winat(hero.y, hero.x) == FLOOR);
+	} while (winat(hero.y, hero.x) != FLOOR);
 	new_rp = &rooms[rm];
     }
 

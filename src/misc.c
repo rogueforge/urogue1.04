@@ -1,5 +1,5 @@
 /*
- * Last Modified: 08/12/86
+ * Last Modified: Jan 5, 1991
  */
 #include "rogue.h"
 #include <ctype.h>
@@ -509,8 +509,10 @@ register struct object *obj;
     if (obj == cur_armor || obj == cur_weapon || 
 	obj == cur_ring[LEFT_1] || obj == cur_ring[LEFT_2] ||
 	obj == cur_ring[LEFT_3] || obj == cur_ring[LEFT_4] ||
+	obj == cur_ring[LEFT_5] ||
 	obj == cur_ring[RIGHT_1] || obj == cur_ring[RIGHT_2] ||
-	obj == cur_ring[RIGHT_3] || obj == cur_ring[RIGHT_4]) {
+	obj == cur_ring[RIGHT_3] || obj == cur_ring[RIGHT_4] ||
+	obj == cur_ring[RIGHT_5]) {
 	msg(terse ? "In use." : "That's already in use.");
 	return TRUE;
     }
@@ -572,8 +574,10 @@ int type;
 
     return (ISRING(LEFT_1, type) || ISRING(LEFT_2, type) ||
 		ISRING(LEFT_3, type) || ISRING(LEFT_4, type) ||
+		ISRING(LEFT_5, type) ||
 		ISRING(RIGHT_1, type) || ISRING(RIGHT_2, type) ||
-		ISRING(RIGHT_3, type) || ISRING(RIGHT_4, type));
+		ISRING(RIGHT_3, type) || ISRING(RIGHT_4, type) ||
+		ISRING(RIGHT_5, type));
 }
 
 /*
@@ -623,6 +627,8 @@ int y, x;
 	    case DOOR:
 	    case SECRETDOOR:
 		return(FALSE);
+	    default:
+		break;
 	}
 	start += delta;
     }
@@ -778,7 +784,6 @@ int_wis_bonus()
 
 electrificate()
 {
-    register int lvl;
     register int affect_dist = 4 + player.t_stats.s_lvl/4;
     register struct linked_list *item, *nitem;
 
@@ -786,23 +791,18 @@ electrificate()
 	register struct thing *tp = THINGPTR(item);
 	char *mname = monsters[tp->t_index].m_name;
 
-	nitem = next(item); /* Get next item now since monster may disappear */
+	nitem = next(item);
 	if (DISTANCE(tp->t_pos.y, tp->t_pos.x, hero.y, hero.x) < affect_dist) {
-	    register int damage = roll(1,player.t_stats.s_lvl) + player.t_stats.s_lvl;
+	    register int damage = roll(2,player.t_stats.s_lvl);
 	    debug("Charge does %d (%d)", damage, tp->t_stats.s_hpt - damage);
-	    if (on(*tp, NOBOLT)) {
-	       msg("The %s basks in your glow", mname);
+	    if (on(*tp, NOBOLT))
 	       continue;
-	    }
 	    if ((tp->t_stats.s_hpt -= damage) <= 0) {
 		msg("The %s is killed by an electric shock.", mname);
-		killed(&player, item, MESSAGE, POINTS);
+		killed(&player, item, NOMESSAGE, POINTS);
 		continue;
 	    }
-	    lvl = tp->t_stats.s_intel - 5;
-	    if (lvl < 0)
-		lvl = 10 + tp->t_stats.s_intel;
-	    if (rnd(lvl + 1)/5 == 0) {
+	    if (rnd(tp->t_stats.s_intel / 5) == 0) {
 		turn_on(*tp, ISFLEE);
 		msg("The %s is shocked by electricity.", mname);
 	    }

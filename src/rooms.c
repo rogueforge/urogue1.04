@@ -1,5 +1,5 @@
 /*
- * Last Modified: 08/12/86
+ * Last Modified: Jan 5, 1991
  */
 /*
  * Draw the nine rooms on the screen
@@ -57,7 +57,7 @@ do_rooms()
 		rp->r_pos.y = top.y + rnd(bsze.y-2) + 1;
 		rp->r_max.x = -COLS;
 		rp->r_max.x = -LINES;
-	    } until(rp->r_pos.y > 0 && rp->r_pos.y < LINES-2);
+	    } while(rp->r_pos.y < 1 || rp->r_pos.y > LINES-3);
 	    continue;
 	}
 	if (rnd(80) < level - 15)
@@ -70,7 +70,7 @@ do_rooms()
 	    rp->r_max.y = rnd(bsze.y - 4) + 4;
 	    rp->r_pos.x = top.x + rnd(bsze.x - rp->r_max.x);
 	    rp->r_pos.y = top.y + rnd(bsze.y - rp->r_max.y);
-	} until (rp->r_pos.y != 0);
+	} while (rp->r_pos.y == 0);
 
 	/* Draw the room */
 	draw_room(rp);
@@ -111,7 +111,7 @@ do_rooms()
 	    tp = THINGPTR(item);
 	    do {
 		rnd_pos(rp, &mp);
-	    } until(mvwinch(stdscr, mp.y, mp.x) == FLOOR);
+	    } while(mvwinch(stdscr, mp.y, mp.x) != FLOOR);
 
 	    which = randmonster(NOWANDER, NOGRAB);
 	    new_monster(item, which, &mp, NOMAXSTATS);
@@ -169,14 +169,16 @@ do_rooms()
 		}
 	    }
 	    if (count > 0) {
+		int boost = rnd(3) + 1;
+
 		if (on(*tp, LOWCAST) || on(*tp, MEDCAST) || on(*tp, HIGHCAST))
 		    turn_on(*tp, CANCAST);
-		tp->t_stats.s_hpt += roll(2,8);
-		tp->t_stats.s_lvl += roll(2,3);
-		tp->t_stats.s_arm -= roll(1,6);
-		tp->t_stats.s_str += roll(2,3);
-		tp->t_stats.s_intel += roll(2,3);
-		tp->t_stats.s_exp += roll(2,8) * monsters[which].m_add_exp;
+		tp->t_stats.s_hpt += 3 * boost;
+		tp->t_stats.s_arm -= 2 * boost;
+		tp->t_stats.s_lvl += 2 * boost;
+		tp->t_stats.s_str += 2 * boost;
+		tp->t_stats.s_intel += 2 * boost;
+		tp->t_stats.s_exp += 4 * boost * monsters[which].m_add_exp;
     	    }
 	}
     }
@@ -249,4 +251,20 @@ register coord *cp;
 {
     cp->x = rp->r_pos.x + rnd(rp->r_max.x-2) + 1;
     cp->y = rp->r_pos.y + rnd(rp->r_max.y-2) + 1;
+}
+
+/*
+ * Pick a room that is really there
+ */
+
+rnd_room()
+{
+    register int rm;
+
+    if (levtype != NORMLEV)
+	rm = 0;
+    else do {
+	    rm = rnd(MAXROOMS);
+	} while (rooms[rm].r_flags & ISGONE);
+    return rm;
 }

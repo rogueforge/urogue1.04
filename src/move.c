@@ -425,9 +425,9 @@ coord *cp;
 			case POST:
 			case '|':
 			case '-':
+			case ' ':
 			    ch = rch;
 			when FLOOR:
-			case ' ':
 			    ch = (on(player, ISBLIND) ? FLOOR : ' ');
 			otherwise:
 			    ch = ' ';
@@ -1157,9 +1157,10 @@ dip_it()
 	    }
 	}
 	else if (ob != NULL && tp->tr_type == POISONTRAP) {
-	    if (player.t_ctype == C_PALADIN) {
+	    if ((player.t_ctype == C_PALADIN) ||
+		(player.t_ctype == C_CLERIC && rnd(2))) {
+		msg("Trying to use poison is evil.");
 		luck += 2;
-		msg("The gods become very angry at you.");
 	    }
 	    if (ob->o_type != WEAPON || rnd(10) > 0) 
 		msg("Nothing seems to happen.");

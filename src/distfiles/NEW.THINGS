@@ -1600,5 +1600,16 @@
 18)	new potion and scroll messages
 19)	ten ring slots, messages when rings come off
 20)	known cursed rings are marked
+21)	held monsters break free and flee by their hit points
+22)	electrified armor does roll(2, level) damage
+23)	poison traps are evil for paladins and sometimes clerics
+24)	pools are found 90% of the time when a level is made
+25)	R_AGGR aggravates monsters on new levels
+26)	mimics in treasure rooms stay disguised
+27)	R_PIETY helps prayer
+28)	stealing gives experience only from unfriendly monsters, 2/3 for
+	thieves
+29)	turned undead run away, others recoil
+30)	swarm leaders get one boost roll
 
 -------	End of File ------
