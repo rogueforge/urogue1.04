@@ -159,6 +159,10 @@ command()
 	    if (count && !running)
 		count--;
 	    switch (ch) {
+
+		/*
+		 * Movement and combat commands
+		 */
 		when 'h' : do_move(0, -1);
 		when 'j' : do_move(1, 0);
 		when 'k' : do_move(-1, 0);
@@ -185,68 +189,43 @@ command()
 		when 'F' : case 'f':
 		    if (!fighting) {
 			fight_ch = ch;
-			if (!get_dir()) {
-			    after = FALSE;
-			    break;
-			}
-			else {
+			if (get_dir()) {
 			    dta.y = delta.y;
 			    dta.x = delta.x;
 			    beast = NULL;
 			}
+			else {
+			    after = FALSE;
+			    break;
+			}
 		    }
 		    do_fight(dta.y, dta.x, (ch == 'F') ? TRUE : FALSE);
 		when 't':
-		    if (!get_dir())
-			 after = FALSE;
-		    else missile(delta.y, delta.x,
+		    if (get_dir())
+			missile(delta.y, delta.x,
 				get_item("throw", NULL), &player);
+		    else
+			after = FALSE;
+
+		/*
+		 * Informational commands - Do not do
+		 * after daemons
+		 */
+		when ' ' : after = FALSE;	/* Do Nothing */
 		when 'Q' : after = FALSE; quit();
 		when 'i' : after = FALSE; inventory(pack, '*');
 		when 'I' : after = FALSE; inventory(pack, 0);
-		when ',' : add_pack(NULL, NOMESSAGE);
-		when 'd' : drop((struct linked_list *) NULL);
-		when 'q' : quaff(&player, -1, ISNORMAL);
-		when 'r' : read_scroll(&player, -1, ISNORMAL);
-		when 'e' : eat();
-		when '=' : listen();
 		when '~' : after = FALSE; next_exp_level(MESSAGE);
-		when 'A' : apply();
-		when 'w' : wield();
-		when 'W' : wear();
-		when 'T' : take_off();
-		when 'P' : ring_on();
-		when 'R' : ring_off();
-		when 'o' : option(); strcpy(fd_data[1].mi_name, fruit);
-		when 'c' : call(FALSE);
-		when 'M' : call(TRUE);
 		when '>' : after = FALSE; d_level();
 		when '<' : after = FALSE; u_level();
 		when '?' : after = FALSE; help();
 		when '/' : after = FALSE; identify();
-		when 19 :	/* ctrl-t */
-		    if (get_dir()) 
-			 steal();
-		    else after = FALSE;
-		when 'D' : dip_it();
-		when '^' : set_trap(&player, hero.y, hero.x);
-		when 's' : search(FALSE);
-		when 'z' :
-		    if (get_dir())
-			 do_zap(&player, -1, ISNORMAL);
-		    else after = FALSE;
-		when 'p' : prayer();
-		when 'C' : incant(&player, NULL);
-		when 'a' :
-		    if (get_dir())
-			 affect();
-		    else after = FALSE;
 		when 'v' : after = FALSE;
 			   msg("UltraRogue Version %s.", release);
+		when 'o' : after = FALSE; option(); strcpy(fd_data[1].mi_name, fruit);
 		when 17 :	/* ctrl-r */
 		    after = FALSE;
 		    clearok(curscr, TRUE);
-		    touchwin(cw);
 		when 15 : {	/* ctrl-p */
 			    register bool decrement = FALSE;
 
@@ -266,22 +245,64 @@ command()
 			endwin();
 			exit(0);
 		    }
-		when '.' : ;			/* Rest command */
-		when ' ' : after = FALSE;	/* Do Nothing */
+
+		/*
+		 * Other misc commands
+		 */
+		when '.' : ;			/* rest */
+		when ',' : add_pack(NULL, NOMESSAGE);
+		when 'q' : quaff(&player, -1, ISNORMAL);
+		when 'r' : read_scroll(&player, -1, ISNORMAL);
+		when 'd' : drop((struct linked_list *) NULL);
+		when '^' : set_trap(&player, hero.y, hero.x);
+		when 'c' : incant(&player, NULL);
+		when 'D' : dip_it();
+		when 'e' : eat();
+		when '=' : listen();
+		when 'A' : apply();
+		when 'w' : wield();
+		when 'W' : wear();
+		when 'T' : take_off();
+		when 'P' : ring_on();
+		when 'R' : ring_off();
+		when 'p' : prayer();
+		when 'C' : call(FALSE);
+		when 'M' : call(TRUE);
+		when 's' : search(FALSE);
+
+		/*
+		 * Directional commands - get_dir sets delta
+		 */
+		when 19 :	/* ctrl-t */
+		    if (get_dir()) 
+			 steal();
+		    else after = FALSE;
+		when 'z' :
+		    if (get_dir())
+			 do_zap(&player, -1, ISNORMAL);
+		    else after = FALSE;
+		when 'a' :
+		    if (get_dir())
+			 affect();
+		    else after = FALSE;
+		    touchwin(cw);
+
+		/*
+		 * wizard commands
+		 */
 		when 22 :	/* ctrl-w */
 		    after = FALSE;
 		    if (!wizard) {
-			if (passwd()) {
-			   if(canwizard) {
+			if (canwizard)
+			   if (passwd()) {
 				    msg("Welcome, oh mighty wizard.");
 				    wizard = waswizard = TRUE;
 				    (void) signal(SIGQUIT, SIG_DFL);
 			   }
 			   else
-				msg("Try it again.");
-			}
+				msg("Incorrect password.");
 			else
-			    msg("Oh no you don't!");
+			    msg("Illegal command '^W'.");
 		    } 
 		    else {
 			object *get_object();
@@ -452,7 +473,6 @@ command()
 		when ESCAPE :	/* Escape */
 			after = doescape();
 		otherwise :
-		    after = FALSE;
 		    msg("Illegal command '%s'.", unctrl(ch));
 		    count = 0;
 		    after = FALSE;

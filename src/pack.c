@@ -354,7 +354,7 @@ pick_up(ch)
     default:
       debug("Where did you pick that up???");
     case GOLD:
-    case ARMOR:
+      debug("Where did you pick up a '%c'???", ch);
     case POTION:
     case FOOD:
     case WEAPON:
@@ -522,6 +522,8 @@ cur_null(op)
     cur_ring[LEFT_3] = NULL;
   else if (op == cur_ring[LEFT_4])
     cur_ring[LEFT_4] = NULL;
+  else if (op == cur_ring[LEFT_5])
+    cur_ring[LEFT_5] = NULL;
   else if (op == cur_ring[RIGHT_1])
     cur_ring[RIGHT_1] = NULL;
   else if (op == cur_ring[RIGHT_2])
@@ -530,6 +532,8 @@ cur_null(op)
     cur_ring[RIGHT_3] = NULL;
   else if (op == cur_ring[RIGHT_4])
     cur_ring[RIGHT_4] = NULL;
+  else if (op == cur_ring[RIGHT_5])
+    cur_ring[RIGHT_5] = NULL;
 }
 
 /*

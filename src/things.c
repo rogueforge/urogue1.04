@@ -176,10 +176,12 @@ register bool lowercase;
     else if (obj == cur_ring[LEFT_2])  strcat(prbuf, " (on left hand)");
     else if (obj == cur_ring[LEFT_3])  strcat(prbuf, " (on left hand)");
     else if (obj == cur_ring[LEFT_4])  strcat(prbuf, " (on left hand)");
+    else if (obj == cur_ring[LEFT_5])  strcat(prbuf, " (on left hand)");
     else if (obj == cur_ring[RIGHT_1]) strcat(prbuf, " (on right hand)");
     else if (obj == cur_ring[RIGHT_2]) strcat(prbuf, " (on right hand)");
     else if (obj == cur_ring[RIGHT_3]) strcat(prbuf, " (on right hand)");
     else if (obj == cur_ring[RIGHT_4]) strcat(prbuf, " (on right hand)");
+    else if (obj == cur_ring[RIGHT_5]) strcat(prbuf, " (on right hand)");
     if (obj->o_flags & ISPROT)
 	strcat(prbuf, " [protected]");
     if (lowercase && isupper(prbuf[0]))
@@ -260,8 +262,7 @@ drop(item)
 struct linked_list *item;
 {
     register char ch = mvwinch(stdscr, hero.y, hero.x);
-    register struct linked_list *obj, *nobj;
-    register struct object *op;
+    register struct object *obj;
 
     switch (ch) {
 	case GOLD:
@@ -282,48 +283,48 @@ struct linked_list *item;
 	    msg("You can't drop something here.");
 	    return(FALSE);
     }
-    obj = item;
-    op = OBJPTR(obj);
-    if (!dropcheck(op))
+    obj = OBJPTR(item);
+    if (!dropcheck(obj))
 	return(FALSE);
 
     /*
-     * If it is a scare monster scroll, curse it
+     * Curse a dropped scare monster scroll
      */
-    if (op->o_type == SCROLL && op->o_which == S_SCARE) {
-	if (op->o_flags & ISBLESSED)
-	    op->o_flags &= ~ISBLESSED;
-	else op->o_flags |= ISCURSED;
+    if (obj->o_type == SCROLL && obj->o_which == S_SCARE) {
+	if (obj->o_flags & ISBLESSED)
+	    obj->o_flags &= ~ISBLESSED;
+	else obj->o_flags |= ISCURSED;
     }
 
     /*
      * Take it out of the pack
      */
-    if (op->o_count >= 2 && op->o_group == NULL) {
-	nobj = new_item(sizeof *op);
-	op->o_count--;
-	op = OBJPTR(nobj);
-	*op = *(OBJPTR(obj));
-	op->o_count = 1;
-	obj = nobj;
+    if (obj->o_count >= 2 && obj->o_group == NULL) {
+	register struct linked_list *nitem = new_item(sizeof *obj);
+
+	obj->o_count--;
+	obj = OBJPTR(nitem);
+	*obj = *(OBJPTR(item));
+	obj->o_count = 1;
+	item = nitem;
     }
-    else {
-      rem_pack(op);
-    }
+    else
+      rem_pack(obj);
     if(ch == POOL) {
-	msg("Your %s sinks out of sight.",inv_name(op,LOWERCASE));
-	discard(obj);
-	obj = NULL;
+	msg("The pool bubbles briefly as your %s sinks out of sight.",
+	    inv_name(obj, TRUE));
+	discard(item);
+	item = NULL;
     }
     else {
 	/*
 	 * Link it into the level object list
 	 */
-	add_obj(obj, hero.y, hero.x);
-	mvaddch(hero.y, hero.x, op->o_type);
+	add_obj(item, hero.y, hero.x);
+	mvaddch(hero.y, hero.x, obj->o_type);
     }
-    if (op->o_type == ARTIFACT)
-	has_artifact &= ~(1 << op->o_which);
+    if (obj->o_type == ARTIFACT)
+	has_artifact &= ~(1 << obj->o_which);
     updpack();
     return (TRUE);
 }
@@ -339,8 +340,10 @@ register struct object *op;
     if (op != cur_armor && op != cur_weapon &&
 	op != cur_ring[LEFT_1] && op != cur_ring[LEFT_2] &&
 	op != cur_ring[LEFT_3] && op != cur_ring[LEFT_4] &&
+	op != cur_ring[LEFT_5] &&
 	op != cur_ring[RIGHT_1] && op != cur_ring[RIGHT_2] &&
-	op != cur_ring[RIGHT_3] && op != cur_ring[RIGHT_4]) 
+	op != cur_ring[RIGHT_3] && op != cur_ring[RIGHT_4] &&
+	op != cur_ring[RIGHT_5]) 
 	    return TRUE;
     if (op->o_flags & ISCURSED) {
 	msg("You can't.  It appears to be cursed.");
@@ -354,16 +357,20 @@ register struct object *op;
     }
     else if (op == cur_ring[LEFT_1] || op == cur_ring[LEFT_2] ||
 	op == cur_ring[LEFT_3] || op == cur_ring[LEFT_4] ||
+	op == cur_ring[LEFT_5] ||
 	op == cur_ring[RIGHT_1] || op == cur_ring[RIGHT_2] ||
-	op == cur_ring[RIGHT_3] || op == cur_ring[RIGHT_4]) {
+	op == cur_ring[RIGHT_3] || op == cur_ring[RIGHT_4] ||
+	op == cur_ring[RIGHT_5]) {
 	if      (op == cur_ring[LEFT_1])  cur_ring[LEFT_1]  = NULL;
 	else if (op == cur_ring[LEFT_2])  cur_ring[LEFT_2]  = NULL;
 	else if (op == cur_ring[LEFT_3])  cur_ring[LEFT_3]  = NULL;
 	else if (op == cur_ring[LEFT_4])  cur_ring[LEFT_4]  = NULL;
+	else if (op == cur_ring[LEFT_5])  cur_ring[LEFT_5]  = NULL;
 	else if (op == cur_ring[RIGHT_1]) cur_ring[RIGHT_1] = NULL;
 	else if (op == cur_ring[RIGHT_2]) cur_ring[RIGHT_2] = NULL;
 	else if (op == cur_ring[RIGHT_3]) cur_ring[RIGHT_3] = NULL;
 	else if (op == cur_ring[RIGHT_4]) cur_ring[RIGHT_4] = NULL;
+	else if (op == cur_ring[RIGHT_5]) cur_ring[RIGHT_5] = NULL;
 	switch (op->o_which) {
 	    when R_ADDSTR:
 		chg_str(-op->o_ac, FALSE, FALSE);
@@ -563,31 +570,11 @@ int type, which, hit, damage;
 	    obj->o_dplus = damage;
 	    obj->o_ac = 10;
 
-	    if (hit > 0 || damage > 0) obj->o_flags |= ISBLESSED;
-	    else if (hit < 0 || damage < 0) obj->o_flags |= ISCURSED;
-
 	when ARMOR:
 	    obj->o_ac = armors[which].a_class - hit;
-	    if (hit > 0) obj->o_flags |= ISBLESSED;
-	    else if (hit < 0) obj->o_flags |= ISCURSED;
 
 	when RING:
 	    obj->o_ac = hit;
-	    switch (obj->o_which) {
-		when R_ADDSTR:
-		case R_ADDWISDOM:
-		case R_ADDINTEL:
-		case R_PROTECT:
-		case R_ADDHIT:
-		case R_ADDDAM:
-		case R_DIGEST:
-		case R_RESURRECT:
-		case R_TELCONTROL:
-		    if (hit > 1) 
-			obj->o_flags |= ISBLESSED;
-		    else if (hit < 0) 
-			obj->o_flags |= ISCURSED;
-	    }
 
 	when STICK:
 	    fix_stick(obj);
@@ -598,6 +585,10 @@ int type, which, hit, damage;
 	    obj->o_count = GOLDCALC;
 	    obj->o_ac = 11;
     }
+    if (hit > 0 || damage > 0)
+	obj->o_flags |= ISBLESSED;
+    else if (hit < 0 || damage < 0)
+	obj->o_flags |= ISCURSED;
     return(item);
 }
 
@@ -646,18 +637,17 @@ long flags;
 
 /*
  * extras:
- *	Return the number of extra items to be created
+ *	Return the number of extra food items to be created
  */
 extras()
 {
-    reg int i;
+    reg int i = rnd(100);
 
-    i = rnd(100);
-    if (i < 4)		/* 4% for 2 more */
+    if (i < 10)
 	return (2);
-    else if (i < 11)	/* 7% for 1 more */
+    else if (i < 20)
 	return (1);
-    else			/* otherwise no more */
+    else
 	return (0);
 }
 /*
@@ -673,23 +663,23 @@ char type;
 {
 switch(type)
   {
-  case ARMOR:
+  when ARMOR:
     return("armor");
-  case WEAPON:
+  when WEAPON:
     return("weapons");
-  case SCROLL:
+  when SCROLL:
     return("scrolls");
-  case RING:
+  when RING:
     return("rings");
-  case STICK:
+  when STICK:
     return("staffs");
-  case POTION:
+  when POTION:
     return("potions");
-  case FOOD:
+  when FOOD:
     return("food");
-  case GOLD:
+  when GOLD:
     return("gold");
-  default:
+  otherwise:
     return("items");
   }
 }
@@ -705,9 +695,8 @@ make_item(obj_p)
  
 register object *obj_p;
 {
-register linked_list *item_p;
+register linked_list *item_p = (linked_list *) ur_alloc(sizeof(linked_list));
 
-item_p = (linked_list *) ur_alloc(sizeof(linked_list));
 next(item_p) = prev(item_p) = NULL;
 item_p->l_data = (char *) obj_p;
 return(item_p);

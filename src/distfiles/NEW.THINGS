@@ -1631,5 +1631,11 @@
 6)	thrown scrolls are cursed, returning weapons say so
 7)	druids can use silver weapons
 8)	minor artifact effect holds monsters
+9)	c casts a spell, C calls an item
+10)	options command takes no turn
+11)	wizard mode asks for the password only if allowed
+12)	new message when an item sinks in a pool
+13)	spec_item() blesses or curses anything by its plusses
+14)	food is more often +1 or +2
 
 -------	End of File ------
