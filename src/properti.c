@@ -69,7 +69,7 @@ char type;			/* character representing item (or NULL) */
 char id;			/* small number identifying item */
 {
     int index;			/* numeric identifier, if used */
-    char inv_temp[3*LINELEN];	/* plenty of space for paranoid programmers */
+    char inv_temp[4*LINELEN + 4];	/* plenty of space for paranoid programmers */
 
     extern char print_letters[];
   

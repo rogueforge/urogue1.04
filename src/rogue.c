@@ -70,7 +70,7 @@ char *lastarg;
 char curpurch[15];			/* name of item ready to buy */
 char PLAYER = VPLAYER;			/* what the player looks like */
 char take;				/* Thing the rogue is taking */
-char prbuf[2*LINELEN];			/* Buffer for sprintfs */
+char prbuf[4*LINELEN];			/* Buffer for sprintfs */
 char outbuf[LINELEN];			/* Output buffer for stdout */
 char runch;				/* Direction player is running */
 char whoami[2*LINELEN];			/* Name of player */

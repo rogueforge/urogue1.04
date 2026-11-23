@@ -955,7 +955,8 @@ pet_message:	    msg("The dungeon begins to rumble and shake!");
 	}
 	else if (askme && !know_items[TYP_SCROLL][which] && guess_items[TYP_SCROLL][which] == NULL) {
 	    msg(terse ? "Call it: " : "What do you want to call it? ");
-	    if (get_str(buf, cw) == NORM) {
+	    buf[0] = '\0';
+	    if (get_str(buf, cw) == NORM && buf[0] != '\0') {
 		guess_items[TYP_SCROLL][which] = new(strlen(buf) + 1);
 		strcpy(guess_items[TYP_SCROLL][which], buf);
 	    }

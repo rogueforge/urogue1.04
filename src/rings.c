@@ -106,7 +106,8 @@ ring_on()
 	     guess_items[TYP_RING][obj->o_which] == NULL) {
 	mpos = 0;
 	msg(terse ? "Call it: " : "What do you want to call it? ");
-	if (get_str(buf, cw) == NORM) {
+	buf[0] = '\0';
+	if (get_str(buf, cw) == NORM && buf[0] != '\0') {
 	    guess_items[TYP_RING][obj->o_which] = new((unsigned int) strlen(buf) + 1);
 	    strcpy(guess_items[TYP_RING][obj->o_which], buf);
 	}

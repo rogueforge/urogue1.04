@@ -71,7 +71,7 @@ get_stack(item)
 register struct linked_list *item;
 {
     register struct object *obj;
-    char buf[2*LINELEN];
+    char buf[4*LINELEN + 8];
     register int i = 0, j;
     register struct linked_list *ll;
 
