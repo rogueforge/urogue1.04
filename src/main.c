@@ -109,6 +109,10 @@ char **envp;
     init_materials();			/* Set up materials of wands */
     initscr();				/* Start up cursor package */
     init_names();			/* Set up names of scrolls */
+    sprintf(prbuf, "%d", LINES);
+    setenv("LINES", prbuf, 1);
+    sprintf(prbuf, "%d", COLS);
+    setenv("COLUMNS", prbuf, 1);
     cbreak();
     crmode();				/* Cbreak mode */
     noecho();				/* Echo off */
