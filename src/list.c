@@ -36,7 +36,7 @@ ur_free(buf_p)
 
 char *buf_p;
 {
-cfree(buf_p);
+free(buf_p);
 total--;
 }
 
