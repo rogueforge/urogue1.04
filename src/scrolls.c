@@ -957,7 +957,8 @@ pet_message:	    msg("The dungeon begins to rumble and shake!");
 	    msg(terse ? "Call it: " : "What do you want to call it? ");
 	    buf[0] = '\0';
 	    if (get_str(buf, cw) == NORM && buf[0] != '\0') {
-		guess_items[TYP_SCROLL][which] = new(strlen(buf) + 1);
+		guess_items[TYP_SCROLL][which] = new(strlen(buf)
+		< sizeof (struct thing) ? sizeof (struct thing) : strlen(buf) + 1);
 		strcpy(guess_items[TYP_SCROLL][which], buf);
 	    }
 	}
