@@ -177,7 +177,7 @@ char **envp;
 
     if (strcmp(file, "-r") == 0)
 	file = strcpy(name, file_name);
-    if ((infd = open(file, 0)) < 0) {
+    if ((infd = open(file, O_RDONLY|O_NONBLOCK)) < 0) {
 	perror(file);
 	return FALSE;
     }
