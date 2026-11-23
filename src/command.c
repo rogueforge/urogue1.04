@@ -967,10 +967,11 @@ bool mark;
 		return;
 	    }
     }
-    elsewise = (guess_items[item_type][obj->o_which] != NULL ?
-		guess_items[item_type][obj->o_which] :
-		item_color[obj->o_which]);
-    if (know_items[item_type][obj->o_which] && !mark) {
+    if (!mark)
+	elsewise = (guess_items[item_type][obj->o_which] != NULL ?
+		    guess_items[item_type][obj->o_which] :
+		    item_color[obj->o_which]);
+    if (!mark && know_items[item_type][obj->o_which]) {
 	msg("That has already been identified.");
 	return;
     }
