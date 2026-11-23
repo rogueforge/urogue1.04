@@ -23,7 +23,7 @@ char **envp;
     register int x;
     register char *env;
     char *crypt(), *strrchr();
-    int lowtime;
+    int lowtime, fd;
     long now;
 	int rflag;
 
@@ -55,6 +55,10 @@ char **envp;
     strcpy(score_file, "urogue.scr");
 #endif
 
+    while ((fd = open("/dev/null", 2)) >= 0 && fd < 3)
+	continue;
+    if (fd >= 3)
+	close(fd);
     fd_score = open(score_file, 2);
 
     if ((env = getenv("OPTIONS")) != NULL)
