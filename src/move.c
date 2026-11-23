@@ -731,7 +731,8 @@ register coord *tc;
 		do {
 		    rm = rnd_room();
 		    rnd_pos(&rooms[rm], &th->t_pos);
-		} until(winat(th->t_pos.y, th->t_pos.x) == FLOOR);
+		} until(winat(th->t_pos.y, th->t_pos.x) == FLOOR
+			&& !ce(th->t_pos, hero));
 
 		/* Put it there */
 		mvwaddch(mw, th->t_pos.y, th->t_pos.x, th->t_type);
