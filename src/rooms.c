@@ -159,13 +159,13 @@ do_rooms()
 
 		    nitem = new_item(sizeof (struct thing));
 		    new_monster(nitem, which, mpos, NOMAXSTATS);
-		    /* If the monster is on a trap, trap it */
-		    if (isatrap(mvinch(mpos->y, mpos->x)))
-			be_trapped( THINGPTR(nitem), mp);
 		    if (on(*tp, ISFRIENDLY))
 			turn_on(*(THINGPTR(nitem)), ISFRIENDLY);
 		    else
 			turn_off(*(THINGPTR(nitem)), ISFRIENDLY);
+		    /* If the monster is on a trap, trap it */
+		    if (isatrap(mvinch(mpos->y, mpos->x)))
+			be_trapped( THINGPTR(nitem), mpos);
 		}
 	    }
 	    if (count > 0) {
