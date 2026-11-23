@@ -502,7 +502,7 @@ void
 byebye()
 {
     endwin();
-    ttputc('\n');
+    printf("\n");
     exit(0);
 }
 

@@ -149,7 +149,12 @@ shoot_ok(ch)
 
 readchar()
 {
-    return (ttgetc() & 0x7f);
+    char c;
+
+    fflush(stdout);
+    while (read(0, &c, 1) < 0)
+	;
+    return (c & 0177);
 }
 
 /*
