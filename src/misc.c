@@ -794,7 +794,7 @@ electrificate()
 	nitem = next(item);
 	if (DISTANCE(tp->t_pos.y, tp->t_pos.x, hero.y, hero.x) < affect_dist) {
 	    register int damage = roll(2,player.t_stats.s_lvl);
-	    debug("Charge does %d (%d)", damage, tp->t_stats.s_hpt - damage);
+	    debug("Charge does %d (%ld)", damage, tp->t_stats.s_hpt - damage);
 	    if (on(*tp, NOBOLT))
 	       continue;
 	    if ((tp->t_stats.s_hpt -= damage) <= 0) {

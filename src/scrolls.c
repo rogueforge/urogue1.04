@@ -850,7 +850,7 @@ pet_message:	    msg("The dungeon begins to rumble and shake!");
 		turn_on(*tp, WASSUMMONED);
 		turn_on(player, HASSUMMONED);
 		msg("You have summoned a %s.", monsters[tp->t_index].m_name);
-		fuse(unsummon, (int) llp, WANDERTIME + rnd(pstats.s_lvl), AFTER); 
+		fuse(unsummon, (long) llp, WANDERTIME + rnd(pstats.s_lvl), AFTER); 
 	    }
 	}
 	when S_REFLECT:

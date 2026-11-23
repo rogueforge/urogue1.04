@@ -394,25 +394,25 @@
  * on - check if a monster flag is on
  */
 #define	on(th, flag) \
-	((th).t_flags[(flag >> FLAGSHIFT) & FLAGINDEX] & (flag << 4))
+	((th).t_flags[(flag >> FLAGSHIFT) & FLAGINDEX] & ((flag << 4) & 0xffffffffL))
 
 /*
  * off - check if a monster flag is off
  */
 #define	off(th, flag) \
-	(!((th).t_flags[(flag >> FLAGSHIFT) & FLAGINDEX] & (flag << 4)))
+	(!((th).t_flags[(flag >> FLAGSHIFT) & FLAGINDEX] & ((flag << 4) & 0xffffffffL)))
 
 /*
  * turn_on - turn on a monster flag
  */
 #define	turn_on(th, flag) \
-	( (th).t_flags[(flag >> FLAGSHIFT) & FLAGINDEX] |= (flag << 4))
+	( (th).t_flags[(flag >> FLAGSHIFT) & FLAGINDEX] |= ((flag << 4) & 0xffffffffL))
 
 /*
  * turn_off - turn off a monster flag
  */
 #define	turn_off(th, flag) \
-	( (th).t_flags[(flag >> FLAGSHIFT) & FLAGINDEX] &= ~(flag << 4))
+	( (th).t_flags[(flag >> FLAGSHIFT) & FLAGINDEX] &= ~((flag << 4) & 0xffffffffL))
 
 
 /* types of things */
@@ -951,11 +951,12 @@ struct linked_list
     *new_thing(), *wake_monster(), *get_hurl(), *spec_item(), 
     *find_mons_around(),*summon_monster();
 
-struct object *wield_weap();
+struct object *wield_weap(), *apply_to_bag(), *new_artifact(), *pop_bag();
 
 char *malloc(), *getenv(), *tr_name(), *new();
 char *vowelstr(), *inv_name(), *strcpy(), *strcat();
 char *ctime(), *num(), *ring_num(), *blesscurse();
+char *charge_str(), *name_type(), *ur_alloc();
 #if !defined(unctrl)
 char *unctrl();
 #endif
@@ -979,7 +980,7 @@ int	auto_save(), quit(), endit(), nohaste(), res_strength(), doctor(),
 
 bool	blue_light(), can_blink(), shoot_bolt(), add_pack(),
 	straight_shot(), maze_view(), is_carrying(), possessed(),
-	wear_ok(), wield_ok(), is_stealth(), is_wearing();
+	wear_ok(), wield_ok(), is_stealth(), is_wearing(), make_artifact();
 
 void	byebye(), id_monst();
 
@@ -988,6 +989,10 @@ int	hearmsg(char *fmt, ...), seemsg(char *fmt, ...);
 
 
 struct trap *trap_at();
+
+struct delayed_action *find_slot();
+
+int start_daemon(int (*)(), long, int), fuse(int (*)(), long, int, int);
 
 extern struct h_list helpstr[];
 

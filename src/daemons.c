@@ -530,7 +530,7 @@ undisguise()
  * Unsummon a monster
  */
 unsummon(monst)
-int
+long
    monst;
 {
 struct linked_list

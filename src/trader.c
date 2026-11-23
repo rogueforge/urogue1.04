@@ -179,21 +179,21 @@ buy_more:
 			for (i = 0, m_item = magic_array; i < array_size;
 								i++, m_item++)
 			    if (!is_spell && m_item->mi_worth > 0) {
-				sprintf(buf, "%3d) %8d %s", i,
+				sprintf(buf, "%3d) %8ld %s", i,
 					m_item->mi_worth, m_item->mi_name);
 				add_line(buf);
 			    }
 		    when TYP_ARMOR:
 			for (i = 0; i < array_size; i++)
 			    if (!is_spell && armors[i].a_worth > 0) {
-				sprintf(buf, "%3d) %8d %s", i,
+				sprintf(buf, "%3d) %8ld %s", i,
 					armors[i].a_worth, armors[i].a_name);
 				add_line(buf);
 			    }
 		    when TYP_WEAPON:
 			for (i = 0; i < array_size; i++)
 			    if (!is_spell && weaps[i].w_worth > 0) {
-				sprintf(buf, "%3d) %8d %s", i,
+				sprintf(buf, "%3d) %8ld %s", i,
 					weaps[i].w_worth, weaps[i].w_name);
 				add_line(buf);
 			    }
@@ -577,7 +577,7 @@ trans_line()
 	reg int adorned = is_wearing(R_ADORNMENT);
 
 	if (level == 0 && purse > 0)
-	    sprintf(buf, "You still have %d pieces of gold left.", purse);
+	    sprintf(buf, "You still have %lu pieces of gold left.", purse);
 	else if (purse == 0)
 	    sprintf(buf, "You have no money left.");
 	else if (!wizard)

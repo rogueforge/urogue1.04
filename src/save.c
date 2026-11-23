@@ -105,7 +105,7 @@ char **envp;
     fflush(stdout);
     brk(version + sbuf2.st_size);
     lseek(infd, 0L, 0);
-    encread(version, (int) sbuf2.st_size, infd);
+    encread(version, (long) sbuf2.st_size, infd);
 
     /*
      * we do not close the file so that we will have a hold of the

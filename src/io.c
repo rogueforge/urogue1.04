@@ -179,7 +179,7 @@ bool display;	/* is TRUE, display unconditionally */
     mvwaddstr(cw, LINES - 2, 0, buf);
     wclrtoeol(cw);
 
-    sprintf(buf, "Lvl:%d Au:%d Hpt:%d(%d) Pow:%d(%d) Ac:%d Exp:%d+%ld %s",
+    sprintf(buf, "Lvl:%d Au:%lu Hpt:%ld(%ld) Pow:%d(%d) Ac:%d Exp:%d+%ld %s",
 	level,
 	purse,
 	stat_ptr->s_hpt, max_ptr->s_hpt,

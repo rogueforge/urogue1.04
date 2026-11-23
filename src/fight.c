@@ -987,7 +987,7 @@ bool print_message;
 	    max_stats.s_exp *= 2L;		/* twice as many for next */
     }
     if (print_message)
-	msg("You need %d more points to attain the %stitle of %s.", 
+	msg("You need %ld more points to attain the %stitle of %s.", 
 		max_stats.s_exp-pstats.s_exp,
 		(pstats.s_lvl>14 ? "next " : ""),
 		cnames[player.t_ctype][min(pstats.s_lvl, 14)]);
@@ -1209,7 +1209,7 @@ struct object *cur_weapon;
 	    }
 
 	    def->s_hpt -= damage;	/* Do the damage */
-	    debug("Hit %s for %d (%d) ",
+	    debug("Hit %s for %d (%ld) ",
 		monsters[def_er->t_index].m_name, damage, 
 		def_er->t_stats.s_hpt);
 
@@ -1223,7 +1223,7 @@ struct object *cur_weapon;
 		player.t_ctype == C_FIGHTER &&
 		damage > def_er->maxstats.s_hpt / 3) {
 		if (def->s_hpt > 0) {
-		    msg("The %s has been stunned! HP=%d",
+		    msg("The %s has been stunned! HP=%ld",
 			monsters[def_er->t_index].m_name, def->s_hpt);
 		    def_er->t_no_move += rnd(4) + 1;
 		}

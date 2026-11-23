@@ -350,7 +350,7 @@ int flags;
 	    damage = roll(pstats.s_lvl, nsides);
 
 	    if (isalpha(ch)) {
-		debug("Missiled %s for %d (%d)",
+		debug("Missiled %s for %d (%ld)",
 		    mname, damage, tp->t_stats.s_hpt-damage);
 		if ((tp->t_stats.s_hpt -= damage) <= 0) {
 		    seemsg("The missile kills the %s.", mname);
@@ -1179,7 +1179,7 @@ at_hero:
 	    else tp = THINGPTR(item);
 	    mname = on(player, ISBLIND) ? "monster" : monsters[tp->t_index].m_name;
 
-	    debug("Zapped %s for %d (%d)",
+	    debug("Zapped %s for %d (%ld)",
 		mname, take_that[x], tp->t_stats.s_hpt-take_that[x]);
 	    if ((tp->t_stats.s_hpt -= take_that[x]) <= 0) {
 		if (cansee(tp->t_pos.y, tp->t_pos.x))

@@ -102,7 +102,7 @@ puta_player()
 	sprintf(pbuf, "You have a %s with the following attributes:",class);
 	mvwaddstr(hw,2,0,pbuf);
 	wclrtoeol(hw);
-	sprintf(pbuf, "Int: %d Str: %d Wis: %d Dex: %d Con: %d Cha: %d Pow: %d Hpt: %d",
+	sprintf(pbuf, "Int: %d Str: %d Wis: %d Dex: %d Con: %d Cha: %d Pow: %d Hpt: %ld",
 	    pstats.s_intel,
 	    pstats.s_str,
 	    pstats.s_wisdom,

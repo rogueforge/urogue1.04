@@ -168,9 +168,9 @@ int size;
     register struct linked_list *item;
 
     if ((item = (struct linked_list *) new(sizeof *item)) == NULL)
-	msg("Ran out of memory for header after %d items.", total);
+	msg("Ran out of memory for header after %lu items.", total);
     if ((item->l_data = new(size)) == NULL)
-	msg("Ran out of memory for data after %d items.", total);
+	msg("Ran out of memory for data after %lu items.", total);
     item->l_next = item->l_prev = NULL;
     return item;
 }
@@ -183,8 +183,8 @@ unsigned int size;
     static char errbuf[2*LINELEN];
 
     if (space == NULL) {
-	sprintf(errbuf,"Rogue ran out of memory (used = %d, wanted = %d).",
-		sbrk(0), size);
+	sprintf(errbuf,"Rogue ran out of memory (used = %ld, wanted = %d).",
+		(long) sbrk(0), size);
 	fatal(errbuf);
     }
     return space;
