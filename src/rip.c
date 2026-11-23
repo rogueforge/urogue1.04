@@ -175,7 +175,7 @@ int lvl;
 	nl();
 	mvaddstr(LINES - 1, 0, retstr);
 	refresh();
-	gets(prbuf);
+	fgets(prbuf, 2*LINELEN, stdin);
 	showpack(packend);
     }
 
@@ -204,7 +204,7 @@ int lvl;
 	mvaddstr(LINES - 1, 0, retstr);
 	refresh();
 	fflush(stdout);
-	gets(prbuf);
+	fgets(prbuf, 2*LINELEN, stdin);
     }
     encread((char *) top_ten, sizeof top_ten, fd_score);
     /*
@@ -281,7 +281,7 @@ int lvl;
     	putchar('\n');
     	printf(retstr);
     	fflush(stdout);
-    	gets(prbuf);
+    	fgets(prbuf, 2*LINELEN, stdin);
     }
 }
 
