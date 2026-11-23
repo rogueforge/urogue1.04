@@ -471,7 +471,7 @@ command()
 		    	}
 		    }
 		when ESCAPE :	/* Escape */
-			after = doescape();
+			after = FALSE;
 		otherwise :
 		    msg("Illegal command '%s'.", unctrl(ch));
 		    count = 0;
@@ -797,11 +797,6 @@ help()
     wait_for(' ');
     wclear(hw);
     wrefresh(hw);
-
-    /*
-     * Print info on keypad
-     */
-    keypadhelp();
 
     wmove(cw, 0, 0);
     wclrtoeol(cw);
