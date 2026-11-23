@@ -7,6 +7,7 @@
  */
 #include <curses.h>
 #include <stdarg.h>
+#include <time.h>
 
 /* Movement penalties */
 #define SHOTPENALTY 2		/* In line of sight of missile */
