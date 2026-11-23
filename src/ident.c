@@ -109,6 +109,7 @@ register struct object *obj_p;
 	if (obj_p == OBJPTR(list_p)) {
 	    _detach(&ident_list, list_p);	/* unlink it from the list */
 	    ur_free(list_p);		/* release link structure */
+	    break;
 	}
     }
 }
