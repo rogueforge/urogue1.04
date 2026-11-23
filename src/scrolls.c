@@ -1129,6 +1129,6 @@ int flags;
 	}
     otherwise:
 	debug("'%s' is a strange scroll for a monster to read!",
-	    r_magic[which].mi_name);
+	    s_magic[which].mi_name);
     }
 }
