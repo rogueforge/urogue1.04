@@ -10,6 +10,10 @@
 #include <time.h>
 #include <unistd.h>
 
+#ifdef NCURSES_VERSION
+#define unctrl unctrl
+#endif
+
 /* Movement penalties */
 #define SHOTPENALTY 2		/* In line of sight of missile */
 #define DOORPENALTY 1		/* Moving out of current room */
