@@ -927,8 +927,11 @@ bool thrown;
     else if (visible)
 	msg("The %s misses the %s.",mname1,mname2);
 
-    if (off(*attackee, ISMEAN) && off(*attackee, ISFAMILIAR))
+    if (off(*attackee, ISMEAN) && off(*attackee, ISFAMILIAR)) {
 	turn_on(*attackee,ISRUN);
+	if (attackee->t_dest == NULL)
+	    attackee->t_dest = &hero;
+    }
 
     if (fight_flush)
 	flushout();
