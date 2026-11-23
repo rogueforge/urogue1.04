@@ -1535,6 +1535,11 @@ register struct linked_list *item;
     register char ch;
     register struct thing *tp;
 
+    if (item == curr_mons)	/* flag monster as gone for do_chase() */
+	curr_mons = NULL;
+    else if (item == next_mons)
+	next_mons = next(next_mons);
+
     mvwaddch(mw, mp->y, mp->x, ' ');
     tp = THINGPTR(item);
     ch = tp->t_oldch;
