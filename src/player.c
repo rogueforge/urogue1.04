@@ -211,7 +211,7 @@ gsense()
 	    return(TRUE);
 	}
     }
-    nothing_message();
+    nothing_message(ISNORMAL);
     return(FALSE);
 }
 
