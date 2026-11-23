@@ -5,6 +5,7 @@
  * This file contains functions for casting magic spells
  */
 
+#include <stdlib.h>
 #include "rogue.h"
 #include "death.h"
 #include <ctype.h>
