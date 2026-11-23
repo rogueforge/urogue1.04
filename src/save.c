@@ -16,8 +16,6 @@ typedef struct stat STAT;
 extern char version[], *strerror();
 #include <errno.h>
 
-char *sbrk();
-
 STAT sbuf;
 
 save_game()
