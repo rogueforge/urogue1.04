@@ -9,7 +9,7 @@
 #include <ctype.h>
 #include "rogue.h"
 
-static char *rainbow[] = {
+static char rainbow[][11] = {
 	"Red",		"Blue",		"Green",	"Yellow",
 	"Black",	"Brown",	"Orange",	"Pink",
 	"Purple",	"Grey",		"White",	"Silver",
@@ -19,7 +19,7 @@ static char *rainbow[] = {
 	"Aquamarine",	"Scarlet",	"Khaki",	"Crimson",
 	"Indigo",	"Beige",	"Lavender",	"Saffron"
 } ;
-#define NCOLORS (sizeof rainbow / sizeof (char *))
+#define NCOLORS (sizeof rainbow / sizeof rainbow[0])
 
 static char *sylls[] = {
     "a", "ab", "ag", "aks", "ala", "an", "ankh", "app", "arg", "arze",
@@ -41,7 +41,7 @@ static char *sylls[] = {
     "zant", "zap", "zeb", "zim", "zok", "zon", "zum"
 } ;
 
-static char *stones[] = {
+static char stones[][14] = {
 	"Agate",		"Alexandrite",		"Amethyst",
 	"Azurite",		"Carnelian",		"Chrysoberyl",
 	"Chrysoprase",		"Citrine",		"Diamond",
@@ -55,9 +55,9 @@ static char *stones[] = {
 	"Spinel",		"Tiger eye",		"Topaz",
 	"Tourmaline",		"Turquoise"
 } ;
-#define NSTONES (sizeof stones / sizeof (char *))
+#define NSTONES (sizeof stones / sizeof stones[0])
 
-static char *wood[] = {
+static char wood[][15] = {
 	"Avocado wood",	"Balsa",	"Banyan",	"Birch",
 	"Cedar",	"Cherry",	"Cinnibar",	"Dogwood",
 	"Driftwood",	"Ebony",	"Eucalyptus",	"Hemlock",
@@ -65,15 +65,15 @@ static char *wood[] = {
 	"Oak",		"Pine",		"Redwood",	"Rosewood",
 	"Teak",		"Walnut",	"Zebra wood", 	"Persimmon wood"
 } ;
-#define NWOOD (sizeof wood / sizeof (char *))
+#define NWOOD (sizeof wood / sizeof wood[0])
 
-static char *metal[] = {
+static char metal[][10] = {
 	"Aluminium",	"Bone",		"Brass",	"Bronze",
 	"Copper",	"Chromium",	"Iron",		"Lead",
 	"Magnesium",	"Pewter",	"Platinum",	"Steel",
 	"Tin",		"Titanium",	"Zinc"
 } ;
-#define NMETAL (sizeof metal / sizeof (char *))
+#define NMETAL (sizeof metal / sizeof metal[0])
 
 
 
