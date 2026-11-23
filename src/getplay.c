@@ -228,27 +228,27 @@ int c_class;
 	char	*class;
 
 	switch(c_class) {
-	    case C_FIGHTER:
+	    when C_FIGHTER:
 		class = "fighter";
-	    case C_MAGICIAN:
+	    when C_MAGICIAN:
 		class = "magician";
-	    case C_CLERIC:
+	    when C_CLERIC:
 		class = "cleric";
-	    case C_THIEF:
+	    when C_THIEF:
 		class = "thief";
-	    case C_PALADIN:
+	    when C_PALADIN:
 	        class = "paladin";
-	    case C_RANGER:
+	    when C_RANGER:
 	        class = "ranger";
-	    case C_DRUID:
+	    when C_DRUID:
 	        class = "druid";
-	    case C_ILLUSION:
+	    when C_ILLUSION:
 	        class = "illusionist";
-	    case C_ASSASIN:
+	    when C_ASSASIN:
 	        class = "assasin";
-	    case C_NINJA:
+	    when C_NINJA:
 	        class = "ninja";
-	    default:
+	    otherwise:
 		class = "monster";
 	}
 	return(class);
