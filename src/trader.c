@@ -384,7 +384,7 @@ sell_it()
 {
 	reg struct object *obj;
 	reg struct linked_list *item;
-	char buf[2*LINELEN];
+	char buf[4*LINELEN + 32];
 
 	if ((item = get_item("sell", 0)) == NULL)
 	    return;
@@ -416,11 +416,11 @@ sell_it()
 	}
 
 	rem_pack(obj);
+	sprintf(buf, "Sold %s.  Hit space to continue.", inv_name(obj, LOWERCASE));
 	discard(item);
 	purse += cur_worth;		/* give him his money */
 	++num_transactions;
 	effective_purse += cur_worth;
-	sprintf(buf, "Sold %s.  Hit space to continue.", inv_name(obj, LOWERCASE));
 	mvwaddstr(hw, 13, 0, buf);
 	touchwin(hw);
 	wrefresh(hw);
