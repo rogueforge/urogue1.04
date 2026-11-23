@@ -299,14 +299,18 @@ eat()
 {
     register struct object *obj;
     register int amount;
+    int which;
+    long flags;
 
     object *get_object();
 
     if ((obj = get_object(pack, "eat", FOOD, NULL)) == NULL)
 	return;
+    which = obj->o_which;
+    flags = obj->o_flags;
     if (--obj->o_count == 0)
 	discard_pack(obj);
-    switch (obj->o_which) {
+    switch (which) {
 	when FD_RATION:
 	    amount = HUNGERTIME + rnd(400) - 200;
 	    if (rnd(100) > 70) {
@@ -337,7 +341,7 @@ eat()
 	    amount = HUNGERTIME;
     }
     food_left += amount;
-    if (obj->o_flags & ISBLESSED) {
+    if (flags & ISBLESSED) {
 	food_left += 2 * amount;
 	msg("You have a tingling feeling in your mouth.");
     }
