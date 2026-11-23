@@ -351,7 +351,8 @@ register char *str;
 		    *(bool *)op->o_opt = TRUE;
 		else {			/* string option */
 		    register char *start;
-		    char value[80];
+		    register int n;
+		    char value[2*LINELEN];
 
 		    /*
 		     * Skip to start of string value
@@ -364,7 +365,9 @@ register char *str;
 		     */
 		    for (sp = str + 1; *sp && *sp != ','; sp++)
 			continue;
-		    strcpy(start, str, sp - str);
+		    n = min(sp - str, sizeof value - 1);
+		    strncpy(start, str, n);
+		    start[n] = '\0';
 
 		    /* Put the value into the option field */
 		    if (op->o_putfunc != put_abil && op->o_putfunc != put_inv)

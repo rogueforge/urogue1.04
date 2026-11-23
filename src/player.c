@@ -20,7 +20,7 @@
 prayer()
 {
     register int chance, i, times;
-    char ch, num_str[20];
+    char ch, num_str[2*LINELEN];
     struct linked_list *item, *f_mons_a();
     struct thing *tp;
     bool got_one = FALSE;
