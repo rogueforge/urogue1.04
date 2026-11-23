@@ -18,6 +18,7 @@ ring_on()
     if ((item = get_item("put on", RING)) == NULL)
 	return;
     obj = OBJPTR(item);
+    ur_free((char *) item);
     if (obj->o_type != RING) {
 	msg("You can't put that on!");
 	return;
@@ -139,7 +140,8 @@ ring_off()
 	    return;
     mpos = 0;
     obj = OBJPTR(item);
-    if ((obj = OBJPTR(item)) == NULL)
+    ur_free((char *) item);
+    if (obj == NULL)
 	msg("%s wearing that!", terse ? "Not" : "You are not");
     if (dropcheck(obj)) {
 	switch (obj->o_which) {

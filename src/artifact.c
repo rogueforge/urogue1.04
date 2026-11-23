@@ -23,6 +23,7 @@ apply()
 	if ((item = get_item("activate", ARTIFACT)) == NULL)
 	    return;
 	obj = OBJPTR(item);
+	ur_free((char *) item);
 	which = obj->o_which;
 	if (!(obj->ar_flags & ISACTIVE)) {
 	    chance = rnd(100) - 10 * rnd(luck);
@@ -981,6 +982,8 @@ do_bag(obj)
 		item_p = make_item(obj_p);	/* attach upper structure */
 		if (add_pack(item_p, MESSAGE) != FALSE) 
 		    pop_bag(obj->o_bag, obj_p);
+		else
+		    ur_free((char *) item_p);
 		}
 	    }
 	when 3: 

@@ -38,10 +38,12 @@ int flags;
 	obj = OBJPTR(item);
 	if (obj->o_type != SCROLL) {
 	    msg ("It says 'Made in Yugoslavia'!");
+	    ur_free((char *) item);
 	    return;
 	}
 	if (on(player, ISBLIND)) {
 	    msg("You can't see to read anything.");
+	    ur_free((char *) item);
 	    return;
 	}
 
@@ -401,6 +403,7 @@ int flags;
 	    else {
 		if ((nitem = get_item("remove the curse on",0)) != NULL) {
 		    obj = OBJPTR(nitem);
+		    ur_free((char *) nitem);
 		    msg("Removed the curse from %s.",inv_name(obj,LOWERCASE));
 		    obj->o_flags &= ~ISCURSED;
 		    if (is_scroll)
@@ -484,6 +487,7 @@ pet_message:	    msg("The dungeon begins to rumble and shake!");
 	    if ((item = get_item("protect",0)) != NULL) {
 		struct object *lb = OBJPTR(item);
 
+		ur_free((char *) item);
 		if (cursed) {
 		    lb->o_flags &= ~ISPROT;
 		    mpos = 0;
@@ -624,8 +628,10 @@ pet_message:	    msg("The dungeon begins to rumble and shake!");
 			lb->o_flags |= flags;
 		}
 		mpos = 0;
-		if (lb != NULL) 
+		if (lb != NULL) {
 		    msg("Enchanted %s.", inv_name(lb,LOWERCASE));
+		    ur_free((char *) ll);
+		}
 	    }
 	}
 	when S_NOTHING:
@@ -639,6 +645,7 @@ pet_message:	    msg("The dungeon begins to rumble and shake!");
 	    }
 	    if ((item = get_item("annoint",WEAPON)) != NULL) {
 		lb = OBJPTR(item);
+		ur_free((char *) item);
 		if (blessed && !(lb->o_flags & ISSILVER)) {
 		    lb->o_hplus += rnd(3) + 1;
 		    lb->o_flags |= ISSILVER;
@@ -671,6 +678,7 @@ pet_message:	    msg("The dungeon begins to rumble and shake!");
 	    }
 	    if ((ll = get_item("claim",0)) != NULL) {
 		lb = OBJPTR(ll);
+		ur_free((char *) ll);
 		if (cursed && lb->o_flags & (ISOWNED | CANRETURN)) {
 		    lb->o_flags &= ~(ISOWNED | CANRETURN);
 		    msg("The gods seem to have forgotten you.");

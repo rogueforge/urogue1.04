@@ -28,8 +28,11 @@ register struct thing *tp;
     if (item == NULL)
 	return;
     obj = OBJPTR(item);
-    if (!dropcheck(obj) || is_current(obj))
+    if (!dropcheck(obj) || is_current(obj)) {
+	if (tp == &player)
+	    ur_free((char *) item);
 	return;
+    }
     /*
     * Get rid of the thing. If it is a non-multiple item object, or
     * if it is the last thing, just drop it. Otherwise, create a new
@@ -48,6 +51,8 @@ register struct thing *tp;
 	obj = OBJPTR(nitem);
 	*obj = *(OBJPTR(item));
 	obj->o_count = 1;
+	if (tp == &player)
+	    ur_free((char *) item);
 	item = nitem;
     }
     switch (obj->o_type) {
@@ -310,6 +315,7 @@ wield()
 	return;
     }
     obj = OBJPTR(item);
+    ur_free((char *) item);
     if (is_current(obj)) {
 	after = FALSE;
 	return;

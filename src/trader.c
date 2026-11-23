@@ -398,6 +398,7 @@ sell_it()
 	    msg("We don't buy those.");
 	    if (is_wearing(R_ADORNMENT) && rnd(10) < 4)
 		msg("How about that %s ring instead?", r_stones[R_ADORNMENT]);
+	    ur_free((char *) item);
 	    return;
 	}
 	describe_it(obj);
@@ -412,6 +413,7 @@ sell_it()
 		if (is_wearing(R_ADORNMENT))
 		    msg("How about that %s ring instead?",
 			r_stones[R_ADORNMENT]);
+		ur_free((char *) item);
 		return;
 	}
 

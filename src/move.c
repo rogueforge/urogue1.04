@@ -1042,6 +1042,7 @@ dip_it()
 	    return;
 	}
 	ob = OBJPTR(what);
+	ur_free((char *) what);
 	mpos = 0;
 	if (ob == cur_armor) {
 	    msg("You have to take off your armor before you can dip it.");

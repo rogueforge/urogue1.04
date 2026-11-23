@@ -428,6 +428,7 @@ int flags;
 	    }
 	    if ((nitem = get_item("charge", STICK)) != NULL) {
 		nobj = OBJPTR(nitem);
+		ur_free((char *) nitem);
 		if ((nobj->o_charges == 0) && (nobj->o_which != WS_CHARGE)) {
 		    fix_stick(nobj);
 		    if (blessed) nobj->o_charges *= 2;

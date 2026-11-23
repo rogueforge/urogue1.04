@@ -44,6 +44,7 @@ int flags;
 	obj = OBJPTR(item);
 	if (obj->o_type != POTION) {
 	    msg("You can't drink that!");
+	    ur_free((char *) item);
 	    return;
 	}
 
