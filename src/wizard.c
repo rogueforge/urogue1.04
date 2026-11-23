@@ -72,7 +72,7 @@ teleport()
 	msg("Where do you wish to teleport to? (* for help)");
 	wmove(cw, hero.y, hero.x);
 	wrefresh(cw);
-	which = (short) (getchar() & 0177);
+	which = (short) readchar();
 	while (which != (short)ESCAPE && which != (short)LINEFEED &&
 					 which != (short)CARRIAGE_RETURN) {
 	    switch(which) {
@@ -93,7 +93,7 @@ teleport()
 	    c.x = min(c.x, COLS - 1);
 	    wmove(cw, c.y, c.x);
 	    wrefresh(cw);
-	    which = (short) (getchar() & 0177);
+	    which = (short) readchar();
 	} 
 	which = winat(c.y, c.x);
 	if ((which == FLOOR || which == PASSAGE || which == DOOR) &&
@@ -166,7 +166,7 @@ passwd()
     msg("Wizard's Password:");
     mpos = 0;
     sp = buf;
-    while ((c = (getchar() & 0177)) != '\n' && c != '\r' && c != '\033')
+    while ((c = readchar()) != '\n' && c != '\r' && c != '\033')
 	if (c == killchar())
 	    sp = buf;
 	else if (c == erasechar() && sp > buf)

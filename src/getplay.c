@@ -46,7 +46,7 @@ geta_player()
 	print_stored();
 	mvwaddstr(hw,0,0,"Do you wish to select a character? ");
 	wrefresh(hw);
-	if ((getchar() & 0177) != 'y')	return FALSE;
+	if (readchar() != 'y')	return FALSE;
 	do {
 	    wmove(hw, LINES - 1, 0);
 	    wclrtoeol(hw);
@@ -120,7 +120,7 @@ puta_player()
 	mvwaddstr(hw,0,0,"Would you like to save this character?");
 	wclrtoeol(hw);
 	wrefresh(hw);
-	if((getchar() & 0177) != 'y')
+	if(readchar() != 'y')
 	    return(TRUE);
 
 	do {

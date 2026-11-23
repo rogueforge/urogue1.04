@@ -1152,13 +1152,13 @@ register struct thing *tp;
     /* Get rid of the monster */
     killed(NULL, item, NOMESSAGE, NOPOINTS);
 
-    which_item = (short) ((getchar() & 0177) - 'a');
+    which_item = (short) (readchar() - 'a');
     while (which_item < 0 || which_item >= nitems || selection[which_item].worth > effective_purse) {
 	if (which_item == (short) ESCAPE - (short) 'a')
 	    return;
 	mvwaddstr(hw, 0, 0, "Please enter one of the listed items: ");
 	wrefresh(hw);
-	which_item = (short) ((getchar() & 0177) - 'a');
+	which_item = (short) (readchar() - 'a');
     }
 
     purse -= selection[which_item].worth;
