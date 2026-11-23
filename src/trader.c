@@ -82,7 +82,7 @@ int flags;
 	reg int i;
 	bool blessed = flags & ISBLESSED;
 	bool cursed = flags & ISCURSED;
-	bool is_spell = flags & SCR_MAGIC;
+	bool is_spell = (flags & SCR_MAGIC) != 0;
 	int array_size;			/* # of items within type */
 	int which_type;			/* Which type to buy */
 	int which_one;			/* Which one within type */
