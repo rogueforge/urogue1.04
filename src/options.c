@@ -20,7 +20,7 @@
 struct optstruct {
     char	*o_name;	/* option name */
     char	*o_prompt;	/* prompt for interactive entry */
-    bool	*o_opt;		/* pointer to thing to set */
+    char	*o_opt;		/* pointer to thing to set */
     int		(*o_putfunc)();	/* function to print value */
     int		(*o_getfunc)();	/* function to get value interactively */
 };
@@ -126,7 +126,7 @@ WINDOW *win;
  * print the character type
  */
 put_abil(ability, win)
-bool *ability;
+char *ability;
 WINDOW *win;
 {
     char *abil;
@@ -285,7 +285,7 @@ WINDOW *win;
  * The ability field is read-only
  */
 get_abil(abil, win)
-bool *abil;
+char *abil;
 WINDOW *win;
 {
     register int oy, ox, ny, nx;
@@ -432,7 +432,7 @@ register char *str;
  * print the inventory type
  */
 put_inv(inv, win)
-bool *inv;
+char *inv;
 WINDOW *win;
 {
     char *style;
@@ -456,7 +456,7 @@ WINDOW *win;
  * The inventory field.
  */
 get_inv(inv, win)
-bool *inv;
+char *inv;
 WINDOW *win;
 {
     register int oy, ox, ny, nx;

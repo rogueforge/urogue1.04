@@ -31,7 +31,7 @@ int prscore;				/* Print scores */
 int prnews;				/* Print news file */
 int prversion;				/* Print version info */
 
-bool char_type = C_NOTSET;		/* what type of character is player */
+char char_type = C_NOTSET;		/* what type of character is player */
 int foodlev = 1;			/* how fast he eats food */
 int ntraps;				/* Number of traps on this level */
 int seed;				/* Random number seed */
@@ -60,7 +60,7 @@ int picked_artifact = 0;
 int msg_index = 0;
 int luck = 0;
 int resurrect = 0;
-bool inv_type = INV_OVER;		/* Overwrite style of inventory */
+char inv_type = INV_OVER;		/* Overwrite style of inventory */
 int line_cnt;				/* Inventory stuff */
 int newpage;				/* Inventory stuff */
 int fam_type = 0;			/* The type of familiar */

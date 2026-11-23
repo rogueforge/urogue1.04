@@ -1208,7 +1208,7 @@ register int y, x;
     register bool is_player = (tp == &player);
     register int selection = rnd(7) + 1;
     register char ch, och;
-    bool thief_bonus = 0;
+    char thief_bonus = 0;
 
     switch (och = mvinch(y, x)) {
 	case WALL:
