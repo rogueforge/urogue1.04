@@ -514,6 +514,7 @@ register bool flee;
     else if (shoot_dir && on(*tp, CANCAST) && 
 	     (off(player, ISDISGUISE) || (rnd(tp->t_stats.s_lvl) > 6))) {
 	incant(tp, *shoot_dir);
+	if (!curr_mons) return(TRUE);
 	ch_ret = *er;
 	dist = DISTANCE(ch_ret.y, ch_ret.x, ee->y, ee->x);
     }
