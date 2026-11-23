@@ -988,8 +988,6 @@ bool mark;
 	addmsg(terse ? "C" : "Was c");
 	msg("alled \"%s\".", elsewise);
 	msg(terse ? "Call it: " : "What do you want to call it? ");
-	if (guess_items[item_type][obj->o_which] != NULL)
-	    free(guess_items[item_type][obj->o_which]);
 	strcpy(prbuf, elsewise);
     }
     if (get_str(prbuf, cw) == NORM) {
@@ -998,6 +996,8 @@ bool mark;
 	    obj->o_mark[MARKLEN-1] = '\0';
 	}
 	else {
+	    if (guess_items[item_type][obj->o_which] != NULL)
+		free(guess_items[item_type][obj->o_which]);
 	    guess_items[item_type][obj->o_which] =
 		new((unsigned int) strlen(prbuf) + 1);
 	    strcpy(guess_items[item_type][obj->o_which], prbuf);
