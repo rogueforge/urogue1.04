@@ -1525,9 +1525,10 @@ register char *mname;
 }
 
 /*
- * remove a monster from the screen
+ * remove_mon:
+ *	Remove a monster from the screen
  */
-remove(mp, item)
+remove_mon(mp, item)
 register coord *mp;
 register struct linked_list *item;
 {
@@ -1671,7 +1672,7 @@ bool print_message, give_points;
 	     discard(pitem);
 	else fall(killer, pitem, FALSE);
     }
-    remove(&tp->t_pos, item);
+    remove_mon(&tp->t_pos, item);
 }
 
 
