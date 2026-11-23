@@ -966,7 +966,7 @@ struct matrix {
 struct linked_list 
     *find_mons(), *find_obj(), *get_item(), *new_item(), *creat_mons(),
     *new_thing(), *wake_monster(), *get_hurl(), *spec_item(), 
-    *find_mons_around(),*summon_monster();
+    *find_mons_around(),*summon_monster(), *make_item();
 
 struct object *wield_weap(), *apply_to_bag(), *new_artifact(), *pop_bag();
 

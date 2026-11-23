@@ -119,6 +119,7 @@ object *obj_p;
     if (item_p == NULL)
 	return(NULL);
     _detach(bag_pp, item_p);
+    ur_free((char *) item_p);
     return(obj_p);
 }
 
