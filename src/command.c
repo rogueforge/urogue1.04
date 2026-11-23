@@ -118,7 +118,8 @@ command()
 		count = 0;
 		newcount = TRUE;
 		while (isdigit(ch)) {
-		    count = count * 10 + (ch - '0');
+		    if (count < 1000)
+			count = count * 10 + (ch - '0');
 		    ch = readchar();
 		}
 		countch = ch;
