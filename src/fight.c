@@ -891,7 +891,7 @@ bool thrown;
      * Similar monsters don't hit each other
      */
     if (attacker->t_index == attackee->t_index) {
-	if (attacker == THINGPTR(fam_ptr) && visible)
+	if (fam_ptr != NULL && attacker == THINGPTR(fam_ptr) && visible)
 	    msg("Master, I cannot hit one of my brethen.");
 	return FALSE;
     }

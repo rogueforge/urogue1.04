@@ -1201,7 +1201,7 @@ at_hero:
 			show(spotpos[x].y, spotpos[x].x));
     }
     if (take_that[BOLT_LENGTH] != 0) {
-	if (tp != THINGPTR(fam_ptr)) {
+	if (fam_ptr == NULL || tp != THINGPTR(fam_ptr)) {
 	    if (terse) 
 		msg("The %s hits you.", name);
 	    else 
@@ -1269,7 +1269,8 @@ int flags;
 		bool see_it = cansee(bolt.o_pos.y, bolt.o_pos.x);
 
 		if ((tp->t_stats.s_hpt -= damage) <= 0)
-		    killed(zapper, item, see_it, (zapper == THINGPTR(fam_ptr)));
+		    killed(zapper, item, see_it,
+			(fam_ptr != NULL && zapper == THINGPTR(fam_ptr)));
 		else if (see_it)
 		    msg("The %s hits the monster.", bolt_name);
 	    }
@@ -1302,7 +1303,8 @@ int flags;
 	else if (blessed)
 	    nsides *= 2;
 	damage = roll(ndice, nsides);
-	shoot_bolt(zapper, zapper->t_pos, delta, (zapper == THINGPTR(fam_ptr)),
+	shoot_bolt(zapper, zapper->t_pos, delta,
+	    (fam_ptr != NULL && zapper == THINGPTR(fam_ptr)),
 	    D_BOLT, bolt_name, damage);
     }
 }
