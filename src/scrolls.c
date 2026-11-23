@@ -989,8 +989,14 @@ bool message;
 	runto(mp, &hero);
 	/* If the monster is on a trap, trap it */
 	if (isatrap(mvinch(mp->y, mp->x))) {
+	    struct linked_list *ocurr = curr_mons;
+
 	    debug("Monster trapped during creat_mons.");
+	    curr_mons = nitem;
 	    be_trapped( THINGPTR(nitem), mp);
+	    if (curr_mons == NULL)
+		nitem = NULL;
+	    curr_mons = ocurr;
 	}
 	light(&hero);
 	return(nitem);
