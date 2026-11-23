@@ -491,7 +491,8 @@ register bool flee;
 		    breath = "fear gas";
 		}
 
-		shoot_bolt(tp, *er, *shoot_dir, (tp == THINGPTR(fam_ptr)),
+		shoot_bolt(tp, *er, *shoot_dir,
+			   (fam_ptr != NULL && tp == THINGPTR(fam_ptr)),
 			   tp->t_index, breath, roll(tp->t_stats.s_lvl, 6));
 
 		ch_ret = *er;
