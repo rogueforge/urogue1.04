@@ -49,7 +49,11 @@ char **envp;
     }
 
     /* Get default score file */
+#ifdef SCOREFILE
+    strcpy(score_file, SCOREFILE);
+#else
     strcpy(score_file, "urogue.scr");
+#endif
 
     fd_score = open(score_file, 2);
 
