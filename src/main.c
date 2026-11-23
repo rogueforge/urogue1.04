@@ -11,6 +11,8 @@
 
 #include <stdio.h>
 #include <signal.h>
+#include <sys/types.h>
+#include <sys/stat.h>
 #include "rogue.h"
 #include "score.h"
 
@@ -25,6 +27,7 @@ char **envp;
     char *crypt(), *strrchr();
     int lowtime, fd;
     long now;
+    struct stat sbuf, sbuf2;
 	int rflag;
 
     for (x = 1; x < argc; x++) {
@@ -59,7 +62,16 @@ char **envp;
 	continue;
     if (fd >= 3)
 	close(fd);
-    fd_score = open(score_file, 2);
+    if (lstat(score_file, &sbuf) < 0
+	|| (sbuf.st_mode & S_IFMT) != S_IFREG || sbuf.st_nlink != 1)
+	fd_score = -1;
+    else if ((fd_score = open(score_file, 2)) >= 0
+	&& (fstat(fd_score, &sbuf2) < 0 || sbuf2.st_dev != sbuf.st_dev
+	    || sbuf2.st_ino != sbuf.st_ino))
+    {
+	close(fd_score);
+	fd_score = -1;
+    }
 
     if ((env = getenv("OPTIONS")) != NULL)
 	parse_opts(env);
