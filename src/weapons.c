@@ -87,7 +87,7 @@ register struct thing *tp;
 	    if (obj->o_type == WEAPON)
 		addmsg("The %s", weaps[obj->o_which].w_name);
 	    else
-		addmsg(inv_name(obj, LOWERCASE));
+		addmsg("%s", inv_name(obj, LOWERCASE));
 	    msg(" vanishes in a puff of greasy smoke.");
 	    discard(item);
 	}
@@ -204,7 +204,7 @@ bool pr;
 	    if (obj->o_type == WEAPON)
 		addmsg("The %s", weaps[obj->o_which].w_name);
 	    else
-		addmsg(inv_name(obj, LOWERCASE));
+		addmsg("%s", inv_name(obj, LOWERCASE));
 	    msg(" vanishes as it hits the ground.");
 	}
     }
