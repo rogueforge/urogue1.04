@@ -666,7 +666,7 @@ do_major()
 	    msg("Your %s crumbles in your hands.", inv_name(obj, LOWERCASE));
 	obj->o_flags &= ~ISCURSED;
 	dropcheck(obj);
-	del_bag(pack, obj);
+	discard_pack(obj);
 
     }
     when 9: {
@@ -682,7 +682,7 @@ do_major()
 	      inv_name(obj, LOWERCASE));
 	obj->o_flags &= ~ISCURSED;
 	dropcheck(obj);
-	del_bag(pack, obj);
+	discard_pack(obj);
     }
     otherwise:
 	if (cur_weapon == NULL) {
@@ -981,7 +981,7 @@ do_bag(obj)
 		!= NULL) {
 		item_p = make_item(obj_p);	/* attach upper structure */
 		if (add_pack(item_p, MESSAGE) != FALSE) 
-		    pop_bag(obj->o_bag, obj_p);
+		    pop_bag(&obj->o_bag, obj_p);
 		else
 		    ur_free((char *) item_p);
 		}
