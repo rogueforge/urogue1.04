@@ -385,7 +385,7 @@ register char *str;
 			if (EQSTR(value, "clear", len))
 				*op->o_opt = INV_CLEAR;
 		    }
-		    else if (*op->o_opt == -1) { /* Only init ability once */
+		    else if (*op->o_opt == C_NOTSET) { /* Only init ability once */
 			register int len = strlen(value);
 
 			if (isupper((unsigned char) value[0])) value[0] = tolower(value[0]);
