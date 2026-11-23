@@ -138,6 +138,12 @@ char **envp;
     init_stones();			/* Set up stone settings of rings */
     init_materials();			/* Set up materials of wands */
     initscr();				/* Start up cursor package */
+    if (LINES < 15 || COLS < 40)
+    {
+	endwin();
+	printf("\nSorry, urogue needs a terminal with at least 15 lines and 40 columns.\n");
+	exit(1);
+    }
     init_names();			/* Set up names of scrolls */
     setup();
 
