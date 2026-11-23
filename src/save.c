@@ -263,7 +263,7 @@ char **envp;
     touchwin(cw);
     noecho();
     nonl();
-    srand(1234);
+    srandom(getpid());
     playit();
 }
 
