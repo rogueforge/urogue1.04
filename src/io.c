@@ -6,7 +6,6 @@
  */
 
 #include <ctype.h>
-#include <varargs.h>
 #include "rogue.h"
 #include "stepok.h"
 
@@ -18,10 +17,10 @@ static int newpos = 0;
  *	Display a message at the top of the screen.
  */
 
-msg(fmt, args)
-char *fmt;
-int args;
+msg(char *fmt, ...)
 {
+    va_list ap;
+
     /*
      * if the string is "", just clear the line
      */
@@ -34,18 +33,22 @@ int args;
     /*
      * otherwise add to the message and flush it out
      */
-    doadd(fmt, &args);
+    va_start(ap, fmt);
+    doadd(fmt, ap);
+    va_end(ap);
     endmsg();
 }
 
 /*
  * add things to the current message
  */
-addmsg(fmt, args)
-char *fmt;
-int args;
+addmsg(char *fmt, ...)
 {
-    doadd(fmt, &args);
+    va_list ap;
+
+    va_start(ap, fmt);
+    doadd(fmt, ap);
+    va_end(ap);
 }
 
 /*
@@ -71,7 +74,7 @@ endmsg()
 
 doadd(fmt, args)
 char *fmt;
-int **args;
+va_list args;
 {
     vsprintf(&mbuf[newpos], fmt, args);
     newpos = strlen(mbuf);
@@ -322,15 +325,22 @@ end_line()
  * hearmsg:
  *	Call msg() only if you are not deaf
  */
-hearmsg(fmt, va_alist)
-char *fmt;
-va_dcl
+hearmsg(char *fmt, ...)
 {
-    if (off(player, ISDEAF))
-	msg(fmt, va_alist);
+    va_list ap;
+
+    if (off(player, ISDEAF)) {
+	va_start(ap, fmt);
+	doadd(fmt, ap);
+	va_end(ap);
+	endmsg();
+    }
     else if (wizard) {
 	msg("Couldn't hear: ");
-	msg(fmt, va_alist);
+	va_start(ap, fmt);
+	doadd(fmt, ap);
+	va_end(ap);
+	endmsg();
     }
 }
 
@@ -338,14 +348,21 @@ va_dcl
  * seemsg:
  *	Call msg() only if you are not blind
  */
-seemsg(fmt, va_alist)
-char *fmt;
-va_dcl
+seemsg(char *fmt, ...)
 {
-    if (off(player, ISBLIND))
-	msg(fmt, va_alist);
+    va_list ap;
+
+    if (off(player, ISBLIND)) {
+	va_start(ap, fmt);
+	doadd(fmt, ap);
+	va_end(ap);
+	endmsg();
+    }
     else if (wizard) {
 	msg("Couldn't see: ");
-	msg(fmt, va_alist);
+	va_start(ap, fmt);
+	doadd(fmt, ap);
+	va_end(ap);
+	endmsg();
     }
 }

@@ -6,6 +6,7 @@
  *
  */
 #include <curses.h>
+#include <stdarg.h>
 
 /* Movement penalties */
 #define SHOTPENALTY 2		/* In line of sight of missile */
@@ -979,6 +980,9 @@ bool	blue_light(), can_blink(), shoot_bolt(), add_pack(),
 	wear_ok(), wield_ok(), is_stealth(), is_wearing();
 
 void	byebye(), id_monst();
+
+int	msg(char *fmt, ...), addmsg(char *fmt, ...);
+int	hearmsg(char *fmt, ...), seemsg(char *fmt, ...);
 
 long lseek();
 
