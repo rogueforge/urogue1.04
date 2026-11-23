@@ -136,9 +136,12 @@ struct magic_item ws_magic[] = {
 };
 int maxsticks = MAXSTICKS;
 
+static char fruit_name[2*LINELEN] =
+    "fruit-with-very-long-name-that-i-am-padding-out-to-be-greater-than-eighty-characters-so-that-a-test-in-options.c-will-work";
+
 struct magic_item fd_data[] = {
     { "food ration",		"RATION",		400, 20, 20, 20 },
-    { "fruit-with-very-long-name-that-i-am-padding-out-to-be-greater-than-eighty-characters-so-that-a-test-in-options.c-will-work",	"FRUIT",	300, 10, 0, 0 },
+    { fruit_name,	"FRUIT",	300, 10, 0, 0 },
     { "cram",			"CRAM",		120, 30, 0, 0 },
     { "honey cake",		"CAKES",		 80, 10, 0, 0 },
     { "lemba",			"LEMBA",		 50, 80, 0, 0 },
