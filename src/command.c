@@ -391,9 +391,12 @@ command()
 			    if (cur_weapon == NULL || 
 			      cur_weapon->o_which != CLAYMORE) {
 				item = spec_item(WEAPON, CLAYMORE, 10, 10);
-				add_pack(item, NOMESSAGE);
-				cur_weapon = OBJPTR(item);
-				cur_weapon->o_flags |= ISKNOW;
+				obj = OBJPTR(item);
+				obj->o_flags |= ISKNOW;
+				if (add_pack(item, NOMESSAGE))
+				    cur_weapon = obj;
+				else
+				    discard(item);
 			    }
 
 			    /* and a kill-o-zap stick */
@@ -405,7 +408,8 @@ command()
 				free(guess_items[TYP_STICK][WS_DISINTEGRATE]);
 				guess_items[TYP_STICK][WS_DISINTEGRATE] = NULL;
 			    }
-			    add_pack(item, NOMESSAGE);
+			    if (!add_pack(item, NOMESSAGE))
+				discard(item);
 
 			    /* and his suit of armor */
 			    if (cur_armor == NULL || 
@@ -416,8 +420,10 @@ command()
 				obj->o_flags |= ISKNOW;
 				obj->o_weight = 
 					armors[CRYSTAL_ARMOR].a_wght * 0.2;
-				cur_armor = obj;
-				add_pack(item, NOMESSAGE);
+				if (add_pack(item, NOMESSAGE))
+				    cur_armor = obj;
+				else
+				    discard(item);
 			    }
 
 			    /* and some rings (have to put them on, for now) */
@@ -430,7 +436,8 @@ command()
 				    free(guess_items[TYP_RING][R_SEARCH]);
 				    guess_items[TYP_RING][R_SEARCH] = NULL;
 				}
-				add_pack(item, NOMESSAGE);
+				if (!add_pack(item, NOMESSAGE))
+				    discard(item);
 			    }
 			    if (!is_wearing(R_PIETY)) {
 				item = spec_item(RING, R_PIETY, 0, 0);
@@ -441,7 +448,8 @@ command()
 				    free(guess_items[TYP_RING][R_PIETY]);
 				    guess_items[TYP_RING][R_PIETY] = NULL;
 				}
-				add_pack(item, NOMESSAGE);
+				if (!add_pack(item, NOMESSAGE))
+				    discard(item);
 			    }
 			    item = spec_item(SCROLL, S_ELECTRIFY, 0, 0);
 			    obj = OBJPTR(item);
@@ -451,7 +459,8 @@ command()
 				free(guess_items[TYP_SCROLL][S_ELECTRIFY]);
 				guess_items[TYP_SCROLL][S_ELECTRIFY] = NULL;
 			    }
-			    add_pack(item, NOMESSAGE);
+			    if (!add_pack(item, NOMESSAGE))
+				discard(item);
 
 			    /* Spiff him up a bit */
 			    quaff(&player, P_SHERO, ISBLESSED);
