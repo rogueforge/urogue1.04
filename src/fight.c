@@ -79,7 +79,7 @@ bool thrown;
      */
     if ((item = find_mons(mp->y, mp->x)) == NULL) {
 	debug("Fight what @ %d,%d", mp->y, mp->x);
-	return;
+	return(FALSE);
     }
     tp = THINGPTR(item);
     mname = (on(player, ISBLIND)) ? "it" : monsters[tp->t_index].m_name;
