@@ -92,8 +92,10 @@ register struct thing *tp;
 	    discard(item);
 	}
 	else {
+	    long flags = obj->o_flags;
+
 	    fall(&player, item, TRUE);
-	    if (obj->o_flags & CANRETURN)
+	    if (flags & CANRETURN)
 		msg("You have %s.", inv_name(obj, LOWERCASE));
 	}
     }
