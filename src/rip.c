@@ -162,7 +162,6 @@ int lvl;
     register struct sc_ent *sc2;
     register char *killer;
     register int fd;
-    struct rlimit lim;
     static char *reason[] = {
 	"killed",
 	"quit",
@@ -238,6 +237,7 @@ int lvl;
 		break;
 	}
     }
+    put_scores((char *) top_ten, sizeof top_ten, fd_score, !waswizard);
     if (flags != SCOREIT) {
 	clear();
 	refresh();
@@ -294,23 +294,35 @@ int lvl;
 	    putchar('\n');
 	}
     }
-    /*
-     * Update the list file
-     */
-    if (!waswizard
-	&& !(getrlimit(RLIMIT_FSIZE, &lim) == 0
-	    && lim.rlim_cur < sizeof top_ten + 12 * sizeof (int)))
-    {
-	lseek(fd_score, 0L, 0);
-	encwrite((char *) top_ten, sizeof top_ten, fd_score);
-    }
-    close(fd_score);
     if(!prscore) {
     	putchar('\n');
     	printf(retstr);
     	fflush(stdout);
     	fgets(prbuf, 2*LINELEN, stdin);
     }
+}
+
+/*
+ * put_scores:
+ *	Update the list file: write the table back over the score file,
+ *	if it has changed, and close the file, which lets go of the lock.
+ */
+put_scores(table, size, fd, changed)
+char *table;
+unsigned int size;
+int fd;
+int changed;
+{
+    struct rlimit lim;
+
+    if (changed
+	&& !(getrlimit(RLIMIT_FSIZE, &lim) == 0
+	    && lim.rlim_cur < size + 12 * sizeof (int)))
+    {
+	lseek(fd, 0L, 0);
+	encwrite(table, (long) size, fd);
+    }
+    close(fd);
 }
 
 /*
