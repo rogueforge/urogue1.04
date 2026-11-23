@@ -6,6 +6,7 @@
  */
 
 #include <ctype.h>
+#include <errno.h>
 #include "rogue.h"
 #include "stepok.h"
 
@@ -150,10 +151,12 @@ shoot_ok(ch)
 readchar()
 {
     char c;
+    register int cnt = 0;
 
     fflush(stdout);
-    while (read(0, &c, 1) < 0)
-	;
+    for (errno = 0; read(0, &c, 1) <= 0; errno = 0)
+	if (errno != EINTR && cnt++ > 100)	/* if we are getting infinite EOFs */
+	    byebye();		/* end the game */
     return (c & 0177);
 }
 
