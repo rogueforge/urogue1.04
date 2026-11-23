@@ -124,7 +124,7 @@ register char print_id;
 {
     register char *id_p;
 
-    for (id_p = print_letters; id_p != NULL; id_p++)
+    for (id_p = print_letters; *id_p != '\0'; id_p++)
 	if (*id_p == print_id)
 	    break;
     return(id_p - print_letters);
