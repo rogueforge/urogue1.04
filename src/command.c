@@ -234,7 +234,7 @@ command()
 			    if (mpos == 0)
 				decrement = TRUE;
 			    msg_index = (msg_index + 9) % 10;
-			    msg(msgbuf[msg_index]);
+			    msg("%s", msgbuf[msg_index]);
 			    if (decrement)
 				msg_index = (msg_index + 9) % 10;
 		}
