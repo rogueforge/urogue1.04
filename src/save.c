@@ -255,7 +255,8 @@ char **envp;
     if ((sp = getenv("OPTIONS")) != NULL)
 	parse_opts(sp);
 
-    strcpy(file_name, file);
+    strncpy(file_name, file, 2*LINELEN - 1);
+    file_name[2*LINELEN - 1] = '\0';
 
     setup();
     clearok(curscr, TRUE);
