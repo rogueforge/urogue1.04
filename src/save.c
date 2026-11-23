@@ -247,12 +247,10 @@ char **envp;
  * the file using data diffusion (putword,getword).
  *
  * Usage:
- *	NOCHECK
-encwrite (start, size, outfd);
+ *	encwrite (start, size, outfd);
  *	unsigned char *start; long size; int outfd;
  *
- *	NOCHECK
-encread (start, size, infd);
+ *	encread (start, size, infd);
  *	unsigned char *start; long size; int infd;
  *
  * HISTORY
@@ -288,6 +286,7 @@ struct wb { int w1, w2, w3, w4; };
  * Encwrite: write a buffer to a file using data encryption
  *****************************************************************/
 
+NOCHECK
 encwrite (start, size, outfd)
 register unsigned char *start;
 long size;
@@ -335,6 +334,7 @@ int outfd;
  * Encread: read a block of encrypted text from a file descriptor
  *****************************************************************/
 
+NOCHECK
 encread (start, size, infd)
 register unsigned char *start;
 long size;
