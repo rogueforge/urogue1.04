@@ -93,6 +93,7 @@
 #define	o_charges o_ac
 #define	mi_wght mi_worth
 
+#define	flushout() flushinp()
 
 /*
  * Things that appear on the screens

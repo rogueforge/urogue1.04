@@ -242,7 +242,7 @@ WINDOW *win;
 	wclrtoeol(win), wrefresh(win)) {
 	if (c == -1)
 	    continue;
-	else if (c == '\b')
+	else if (c == erasechar()) /* process erase character */
 	{
 	    if (sp > buf) {
 		register int i;
@@ -253,7 +253,7 @@ WINDOW *win;
 	    }
 	    continue;
 	}
-	else if (c == '\0')
+	else if (c == killchar())  /* process kill character */
 	{
 	    sp = buf;
 	    wmove(win, oy, ox);

@@ -167,9 +167,9 @@ passwd()
     mpos = 0;
     sp = buf;
     while ((c = (getchar() & 0177)) != '\n' && c != '\r' && c != '\033')
-	if (c == '\0')
+	if (c == killchar())
 	    sp = buf;
-	else if (c == '\b' && sp > buf)
+	else if (c == erasechar() && sp > buf)
 	    sp--;
 	else
 	    *sp++ = c;
