@@ -523,7 +523,7 @@ pet_message:	    msg("The dungeon begins to rumble and shake!");
 	{
 	    struct linked_list *ll;
 	    struct object *lb;
-	    int howmuch, flags;
+	    int howmuch;
 	    if (is_scroll && know_items[TYP_SCROLL][S_ENCHANT] == FALSE) {
 		msg("You are granted the power of enchantment.");
 		msg("You may enchant anything(weapon,ring,armor,scroll,potion)");
