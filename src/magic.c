@@ -482,7 +482,7 @@ coord shoot_dir;
 	    msg("The Sceptre enhanced your %s.", spell_type);
 	if (message_flags & CAST_CROWN)
 	    msg("The Crown wordlessly corrected your %s.", spell_type);
-	switch (message_flags & 01) {
+	switch (message_flags & (CAST_CURSED | CAST_BLESSED)) {
 	when CAST_CURSED:
 	    msg("You botched your '%s' %s.", cast_name, spell_type);
 	    fumble_spell(caster, num_fumbles);
