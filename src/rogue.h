@@ -10,6 +10,10 @@
 #include <time.h>
 #include <unistd.h>
 
+#ifndef reg
+#define reg register
+#endif
+
 #ifdef NCURSES_VERSION
 #define unctrl unctrl
 #endif
