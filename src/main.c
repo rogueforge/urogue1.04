@@ -159,6 +159,9 @@ char **envp;
 
 setup()
 {
+#ifdef SIGXFSZ
+    signal(SIGXFSZ, SIG_IGN);
+#endif
     sprintf(prbuf, "%d", LINES);
     setenv("LINES", prbuf, 1);
     sprintf(prbuf, "%d", COLS);

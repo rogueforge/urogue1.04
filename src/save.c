@@ -119,8 +119,12 @@ gotfile:
      * write out encrpyted file (after a stat)
      * The fwrite is to force allocation of the buffer before the write
      */
-    save_file(savefd);
-    return TRUE;
+    if (save_file(savefd))
+	return TRUE;
+    c = errno;
+    unlink(file_name);
+    msg(strerror(c));
+    return FALSE;
 }
 
 /*
@@ -141,6 +145,8 @@ save_open()
 save_file(savefd)
 register int savefd;
 {
+    register int i;
+
     wmove(cw, LINES-1, 0);
     wrefresh(cw);
     fstat(savefd, &sbuf);
@@ -151,9 +157,11 @@ register int savefd;
     save_wins(FALSE);
     save_stamp[0] = (long) playit - (long) version;
     save_stamp[1] = (long) rg_restored - (long) __executable_start;
-    encwrite(version, rg_edata - version, savefd);
-    encwrite(rg_bss, rg_ebss - rg_bss, savefd);
-    close(savefd);
+    i = encwrite(version, rg_edata - version, savefd)
+	&& encwrite(rg_bss, rg_ebss - rg_bss, savefd);
+    if (close(savefd) < 0 || !i)
+	return FALSE;
+    return TRUE;
 }
 
 restore(file, envp)
@@ -321,8 +329,9 @@ int outfd;
   srandom (time ((long *) 0));	/* Build a random seed */
   seed = (random () & 0x7fff);
   
-  putword (seed, outfd);			/* Write the random seed */
-  putword (size, outfd);			/* Write the file length */
+  if (putword (seed, outfd) != sizeof (struct wb)	/* Write the random seed */
+      || putword (size, outfd) != sizeof (struct wb))	/* Write the file length */
+    return 0;
 
 # ifdef DEBUG
   fprintf (stderr, "Encwrite: size %ld, seed %ld.\n", size, seed);
@@ -343,7 +352,8 @@ int outfd;
     size -= cnt;
   }
 
-  putword (cksum, outfd);			/* Write out the checksum */
+  if (putword (cksum, outfd) != sizeof (struct wb))	/* Write out the checksum */
+    return 0;
 
 # ifdef DEBUG
   fprintf (stderr, "Checksum is %ld.\n", cksum);
