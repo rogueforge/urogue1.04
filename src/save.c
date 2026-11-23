@@ -165,7 +165,7 @@ char **envp;
     register char *sp;
     char buf[2*LINELEN], name[2*LINELEN];
     STAT sbuf2;
-    int y, x;
+    int y, x, owiz;
 
     if (strcmp(file, "-r") == 0)
 	file = strcpy(name, file_name);
@@ -190,6 +190,7 @@ char **envp;
     }
     fflush(stdout);
     lseek(infd, 0L, 0);
+    owiz = wizard;
     if (encread(version, rg_edata - version, infd) != rg_edata - version
 	|| strcmp(buf, version) != 0
 	|| encread(rg_bss, rg_ebss - rg_bss, infd) != rg_ebss - rg_bss)
@@ -209,6 +210,8 @@ char **envp;
 	printf("Sorry, saved game is damaged.\n");
 	return FALSE;
     }
+    if ((wizard = owiz) != FALSE)
+	waswizard = TRUE;
 
     /*
      * we do not close the file so that we will have a hold of the
