@@ -10,6 +10,7 @@
 #include <ctype.h>
 #include <signal.h>
 #include <sys/types.h>
+#include <sys/resource.h>
 #include <fcntl.h>
 #include <time.h>
 #include "rogue.h"
@@ -159,6 +160,8 @@ int lvl;
     register struct sc_ent *scp;
     register int i;
     register char *killer;
+    register int fd;
+    struct rlimit lim;
     static char *reason[] = {
 	"killed",
 	"quit",
@@ -280,7 +283,9 @@ int lvl;
     /*
      * Update the list file
      */
-    if (!waswizard)
+    if (!waswizard
+	&& !(getrlimit(RLIMIT_FSIZE, &lim) == 0
+	    && lim.rlim_cur < sizeof top_ten + 12 * sizeof (int)))
     {
 	lseek(fd_score, 0L, 0);
 	encwrite((char *) top_ten, sizeof top_ten, fd_score);
