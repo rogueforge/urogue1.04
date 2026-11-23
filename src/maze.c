@@ -10,7 +10,7 @@ struct cell {
 struct bordercells {
 	char num_pos;		/* number of frontier cells next to you */
 	struct cell conn[4];	/* the y,x position of above cell */
-} border;
+} mborder;
 
 char *frontier, *bits;
 char *moffset(), *foffset();
@@ -171,43 +171,43 @@ reg int x, y;
 	reg int rtpos, i;
 
 	*foffset(y, x) = FALSE;
-	border.num_pos = 0;
+	mborder.num_pos = 0;
 	if (y < lines - 1) {				/* look below */
 		if (*foffset(y + 1, x)) {
-			border.conn[border.num_pos].y_pos = y + 1;
-			border.conn[border.num_pos].x_pos = x;
-			border.num_pos += 1;
+			mborder.conn[mborder.num_pos].y_pos = y + 1;
+			mborder.conn[mborder.num_pos].x_pos = x;
+			mborder.num_pos += 1;
 		}
 	}
 	if (y > 0) {					/* look above */
 		if (*foffset(y - 1, x)) {
-			border.conn[border.num_pos].y_pos = y - 1;
-			border.conn[border.num_pos].x_pos = x;
-			border.num_pos += 1;
+			mborder.conn[mborder.num_pos].y_pos = y - 1;
+			mborder.conn[mborder.num_pos].x_pos = x;
+			mborder.num_pos += 1;
 
 		}
 	}
 	if (x < cols - 1) {				/* look right */
 		if (*foffset(y, x + 1)) {
-			border.conn[border.num_pos].y_pos = y;
-			border.conn[border.num_pos].x_pos = x + 1;
-			border.num_pos += 1;
+			mborder.conn[mborder.num_pos].y_pos = y;
+			mborder.conn[mborder.num_pos].x_pos = x + 1;
+			mborder.num_pos += 1;
 		}
 	}
 	if (x > 0) {					/* look left */
 		if (*foffset(y, x - 1)) {
-			border.conn[border.num_pos].y_pos = y;
-			border.conn[border.num_pos].x_pos = x - 1;
-			border.num_pos += 1;
+			mborder.conn[mborder.num_pos].y_pos = y;
+			mborder.conn[mborder.num_pos].x_pos = x - 1;
+			mborder.num_pos += 1;
 
 		}
 	}
-	if (border.num_pos == 0)		/* no neighbors available */
+	if (mborder.num_pos == 0)		/* no neighbors available */
 		return 0;
 	else {
-		i = rnd(border.num_pos);
-		rtpos = border.num_pos - 1;
-		rmwall(border.conn[i].y_pos, border.conn[i].x_pos, y, x);
+		i = rnd(mborder.num_pos);
+		rtpos = mborder.num_pos - 1;
+		rmwall(mborder.conn[i].y_pos, mborder.conn[i].x_pos, y, x);
 		return rtpos;
 	}
 }
