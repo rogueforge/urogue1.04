@@ -66,7 +66,7 @@ runners()	/* with monsters now fighting each other, this routine
 	    }
 	    if (curr_mons) {
 		tp->t_turn ^= TRUE;
-		tp->t_wasshot ^= FALSE;	/* Not shot anymore */
+		tp->t_wasshot = FALSE;	/* Not shot anymore */
 	    }
 	}
     }
