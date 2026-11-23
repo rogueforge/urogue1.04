@@ -61,7 +61,7 @@ register short monst;
 	    register struct linked_list *item;
 	    register struct linked_list *next_item;
 	    register struct object *obj;
-	    register int rm, flags;
+	    register int rm, flags, cnt;
 	    coord pos;
 
 	    die = FALSE;
@@ -87,10 +87,13 @@ register short monst;
 		    item = make_item(obj);
 		    if (obj->o_type == ARTIFACT)
 			has_artifact &= ~(1 << obj->o_which);
+		    cnt = 0;
 		    do {
 			rm = rnd_room();
 		        rnd_pos(&rooms[rm], &pos);
-		    } until (winat(pos.y, pos.x) == FLOOR);
+		    } until (winat(pos.y, pos.x) == FLOOR || ++cnt > 500);
+		    if (cnt > 500)
+			pos = hero;
 		    obj->o_pos = pos;
 		    add_obj(item, obj->o_pos.y, obj->o_pos.x);
 		}

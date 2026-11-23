@@ -109,11 +109,19 @@ teleport()
 	else msg("Your attempt fails.");
     }
     if (rand_position) {
+	register int cnt = 0;
+	coord opos;
+
+	opos = hero;
 	do {
 	    rm = rnd_room();
 	    rnd_pos(&rooms[rm], &hero);
-	} while (winat(hero.y, hero.x) != FLOOR);
+	} while (winat(hero.y, hero.x) != FLOOR && ++cnt <= 500);
 	new_rp = &rooms[rm];
+	if (cnt > 500) {
+	    hero = opos;
+	    new_rp = roomin(&hero);
+	}
     }
 
     /* If hero gets moved, darken old room */

@@ -303,7 +303,8 @@ bool thrown;
 		turn_off(*tp, DIDHOLD);
 
 		if (on(*tp, CANTELEPORT)) {
-		    register int rm;
+		    register int rm, cnt = 0;
+		    coord opos;
 
 		    /* Erase the monster from the old position */
 		    if (isalpha(mvwinch(cw, tp->t_pos.y, tp->t_pos.x)))
@@ -311,11 +312,14 @@ bool thrown;
 		    mvwaddch(mw, tp->t_pos.y, tp->t_pos.x, ' ');
 
 		    /* Get a new position */
+		    opos = tp->t_pos;
 		    do {
 			rm = rnd_room();
 			rnd_pos(&rooms[rm], &tp->t_pos);
-		    } until(winat(tp->t_pos.y, tp->t_pos.x) == FLOOR
-			    && !ce(tp->t_pos, hero));
+		    } until((winat(tp->t_pos.y, tp->t_pos.x) == FLOOR
+			    && !ce(tp->t_pos, hero)) || ++cnt > 500);
+		    if (cnt > 500)
+			tp->t_pos = opos;
 
 		    /* Put it there */
 		    mvwaddch(mw, tp->t_pos.y, tp->t_pos.x, tp->t_type);

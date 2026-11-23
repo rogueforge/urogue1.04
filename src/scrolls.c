@@ -1101,7 +1101,8 @@ int flags;
 	if (cursed)
 	    reader->t_no_move++;
 	else {
-	    register int rm;
+	    register int rm, cnt = 0;
+	    coord opos;
 
 	    if (blessed)	/* Give him his hit points */
 		curp->s_hpt = maxp->s_hpt;
@@ -1112,11 +1113,14 @@ int flags;
 	    mvwaddch(mw, reader->t_pos.y, reader->t_pos.x, ' ');
 
 	    /* Get a new position */
+	    opos = reader->t_pos;
 	    do {
 		rm = rnd_room();
 		rnd_pos(&rooms[rm], &reader->t_pos);
-	    } while(winat(reader->t_pos.y, reader->t_pos.x) != FLOOR
-		    || ce(reader->t_pos, hero));
+	    } while((winat(reader->t_pos.y, reader->t_pos.x) != FLOOR
+		    || ce(reader->t_pos, hero)) && ++cnt <= 500);
+	    if (cnt > 500)
+		reader->t_pos = opos;
 
 	    /* Put it there */
 	    mvwaddch(mw, reader->t_pos.y, reader->t_pos.x, reader->t_type);

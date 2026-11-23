@@ -722,7 +722,8 @@ register coord *tc;
 		    msg("You feel dizzy for a moment, but it quickly passes.");
 	    }
 	    else {
-		register int rm;
+		register int rm, cnt = 0;
+		coord opos;
 
 		/* Erase the monster from the old position */
 		if (isalpha(mvwinch(cw, th->t_pos.y, th->t_pos.x)))
@@ -730,11 +731,14 @@ register coord *tc;
 		mvwaddch(mw, th->t_pos.y, th->t_pos.x, ' ');
 
 		/* Get a new position */
+		opos = th->t_pos;
 		do {
 		    rm = rnd_room();
 		    rnd_pos(&rooms[rm], &th->t_pos);
-		} until(winat(th->t_pos.y, th->t_pos.x) == FLOOR
-			&& !ce(th->t_pos, hero));
+		} until((winat(th->t_pos.y, th->t_pos.x) == FLOOR
+			&& !ce(th->t_pos, hero)) || ++cnt > 500);
+		if (cnt > 500)
+		    th->t_pos = opos;
 
 		/* Put it there */
 		mvwaddch(mw, th->t_pos.y, th->t_pos.x, th->t_type);
