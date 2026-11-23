@@ -247,8 +247,10 @@ coord shoot_dir;
     /* Bug - What about when WIS == INT? */
     spell_type = (stat_casters == curp->s_intel) ? "spell" : "prayer";
 
-    if (!is_player && (sp = pick_monster_spell(caster)) == NULL)
-	return;
+    if (!is_player) {
+	if ((sp = pick_monster_spell(caster)) == NULL)
+	    return;
+    }
     else {
 	int num_spells = -1;			/* num of spells cheap enough */
 	int sort_spells();			/* for qsort() */
