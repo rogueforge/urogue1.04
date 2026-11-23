@@ -432,6 +432,7 @@ register struct magic_item *magic ;
 register int bound ;
 {
     register struct magic_item *end ;
+    register int ch ;
 
     if (magic[bound - 1].mi_prob == 1000)
 	return ;
@@ -440,6 +441,6 @@ register int bound ;
 	printf("%3d%% %s\n", magic->mi_prob, magic->mi_name) ;
     printf("[Hit RETURN to continue]") ;
     fflush(stdout) ;
-    while ((getchar() & 0177) != '\n')
+    while ((ch = getchar()) != EOF && (ch & 0177) != '\n')
 	continue ;
 }
