@@ -79,7 +79,8 @@
 #define	next(ptr) (ptr->l_next)
 #define	prev(ptr) (ptr->l_prev)
 #define identifier(ptr) (ptr->o_ident)
-#define	winat(y, x) (mvwinch(mw, y, x)==' '?mvwinch(stdscr, y, x):winch(mw))
+#define	winat(y, x) ((y) < 0 || (y) >= LINES || (x) < 0 || (x) >= COLS ? ' ' : \
+		     mvwinch(mw, y, x)==' '?mvwinch(stdscr, y, x):winch(mw))
 #define	debug if (wizard && wiz_verbose) msg
 #define	DISTANCE(y1, x1, y2, x2) ((x2 - x1)*(x2 - x1) + (y2 - y1)*(y2 - y1))
 #define	OBJPTR(what)	(struct object *)((*what).l_data)
