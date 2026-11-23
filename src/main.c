@@ -113,14 +113,7 @@ char **envp;
     init_materials();			/* Set up materials of wands */
     initscr();				/* Start up cursor package */
     init_names();			/* Set up names of scrolls */
-    sprintf(prbuf, "%d", LINES);
-    setenv("LINES", prbuf, 1);
-    sprintf(prbuf, "%d", COLS);
-    setenv("COLUMNS", prbuf, 1);
-    cbreak();
-    crmode();				/* Cbreak mode */
-    noecho();				/* Echo off */
-    nonl();
+    setup();
 
     /*
      * Set up windows
@@ -146,6 +139,34 @@ char **envp;
     fuse(swander, 0, WANDERTIME, AFTER);
     start_daemon(stomach, 0, AFTER);
     start_daemon(runners, 0, AFTER);
+    playit();
+}
+
+/*
+ * setup:
+ *	Put the terminal in the modes the game is played in
+ */
+
+setup()
+{
+    sprintf(prbuf, "%d", LINES);
+    setenv("LINES", prbuf, 1);
+    sprintf(prbuf, "%d", COLS);
+    setenv("COLUMNS", prbuf, 1);
+    cbreak();
+    crmode();				/* Cbreak mode */
+    noecho();				/* Echo off */
+    nonl();
+}
+
+/*
+ * playit:
+ *	The main loop of the program.  Loop until the game is over,
+ *	refreshing things and looking at the proper times.
+ */
+
+playit()
+{
     char_type = player.t_ctype;
     player.t_oldpos = hero;
     oldrp = roomin(&hero);
