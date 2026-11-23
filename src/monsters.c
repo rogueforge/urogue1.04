@@ -464,9 +464,12 @@ wanderer()
     coord cp;
     char *loc;
     int which;
+    register int cnt = 0;
 
     /* Find a place for it -- avoid the player's room */
     do {
+	if (cnt++ >= 500)
+	    return;
 	do {
 	    count++;
 	    i = rnd_room();
