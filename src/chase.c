@@ -234,7 +234,12 @@ register bool flee;
 		((on(*th, CANWIELD) || on(*th, CANSHOOT))
 			&& (obj->o_type == WEAPON || obj->o_type == ARMOR))
 		|| (on(*th, CANCAST) && is_magic(obj))) {
+	    register struct linked_list *mitem;
+
 	    rem_obj(item, FALSE);
+	    for (mitem = mlist; mitem != NULL; mitem = next(mitem))
+		if ((THINGPTR(mitem))->t_dest == &obj->o_pos)
+		    (THINGPTR(mitem))->t_dest = &hero;
 	    attach(th->t_pack, item);
 	}
     }
