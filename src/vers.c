@@ -6,3 +6,4 @@
  */
 char version[] = "UltraRogue 1.04 mm/dd/yy 01/20/91";
 char *release = "1.04 (01/20/91)";
+char rg_bss[1];

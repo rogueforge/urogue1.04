@@ -18,6 +18,9 @@
 #define SHOTPENALTY 2		/* In line of sight of missile */
 #define DOORPENALTY 1		/* Moving out of current room */
 
+#define MAXLINES	128		/* most screen lines a saved game holds */
+#define MAXCOLS		256		/* most screen columns a saved game holds */
+
 /*
  * Maximum number of different things
  */
@@ -950,6 +953,10 @@ struct matrix {
     int offset;			/* What to offset level */
     int range;			/* Range of levels for each offset */
 };
+
+#define malloc	rg_alloc
+#define calloc	rg_calloc
+#define free	rg_free
 
 struct linked_list 
     *find_mons(), *find_obj(), *get_item(), *new_item(), *creat_mons(),
