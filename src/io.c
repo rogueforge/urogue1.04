@@ -272,6 +272,7 @@ add_line(fmt, arg)
 char *fmt, *arg;
 {
     register WINDOW *tw;
+    static char lastline[4*LINELEN + 8];
 
     if (line_cnt == 0) {
         wclear(hw);
@@ -310,8 +311,9 @@ char *fmt, *arg;
         }
         if (fmt != NULL && !(line_cnt == 0 && *fmt == '\0')) {
             mvwprintw(hw, line_cnt++, 0, fmt, arg);
-            lastfmt = fmt;
-            lastarg = arg;
+            sprintf(lastline, fmt, arg);
+            lastfmt = "%s";
+            lastarg = lastline;
         }
     }
 }
