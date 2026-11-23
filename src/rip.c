@@ -8,6 +8,7 @@
  */
 
 #include <ctype.h>
+#include <signal.h>
 #include <time.h>
 #include "rogue.h"
 #include "score.h"
@@ -166,6 +167,7 @@ int lvl;
     char *packend;
     extern int fd_score;
 
+    signal(SIGHUP, SIG_IGN);
     if (flags != WINNER && flags != TOTAL && flags != SCOREIT) {
 	if (flags == CHICKEN)
 	    packend = "when you quit";
