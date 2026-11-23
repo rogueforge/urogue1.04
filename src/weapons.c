@@ -186,6 +186,7 @@ bool pr;
 	    traps[ntraps++].tr_pos.x = fpos.x;
 	    if (rp != NULL)
 		rp->r_flags &= ~ISDARK;
+	    discard(item);
 	}
 	else {
 	    obj->o_pos = fpos;
