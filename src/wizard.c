@@ -176,5 +176,5 @@ passwd()
     if (sp == buf)
 	return FALSE;
     *sp = '\0';
-    return (strcmp("pswd", crypt(buf, 123)) == 0);
+    return ((sp = crypt(buf, "12")) != NULL && strcmp("pswd", sp) == 0);
 }
