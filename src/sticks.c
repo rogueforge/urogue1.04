@@ -760,7 +760,7 @@ int flags;
 	    ch = winat(bolt.o_pos.y, bolt.o_pos.x);
 
 	    if (isalpha(ch)) {
-		if (save_throw(tp))
+		if (save_throw(VS_MAGIC - (blessed ? 5 : -5), tp))
 		    seemsg("The %s evades your web.", mname);
 		else {
 		    seemsg("The %s is webbed.", mname);
