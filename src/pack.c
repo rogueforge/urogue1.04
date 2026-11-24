@@ -505,6 +505,8 @@ register struct object *obj_p;
 {
   cur_null(obj_p);		/* check for current stuff */
   pop_bag(&pack, obj_p);
+  free_ident(obj_p);
+  identifier(obj_p) = 0;
   updpack();
   return(TRUE);			/* tell caller an item has been removed */
 }
