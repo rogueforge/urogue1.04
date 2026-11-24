@@ -35,6 +35,7 @@ register struct linked_list *top, *node; /* This node must belong to the
     detach(lvl_obj, top);		/* Remove item from level */
     if (obn->next_obj = obt->next_obj)
 	obn->next_obj->l_prev = NULL;
+    obt->next_obj = NULL;
     attach((obn->next_obj), top);
 }
 

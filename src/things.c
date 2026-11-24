@@ -215,6 +215,7 @@ int dis;
 	op = OBJPTR(llptr);
 	if (op->next_obj = objptr->next_obj)
 	    objptr->next_obj->l_prev = NULL;
+	objptr->next_obj = NULL;
 	y = op->o_pos.y;
 	x = op->o_pos.x;
 	if (cansee(y, x))
