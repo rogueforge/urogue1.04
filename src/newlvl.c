@@ -94,8 +94,9 @@ LEVTYPE	ltype;		/* designates type of level to create */
     if (levtype == NORMLEV) {
 	if (rnd(10) < level) {
 	    register char ch;
+	    register int n = rnd(level / 4) + 1;
 
-	    i = ntraps = min(MAXTRAPS, rnd(level / 4) + 1);
+	    i = ntraps = min(MAXTRAPS, n);
 	    /*
 	     * maybe a lair
 	     */
