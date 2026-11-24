@@ -407,7 +407,7 @@
  * on - check if a monster flag is on
  */
 #define	on(th, flag) \
-	((th).t_flags[(flag >> FLAGSHIFT) & FLAGINDEX] & ((flag << 4) & 0xffffffffL))
+	(((th).t_flags[(flag >> FLAGSHIFT) & FLAGINDEX] & ((flag << 4) & 0xffffffffL)) != 0)
 
 /*
  * off - check if a monster flag is off
