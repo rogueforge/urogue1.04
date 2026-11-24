@@ -922,6 +922,7 @@ int damage;			/* make zapee suffer */
     coord spotpos[BOLT_LENGTH];
     bool ret_val = FALSE;	/* True if breathing monster gets killed */
     register struct linked_list *item;
+    struct linked_list *shooter_item = NULL;
     register struct thing *tp;
     register char *mname;
     int bounced;		/* where along BOLT_LENGTH it hit a wall */
@@ -1191,7 +1192,10 @@ at_hero:
 		if (cansee(tp->t_pos.y, tp->t_pos.x))
 		    msg("The %s kills the %s.", name,
 			on(player, ISBLIND) ? "monster" : mname);
-		killed(shooter, item, NOMESSAGE, get_points);
+		if (tp == shooter)
+		    shooter_item = item;
+		else
+		    killed(shooter, item, NOMESSAGE, get_points);
 		ret_val = TRUE;
 	    }
 	    else if (get_points)
@@ -1205,6 +1209,8 @@ at_hero:
 	    mvwaddch(cw, spotpos[x].y, spotpos[x].x,
 			show(spotpos[x].y, spotpos[x].x));
     }
+    if (shooter_item != NULL)
+	killed(shooter, shooter_item, NOMESSAGE, get_points);
     if (take_that[BOLT_LENGTH] != 0) {
 	if (fam_ptr == NULL || tp != THINGPTR(fam_ptr)) {
 	    if (terse) 
