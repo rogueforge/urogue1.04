@@ -730,16 +730,17 @@ bool thrown;
 
 	    /* some monsters steal gold */
 	    if (on(*mp, STEALGOLD)) {
-		register long lastpurse;
+		register long lastpurse, left;
 		register struct linked_list *item;
 		register struct object *obj;
 
-		lastpurse = purse;
-		purse -= GOLDCALC;
+		lastpurse = left = purse;
+		left -= GOLDCALC;
 		if (!save(VS_MAGIC)) 
-		    purse -= GOLDCALC + GOLDCALC + GOLDCALC + GOLDCALC;
-		if (purse < 0)
-		    purse = 0;
+		    left -= GOLDCALC + GOLDCALC + GOLDCALC + GOLDCALC;
+		if (left < 0)
+		    left = 0;
+		purse = left;
 		if (purse != lastpurse) {
 		    msg("Your purse feels lighter.");
 

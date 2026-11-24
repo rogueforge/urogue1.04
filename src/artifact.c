@@ -141,6 +141,7 @@ do_minor(tr)
 struct object *tr;
 {
     register int which;
+    register long left;
 
     which = rnd(115);
     debug("Rolled %d.", which);
@@ -400,10 +401,12 @@ struct object *tr;
 		food_left -= 500;
 	when 59:
 		msg("Your purse feels lighter.");
-		purse = max(purse - 50 - rnd(purse/2), 0);
+		left = (long) purse - 50 - rnd(purse/2);
+		purse = max(left, 0);
 	when 60:
 		msg("A pixie appears and grabs gold from your purse.");
-		purse = max(purse - 50 - rnd(50), 0);
+		left = (long) purse - 50 - rnd(50);
+		purse = max(left, 0);
 	when 61:
 		msg("You feel a tingling sensation all over.");
 		pstats.s_hpt -= rnd(pstats.s_hpt/3);
