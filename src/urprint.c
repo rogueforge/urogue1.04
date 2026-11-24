@@ -474,7 +474,8 @@ register int i;
 	register long flag = weaps[i].w_flags;
 	register long mask;
 
-	for (i = 0; i < 32; i++, mask = flag & (1L << i)) {
+	for (i = 0; i < 32; i++) {
+		mask = flag & (1L << i);
 		if (mask & ISCURSED) printf(" CURSED");
 		if (mask & ISKNOW) printf(" KNOW");
 		if (mask & ISPOST) printf(" POST");
