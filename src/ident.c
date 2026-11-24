@@ -42,7 +42,9 @@ register struct object *obj_p;
     register struct linked_list *new_place_p = NULL;
 
     if (identifier(obj_p) != NULL)
-	return(identifier(obj_p));
+	for (list_p = ident_list; list_p != NULL; list_p = next(list_p))
+	    if (OBJPTR(list_p) == obj_p)
+		return(identifier(obj_p));
 
     /*
      * no identifier - must allocate one 
