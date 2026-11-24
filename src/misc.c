@@ -135,7 +135,7 @@ bool wakeup;
 		    tp->t_oldch = (trp->tr_flags & ISFOUND) ? tp->t_oldch
 							    : trp->tr_show;
 		}
-		if (tp->t_oldch == FLOOR && (rp->r_flags & ISDARK)
+		if (tp->t_oldch == FLOOR && rp != NULL && (rp->r_flags & ISDARK)
 		    && !(rp->r_flags & HASFIRE) && off(player, ISBLIND))
 			tp->t_oldch = ' ';
 	    }
@@ -223,6 +223,7 @@ bool wakeup;
 
     /* Do we have to light up the area (just stepped into a new corridor)? */
     if (do_light && wakeup && 	/* wakeup will be true on a normal move */
+	rp != NULL &&
 	!(rp->r_flags & ISDARK) &&   /* We have some light */
 	!ce(hero, player.t_oldpos))  /* Don't do anything if we didn't move */
 	    light(&hero);
