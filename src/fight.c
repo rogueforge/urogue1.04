@@ -827,6 +827,8 @@ bool thrown;
 		    else {
 			msg("The %s stole %s!", mname, inv_name(obj, LOWERCASE));
 			obj->o_flags &= ~ISCURSED;
+			if (obj == cur_armor)
+			    cur_armor = NULL;
 			dropcheck(obj);
 			rem_pack(obj);
 			attach(mp->t_pack, make_item(obj));
