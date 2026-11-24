@@ -240,7 +240,16 @@ register bool flee;
 	    for (mitem = mlist; mitem != NULL; mitem = next(mitem))
 		if ((THINGPTR(mitem))->t_dest == &obj->o_pos)
 		    (THINGPTR(mitem))->t_dest = &hero;
-	    attach(th->t_pack, item);
+	    for (mitem = th->t_pack; mitem != NULL; mitem = next(mitem))
+		if (obj->o_group > 0
+		    && (OBJPTR(mitem))->o_group == obj->o_group)
+			break;
+	    if (mitem != NULL) {
+		(OBJPTR(mitem))->o_count += obj->o_count;
+		discard(item);
+	    }
+	    else
+		attach(th->t_pack, item);
 	}
     }
 
