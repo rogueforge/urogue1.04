@@ -663,7 +663,7 @@ int flags;
 			turn_on(*tp, ISINVIS);
 			turn_on(*tp, ISRUN);
 			turn_off(*tp, ISDISGUISE);
-			runto(&tp->t_pos, &hero);
+			tp->t_dest = &hero;
 			zapped = TRUE;
 		    }
 		}
