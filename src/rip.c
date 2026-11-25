@@ -236,11 +236,33 @@ int lvl;
      */
     if (!waswizard)
     {
+	char name[3*LINELEN];
 	for (scp = top_ten; scp < &top_ten[10]; scp++) {
 	    if ( lvl > scp->sc_lvl)
 		break;
 	    if ( lvl == scp->sc_lvl && amount > scp->sc_score)
 		break;
+	}
+	if (scp < &top_ten[10])
+	{
+	    for (sc2 = &top_ten[9]; sc2 > scp; sc2--)
+		*sc2 = *(sc2-1);
+	    scp->sc_lvl = lvl;
+	    scp->sc_score = amount;
+	    scp->sc_gold = purse;
+	    strcpy(name, whoami);
+	    sprintf(prbuf, " %s", 
+			cnames[player.t_ctype][min(pstats.s_lvl,11) - 1]);
+	    strcat(name, prbuf);
+	    strncpy(scp->sc_name, name, 75);
+	    scp->sc_name[75] = '\0';
+	    scp->sc_flags = flags;
+	    if (flags == WINNER || flags == TOTAL)
+		scp->sc_level = max_level;
+	    else
+		scp->sc_level = level;
+	    scp->sc_monster = monst;
+	    scp->sc_artifacts = picked_artifact;
 	}
     }
     put_scores((char *) top_ten, sizeof top_ten, fd_score, !waswizard);
