@@ -176,6 +176,7 @@ bool max_monster;
     tp->t_ctype = C_MONSTER;
     tp->t_no_move = 0;
     tp->t_doorgoal = -1;
+    tp->t_dest = &hero;
     tp->t_pos = *cp;
     tp->t_oldpos = *cp;
     tp->t_oldch = mvwinch(cw, cp->y, cp->x);
