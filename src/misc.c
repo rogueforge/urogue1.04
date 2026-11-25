@@ -818,7 +818,7 @@ electrificate()
 	    turn_off(*tp, ISCHARMED);
 	    turn_on(*tp, ISRUN);
 	    turn_off(*tp, ISDISGUISE);
-	    runto(&tp->t_pos, &hero);
+	    tp->t_dest = &hero;
 	    fighting = after = running = FALSE;
 	}
     }
