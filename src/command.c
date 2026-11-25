@@ -224,10 +224,10 @@ command()
 		when 'v' : after = FALSE;
 			   msg("UltraRogue Version %s.", release);
 		when 'o' : after = FALSE; option(); strcpy(fd_data[1].mi_name, fruit);
-		when 17 :	/* ctrl-r */
+		when 18 :	/* ctrl-r */
 		    after = FALSE;
 		    clearok(curscr, TRUE);
-		when 15 : {	/* ctrl-p */
+		when 16 : {	/* ctrl-p */
 			    register bool decrement = FALSE;
 
 			    after = FALSE; 
@@ -274,7 +274,7 @@ command()
 		/*
 		 * Directional commands - get_dir sets delta
 		 */
-		when 19 :	/* ctrl-t */
+		when 20 :	/* ctrl-t */
 		    if (get_dir()) 
 			 steal();
 		    else after = FALSE;
@@ -291,7 +291,7 @@ command()
 		/*
 		 * wizard commands
 		 */
-		when 22 :	/* ctrl-w */
+		when 23 :	/* ctrl-w */
 		    after = FALSE;
 		    if (!wizard) {
 			if (canwizard)
