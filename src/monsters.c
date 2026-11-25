@@ -413,7 +413,7 @@ bool max_monster;
 	    }
 
 	/* LOWFRIENDLY monsters might be friendly */
-	i = roll(100);
+	i = roll(1, 100);
 	if (i == 0 || (on(*tp, LOWFRIENDLY) && i < eff_charisma) ||
 		      (on(*tp, MEDFRIENDLY) && i < 3 * eff_charisma) ||
 		      (on(*tp, HIGHFRIENDLY) && i < 5 * eff_charisma)) {
@@ -421,7 +421,7 @@ bool max_monster;
 	    turn_off(*tp, ISMEAN);
 	}
 
-	i = roll(100);
+	i = roll(1, 100);
 	if (i == 0 || (on(*tp, LOWCAST) && i < eff_intel) ||
 		      (on(*tp, MEDCAST) && i < 3 * eff_intel) ||
 		      (on(*tp, HIGHCAST) && i < 5 * eff_intel)) {
