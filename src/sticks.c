@@ -325,7 +325,7 @@ int flags;
 		    turn_on(*tp, ISRUN);
 		    turn_off(*tp, ISDISGUISE);
 		    mvwaddch(mw, y, x, ' ');
-		    mvwaddch(mw, tp->t_pos.y, tp->t_pos.x, tp->t_oldch);
+		    mvwaddch(mw, tp->t_pos.y, tp->t_pos.x, tp->t_type);
 		    if (tp->t_pos.y != y || tp->t_pos.x != x)
 			tp->t_oldch = mvwinch(cw, tp->t_pos.y, tp->t_pos.x);
 		}
