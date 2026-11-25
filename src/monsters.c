@@ -934,6 +934,8 @@ register struct thing *tp;
 
     /* Select the items */
     nitems = rnd(6) + 5;
+    for (i = 0; i < nitems; i++)	/* only weapons have a second plus */
+	selection[i].plus2 = 0;
     switch (rnd(6)) {
 	/* Armor */
 	case 0:
