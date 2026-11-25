@@ -179,6 +179,10 @@ int lvl;
     extern int fd_score;
 
     signal(SIGHUP, SIG_IGN);
+    if (flags != SCOREIT) {
+	nocbreak();
+	nl();
+    }
     if (flags != WINNER && flags != TOTAL && flags != SCOREIT) {
 	if (flags == CHICKEN)
 	    packend = "when you quit";
