@@ -684,6 +684,8 @@ do_major()
 	msg("Your %s crumbles into small black powdery dust.",
 	      inv_name(obj, LOWERCASE));
 	obj->o_flags &= ~ISCURSED;
+	if (obj == cur_armor)
+	    cur_armor = NULL;
 	dropcheck(obj);
 	discard_pack(obj);
     }

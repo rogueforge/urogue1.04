@@ -586,8 +586,10 @@ pet_message:	    msg("The dungeon begins to rumble and shake!");
 			    msg("Your %s explodes in a cloud of dust.",
 				inv_name(lb, LOWERCASE));
 			    lb->o_flags &= ~ISCURSED;
-			    if (lb == cur_armor)
+			    if (lb == cur_armor) {
 			        pstats.s_hpt /= 2;
+				cur_armor = NULL;
+			    }
 			    dropcheck(lb);
 			    del_pack(ll);
 			    lb = NULL;
