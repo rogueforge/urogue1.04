@@ -349,7 +349,15 @@ int flags;
 		nsides *= 2;
 	    damage = roll(pstats.s_lvl, nsides);
 
-	    if (isalpha(ch)) {
+	    /*
+	     * The missile stops where do_motion() takes it, which need
+	     * not be the square the target was found on above.
+	     */
+	    if (isalpha(ch) &&
+		(item = find_mons(bolt.o_pos.y, bolt.o_pos.x)) != NULL) {
+		tp = THINGPTR(item);
+		mname = on(player, ISBLIND) ? "monster" :
+			monsters[tp->t_index].m_name;
 		debug("Missiled %s for %d (%ld)",
 		    mname, damage, tp->t_stats.s_hpt-damage);
 		if ((tp->t_stats.s_hpt -= damage) <= 0) {
