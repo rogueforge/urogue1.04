@@ -100,7 +100,7 @@ register struct thing *tp;
 	    fall(&player, item, TRUE);
     }
     else if (obj->o_flags & ISOWNED) {
-	char buf[2*LINELEN];
+	char buf[4*LINELEN];
 
 	strcpy(buf, inv_name(obj, LOWERCASE));
 	add_pack(item, NOMESSAGE);
@@ -173,7 +173,7 @@ bool pr;
     obj = OBJPTR(item);
     rp = roomin(&(tp->t_pos));
     if (obj->o_flags & CANRETURN) {
-	char buf[2*LINELEN];
+	char buf[4*LINELEN];
 
 	strcpy(buf, inv_name(obj, LOWERCASE));
 	add_pack(item, NOMESSAGE);
