@@ -50,6 +50,8 @@ LEVTYPE	ltype;		/* designates type of level to create */
 	killed(NULL, item, NOMESSAGE, NOPOINTS);
     }
 
+    for (item = lvl_obj; item != NULL; item = next(item))
+	free_list((OBJPTR(item))->next_obj);
     free_list(lvl_obj);			/* Free up previous objects (if any) */
 
     wclear(cw);
