@@ -1026,6 +1026,7 @@ extern struct thing *beast;		/* The last monster attacking */
 extern struct monster monsters[];	/* The initial monster states */
 extern struct linked_list *lvl_obj;	/* List of objects on this level */
 extern struct linked_list *fam_ptr;	/* A ptr to the familiar */
+extern int fam_upgrade;			/* a stronger familiar is due */
 extern struct linked_list *curr_mons;	/* The mons. currently moving */
 extern struct linked_list *next_mons;	/* The mons. after curr_mons */
 extern struct object *cur_weapon;	/* Which weapon he is wielding */
