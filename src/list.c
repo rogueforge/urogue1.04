@@ -139,6 +139,10 @@ register linked_list **ptr;
 discard(item)
      register struct linked_list *item;
 {
+  if (item == fam_ptr) {	/* the familiar is gone */
+    turn_off(player, HASFAMILIAR);
+    fam_ptr = NULL;
+  }
   throw_away(item->l_data);
   ur_free((char *)item);
 }

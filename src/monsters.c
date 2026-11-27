@@ -69,6 +69,7 @@ bool familiar,print_message;
 	    turn_off(*tp, fam_off[i]);
 
 	if (fam_ptr != NULL) {		/* Get rid of old familiar */
+	    register struct linked_list *fitem = fam_ptr;
 	    register struct thing *fp = THINGPTR(fam_ptr);
 	    struct linked_list *fpack = fp->t_pack;
 	    struct linked_list *item;
@@ -85,7 +86,8 @@ bool familiar,print_message;
 		}
 	    }
 	    fp->t_pack = NULL;
-	    killed(NULL, fam_ptr, NOMESSAGE, NOPOINTS);
+	    fam_ptr = NULL;		/* the hero keeps a familiar */
+	    killed(NULL, fitem, NOMESSAGE, NOPOINTS);
 	}
 
 	fam_ptr = mp;

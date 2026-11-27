@@ -1630,8 +1630,6 @@ bool print_message, give_points;
 
     if (killer != NULL && item == fam_ptr) {
 	/* The player's familiar died */
-	turn_off(player,HASFAMILIAR);
-	fam_ptr = NULL;
 	msg("An incredible wave of sadness sweeps over you.");
 	/* There should be some penalty here... */
     }
