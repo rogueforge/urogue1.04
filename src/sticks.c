@@ -721,9 +721,10 @@ int flags;
 		    mvwaddch(cw, obj->o_pos.y, obj->o_pos.x, 
 		   		show(obj->o_pos.y, obj->o_pos.x));
 		}
-		if (shoot_ok(ch = winat(obj->o_pos.y, obj->o_pos.x)) 
+		if ((shoot_ok(ch = winat(obj->o_pos.y, obj->o_pos.x))
+			    || isalpha(ch))
 			&& ch != DOOR && !ce(obj->o_pos, hero)) {
-		    if (cansee(obj->o_pos.y, obj->o_pos.x) && 
+		    if (!isalpha(ch) && cansee(obj->o_pos.y, obj->o_pos.x) && 
 			    ntraps + 1 < 2*MAXTRAPS &&
 			    mvwinch(cw, obj->o_pos.y, obj->o_pos.x) != ' ') {
 			mvwaddch(cw, obj->o_pos.y, obj->o_pos.x, TRAPDOOR);
